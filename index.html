@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFFENSIVE-INTEL // Threat Intelligence Research</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void:      #040406;
+            --border-hi: #2A2A3A;
+            --green:     #00FF41;
+            --red:       #FF1A1A;
+            --cyan:      #00D4FF;
+            --white:     #EEEEF0;
+            --dim:       #55556A;
+            --muted:     #22222E;
+            --font-d: 'Barlow Condensed', sans-serif;
+            --font-m: 'Share Tech Mono', monospace;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body { height: 100%; }
+
+        body {
+            background: var(--void);
+            color: var(--white);
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        /* Scanlines */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.13) 2px, rgba(0,0,0,0.13) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ─── HERO ────────────────────────────────────── */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 2.5rem;
+            overflow: hidden;
+        }
+
+        #fx {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #hex-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            opacity: 0.055;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(4,4,6,0.85) 100%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1100px;
+        }
+
+        .eyebrow {
+            font-family: var(--font-m);
+            font-size: 0.68rem;
+            letter-spacing: 0.32em;
+            color: var(--red);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-p {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.85rem 1.75rem;
+            background: var(--red);
+            color: var(--white);
+            font-family: var(--font-m);
+            font-size: 0.72rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.25s;
+        }
+        .btn-p::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--white);
+            transform: translateX(-101%);
+            transition: transform 0.28s ease;
+        }
+        .btn-p:hover::before { transform: translateX(0); }
+        .btn-p:hover { color: var(--red); }
+        .btn-p span { position: relative; z-index: 1; }
+
+        .hero-title {
+            font-family: var(--font-d);
+            font-size: clamp(5rem, 13vw, 12rem);
+            font-weight: 900;
+            line-height: 0.88;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .t-solid { color: var(--white); }
+        .t-outline {
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--red);
+        }
+
+        .glitch { position: relative; display: block; }
+        .glitch::before, .glitch::after {
+            content: attr(data-t);
+            position: absolute;
+            inset: 0;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            opacity: 0;
+        }
+        .glitch::before {
+            color: var(--cyan);
+            clip-path: polygon(0 28%, 100% 28%, 100% 48%, 0 48%);
+            animation: g1 5s infinite;
+        }
+        .glitch::after {
+            color: var(--red);
+            clip-path: polygon(0 62%, 100% 62%, 100% 80%, 0 80%);
+            animation: g2 5s infinite;
+        }
+        @keyframes g1 {
+            0%,88%,100%{ opacity:0; transform:translateX(0); }
+            89%{ opacity:1; transform:translateX(-5px); }
+            91%{ transform:translateX(5px); }
+            93%{ opacity:0; }
+        }
+        @keyframes g2 {
+            0%,88%,100%{ opacity:0; transform:translateX(0); }
+            90%{ opacity:1; transform:translateX(5px); }
+            92%{ transform:translateX(-5px); }
+            94%{ opacity:0; }
+        }
+
+        .hero-sub {
+            margin-top: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .hero-tagline {
+            font-family: var(--font-m);
+            font-size: 0.8rem;
+            color: var(--dim);
+            line-height: 1.9;
+            max-width: 480px;
+        }
+
+        ::selection { background: var(--red); color: #fff; }
+    </style>
+</head>
+<body>
+
+<section class="hero">
+    <canvas id="fx"></canvas>
+    <svg id="hex-bg" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"></svg>
+    <div class="hero-inner">
+        <div class="eyebrow">Threat Intelligence Research</div>
+        <h1 class="hero-title">
+            <span class="t-solid glitch" data-t="OFFENSIVE">OFFENSIVE</span>
+            <span class="t-outline glitch" data-t="INTEL">INTEL</span>
+        </h1>
+        <div style="margin-top:2.5rem">
+            <a href="n4d-mech-controller/" class="btn-p"><span>→ Latest Research: N4D Mech Controller</span></a>
+        </div>
+    </div>
+</section>
+
+<script>
+    // ── Hex Grid ──────────────────────────────────────────
+    (function() {
+        const svg = document.getElementById('hex-bg');
+        const W = 1400, H = 900, R = 28;
+        const w = R * Math.sqrt(3), h = R * 2;
+        const cols = Math.ceil(W / w) + 2;
+        const rows = Math.ceil(H / (h * 0.75)) + 2;
+        let d = '';
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const cx = c * w + (r % 2 === 0 ? 0 : w / 2) - w / 2;
+                const cy = r * h * 0.75 - h / 2;
+                const pts = [];
+                for (let i = 0; i < 6; i++) {
+                    const a = Math.PI / 180 * (60 * i - 30);
+                    pts.push(`${(cx + R * Math.cos(a)).toFixed(1)},${(cy + R * Math.sin(a)).toFixed(1)}`);
+                }
+                d += `<polygon points="${pts.join(' ')}" fill="none" stroke="#FF1A1A" stroke-width="0.6"/>`;
+            }
+        }
+        svg.innerHTML = d;
+    })();
+
+    // ── Particles + Lightning ──────────────────────────────
+    (function() {
+        const canvas = document.getElementById('fx');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Snow particles
+        const COUNT = 130;
+        const pts = Array.from({ length: COUNT }, () => ({
+            x:     Math.random() * window.innerWidth,
+            y:     Math.random() * window.innerHeight,
+            r:     Math.random() * 1.8 + 0.5,
+            vx:    (Math.random() - 0.5) * 0.3,
+            vy:    -(Math.random() * 0.5 + 0.12),
+            base:  Math.random() * 0.35 + 0.12,
+            phase: Math.random() * Math.PI * 2,
+        }));
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            pts.forEach(p => {
+                p.phase += 0.018;
+                p.x += p.vx + Math.sin(p.phase * 0.7) * 0.15;
+                p.y += p.vy;
+                if (p.y < -4) { p.y = canvas.height + 4; p.x = Math.random() * canvas.width; }
+                if (p.x < -4) p.x = canvas.width  + 4;
+                if (p.x > canvas.width + 4) p.x = -4;
+                const a = p.base * (0.7 + 0.3 * Math.sin(p.phase));
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(220,228,240,${a})`;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    })();
+</script>
+</body>
+</html>

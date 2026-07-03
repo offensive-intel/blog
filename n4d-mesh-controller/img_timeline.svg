@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b949e"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff4444"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/>
+    </marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e"/>
+    </marker>
+    <marker id="arr-yellow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#eab308"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a855f7"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="620" fill="#0a0c10"/>
+
+  <!-- Title area -->
+  <text x="600" y="36" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="bold" fill="#e6edf3" text-anchor="middle">ACTIVE CAMPAIGN TIMELINE - Captured 2026-06-19</text>
+  <text x="600" y="58" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="normal" fill="#8b949e" text-anchor="middle">~9.5 hours of continuous operation • Discovered: 2026-07-02 • Open directory exposure</text>
+
+  <!-- Divider line under title -->
+  <line x1="60" y1="74" x2="1140" y2="74" stroke="#21262d" stroke-width="1"/>
+
+  <!-- ── Timeline bar at y=278 ── -->
+  <rect x="60" y="278" width="1080" height="24" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Hour tick marks on the bar -->
+  <line x1="85"   y1="278" x2="85"   y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="85"   y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">04:00Z</text>
+  <line x1="196"  y1="278" x2="196"  y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="196"  y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">05:00Z</text>
+  <line x1="307"  y1="278" x2="307"  y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="307"  y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">06:00Z</text>
+  <line x1="418"  y1="278" x2="418"  y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="418"  y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">07:00Z</text>
+  <line x1="529"  y1="278" x2="529"  y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="529"  y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">08:00Z</text>
+  <line x1="640"  y1="278" x2="640"  y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="640"  y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">09:00Z</text>
+  <line x1="751"  y1="278" x2="751"  y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="751"  y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">10:00Z</text>
+  <line x1="862"  y1="278" x2="862"  y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="862"  y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">11:00Z</text>
+  <line x1="973"  y1="278" x2="973"  y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="973"  y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">12:00Z</text>
+  <line x1="1084" y1="278" x2="1084" y2="302" stroke="#484f58" stroke-width="1"/>
+  <text x="1084" y="318" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="middle">13:00Z</text>
+
+  <!-- ── EVENT: 03:46Z - First MCP scan begins ── -->
+  <line x1="60" y1="268" x2="60" y2="312" stroke="#ff4444" stroke-width="3"/>
+  <circle cx="60" cy="290" r="6" fill="#ff4444"/>
+  <text x="60" y="108" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#ff4444" text-anchor="middle">03:46Z</text>
+  <text x="60" y="124" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#ff4444" text-anchor="middle">First MCP</text>
+  <text x="60" y="140" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#ff4444" text-anchor="middle">scan begins</text>
+  <line x1="60" y1="144" x2="60" y2="268" stroke="#ff4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <!-- ── EVENT: 04:00-04:50Z - Sequential /24 sweeps ── -->
+  <line x1="132" y1="268" x2="132" y2="312" stroke="#f97316" stroke-width="3"/>
+  <circle cx="132" cy="290" r="6" fill="#f97316"/>
+  <text x="132" y="170" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#f97316" text-anchor="middle">04:00-04:50Z</text>
+  <text x="132" y="186" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#f97316" text-anchor="middle">Sequential /24</text>
+  <text x="132" y="202" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#f97316" text-anchor="middle">sweeps begin</text>
+  <line x1="132" y1="206" x2="132" y2="268" stroke="#f97316" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <!-- ── EVENT: ~07:00Z - Intel collection begins ── -->
+  <line x1="418" y1="268" x2="418" y2="312" stroke="#eab308" stroke-width="3"/>
+  <circle cx="418" cy="290" r="6" fill="#eab308"/>
+  <text x="418" y="108" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#eab308" text-anchor="middle">~07:00Z</text>
+  <text x="418" y="124" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#eab308" text-anchor="middle">Intel collection</text>
+  <text x="418" y="140" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#eab308" text-anchor="middle">begins</text>
+  <line x1="418" y1="144" x2="418" y2="268" stroke="#eab308" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <!-- ── EVENT: 09:35Z - /16 sweep 42.193.0.0/16 ── -->
+  <line x1="705" y1="268" x2="705" y2="312" stroke="#ff4444" stroke-width="3"/>
+  <circle cx="705" cy="290" r="6" fill="#ff4444"/>
+  <text x="705" y="170" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#ff4444" text-anchor="middle">09:35Z</text>
+  <text x="705" y="186" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#ff4444" text-anchor="middle">/16 sweep</text>
+  <text x="705" y="202" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#ff4444" text-anchor="middle">42.193.0.0/16</text>
+  <text x="705" y="218" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#ff4444" text-anchor="middle">851,942 probes</text>
+  <line x1="705" y1="222" x2="705" y2="268" stroke="#ff4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <!-- ── EVENT: 13:13Z - /16 sweep 182.92.0.0/16 ── -->
+  <line x1="1108" y1="268" x2="1108" y2="312" stroke="#f97316" stroke-width="3"/>
+  <circle cx="1108" cy="290" r="6" fill="#f97316"/>
+  <text x="1108" y="108" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#f97316" text-anchor="middle">13:13Z</text>
+  <text x="1108" y="124" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#f97316" text-anchor="middle">/16 sweep</text>
+  <text x="1108" y="140" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#f97316" text-anchor="middle">182.92.0.0/16</text>
+  <line x1="1108" y1="144" x2="1108" y2="268" stroke="#f97316" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <!-- ── Swim lane: SCANNING ── -->
+  <rect x="60" y="332" width="1080" height="60" rx="4" fill="#0f1117" stroke="#21262d" stroke-width="1"/>
+  <text x="66" y="352" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="bold" fill="#3b82f6" text-anchor="start">SCANNING</text>
+  <rect x="60"   y="354" width="118" height="22" rx="3" fill="#3b82f6" opacity="0.6"/>
+  <rect x="696"  y="354" width="46"  height="22" rx="3" fill="#ff4444" opacity="0.6"/>
+  <rect x="1103" y="354" width="37"  height="22" rx="3" fill="#ff4444" opacity="0.6"/>
+
+  <!-- ── Swim lane: C2 ACTIVITY ── -->
+  <rect x="60" y="406" width="1080" height="60" rx="4" fill="#0f1117" stroke="#21262d" stroke-width="1"/>
+  <text x="66" y="426" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="bold" fill="#f97316" text-anchor="start">C2 ACTIVITY</text>
+  <line x1="60"  y1="430" x2="60"  y2="458" stroke="#f97316" stroke-width="2"/>
+  <text x="60"  y="466" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">startup</text>
+  <line x1="85"  y1="430" x2="85"  y2="458" stroke="#f97316" stroke-width="2"/>
+  <text x="85"  y="466" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">check-ins</text>
+  <line x1="705" y1="430" x2="705" y2="458" stroke="#f97316" stroke-width="2"/>
+  <text x="705" y="466" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">mass task dispatch</text>
+  <line x1="1108" y1="430" x2="1108" y2="458" stroke="#f97316" stroke-width="2"/>
+  <text x="1108" y="466" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">chain tasks</text>
+
+  <!-- ── Swim lane: INTEL COLLECTION ── -->
+  <rect x="60" y="480" width="1080" height="36" rx="4" fill="#0f1117" stroke="#21262d" stroke-width="1"/>
+  <text x="66" y="500" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="bold" fill="#eab308" text-anchor="start">INTEL COLLECTION</text>
+  <rect x="418" y="484" width="722" height="26" rx="3" fill="#eab308" opacity="0.5"/>
+  <text x="779" y="502" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" fill="#eab308" text-anchor="middle">Continuous credential harvest</text>
+
+  <!-- ── Stats summary box ── -->
+  <rect x="24" y="530" width="1152" height="72" rx="6" fill="#0f1117" stroke="#21262d" stroke-width="1"/>
+  <text x="168" y="554" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="22" font-weight="bold" fill="#eab308" text-anchor="middle">~9.5 hrs</text>
+  <text x="168" y="575" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">continuous operation</text>
+  <line x1="336" y1="538" x2="336" y2="594" stroke="#21262d" stroke-width="1"/>
+  <text x="480" y="554" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="22" font-weight="bold" fill="#eab308" text-anchor="middle">851,942</text>
+  <text x="480" y="575" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">probes in single /16 sweep</text>
+  <line x1="648" y1="538" x2="648" y2="594" stroke="#21262d" stroke-width="1"/>
+  <text x="792" y="554" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="22" font-weight="bold" fill="#eab308" text-anchor="middle">2</text>
+  <text x="792" y="575" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">autonomous /16 sweeps</text>
+  <line x1="960" y1="538" x2="960" y2="594" stroke="#21262d" stroke-width="1"/>
+  <text x="1080" y="554" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="22" font-weight="bold" fill="#eab308" text-anchor="middle">50+</text>
+  <text x="1080" y="575" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" fill="#8b949e" text-anchor="middle">intel records captured</text>
+</svg>

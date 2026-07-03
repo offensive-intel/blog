@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b949e"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff4444"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/>
+    </marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e"/>
+    </marker>
+    <marker id="arr-yellow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#eab308"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a855f7"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="640" fill="#0a0c10"/>
+  <text x="600" y="36" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="bold" fill="#e6edf3" text-anchor="middle">CREDENTIAL HARVEST CHAIN — INTEL COLLECTION FLOW</text>
+  <text x="600" y="58" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="normal" fill="#8b949e" text-anchor="middle">Multi-source credential extraction, aggregation, and exploitation</text>
+  <rect x="100" y="78" width="260" height="100" rx="6" fill="#0f1117" stroke="#ff4444" stroke-width="2" opacity="1.0"/>
+  <text x="230" y="102" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#ff4444" text-anchor="middle">remote-executor</text>
+  <text x="230" y="122" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#ff4444" text-anchor="middle">MCP Server</text>
+  <text x="230" y="144" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="middle">execute_command</text>
+  <text x="230" y="159" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="middle">execute_script</text>
+  <rect x="460" y="78" width="260" height="100" rx="6" fill="#0f1117" stroke="#f97316" stroke-width="2" opacity="1.0"/>
+  <text x="590" y="102" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#f97316" text-anchor="middle">Message Bot</text>
+  <text x="590" y="122" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#f97316" text-anchor="middle">MCP Server</text>
+  <text x="590" y="144" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="middle">send_message</text>
+  <text x="590" y="159" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="middle">get_history</text>
+  <rect x="820" y="78" width="260" height="100" rx="6" fill="#0f1117" stroke="#a855f7" stroke-width="2" opacity="1.0"/>
+  <text x="950" y="102" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#a855f7" text-anchor="middle">Azure VM</text>
+  <text x="950" y="122" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#a855f7" text-anchor="middle">+ IMDS Endpoint</text>
+  <text x="950" y="144" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="middle">instance metadata</text>
+  <text x="950" y="159" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="middle">Azure JWT tokens</text>
+  <line x1="230" y1="180" x2="230" y2="238" stroke="#ff4444" stroke-width="2" marker-end="url(#arr-red)"/>
+  <text x="230" y="218" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">tools/call</text>
+  <line x1="590" y1="180" x2="590" y2="238" stroke="#f97316" stroke-width="2" marker-end="url(#arr-orange)"/>
+  <text x="590" y="218" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">tools/call</text>
+  <line x1="950" y1="180" x2="950" y2="238" stroke="#a855f7" stroke-width="2" marker-end="url(#arr-purple)"/>
+  <text x="950" y="218" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">tools/call</text>
+  <rect x="100" y="240" width="1000" height="80" rx="8" fill="#161b22" stroke="#3b82f6" stroke-width="2" opacity="1.0"/>
+  <text x="600" y="268" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">N4D FIELD AGENT</text>
+  <text x="600" y="288" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">Aggregates harvested credentials from all tool responses</text>
+  <text x="600" y="308" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#484f58" text-anchor="middle">Structures data → intel record → POST /api/intel</text>
+  <line x1="600" y1="322" x2="600" y2="358" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <rect x="280" y="360" width="640" height="80" rx="6" fill="#0f1117" stroke="#484f58" stroke-width="1" opacity="1.0"/>
+  <text x="600" y="382" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#e6edf3" text-anchor="middle">INTEL RECORD + TRANSMISSION</text>
+  <text x="600" y="400" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="middle">{"node_id":"agent-x","files":{"/etc/shadow":"...","id_rsa":"..."},</text>
+  <text x="600" y="416" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="middle">"metadata":{"AWS_KEY":"AKIA...","AZURE_JWT":"eyJ..."}}</text>
+  <text x="600" y="434" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#484f58" text-anchor="middle">POST /api/intel → C2 controller stores in PostgreSQL</text>
+  <rect x="80" y="454" width="1040" height="56" rx="6" fill="#150a00" stroke="#f97316" stroke-width="2" opacity="1.0"/>
+  <text x="600" y="474" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#f97316" text-anchor="middle">KEY INSIGHT: In v3.1, GET /api/intel returned this exact data UNAUTHENTICATED</text>
+  <text x="600" y="494" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">Any researcher — or any adversary — could harvest the botnet's stolen credentials by issuing a simple HTTP GET request</text>
+  <rect x="60" y="524" width="240" height="100" rx="6" fill="#0f1117" stroke="#ff4444" stroke-width="1" opacity="1.0"/>
+  <line x1="600" y1="512" x2="180" y2="522" stroke="#ff4444" stroke-width="1.5" marker-end="url(#arr-red)" stroke-dasharray="6,3"/>
+  <text x="180" y="548" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#ff4444" text-anchor="middle">Credential</text>
+  <text x="180" y="568" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#ff4444" text-anchor="middle">Cracking</text>
+  <text x="180" y="592" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">hashcat offline</text>
+  <text x="180" y="607" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">attack on /etc/shadow</text>
+  <rect x="340" y="524" width="240" height="100" rx="6" fill="#0f1117" stroke="#f97316" stroke-width="1" opacity="1.0"/>
+  <line x1="600" y1="512" x2="460" y2="522" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr-orange)" stroke-dasharray="6,3"/>
+  <text x="460" y="548" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#f97316" text-anchor="middle">SSH</text>
+  <text x="460" y="568" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#f97316" text-anchor="middle">Persistence</text>
+  <text x="460" y="592" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">Inject id_rsa into</text>
+  <text x="460" y="607" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">authorized_keys</text>
+  <rect x="620" y="524" width="240" height="100" rx="6" fill="#0f1117" stroke="#eab308" stroke-width="1" opacity="1.0"/>
+  <line x1="600" y1="512" x2="740" y2="522" stroke="#eab308" stroke-width="1.5" marker-end="url(#arr-yellow)" stroke-dasharray="6,3"/>
+  <text x="740" y="548" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#eab308" text-anchor="middle">AWS Account</text>
+  <text x="740" y="568" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#eab308" text-anchor="middle">Compromise</text>
+  <text x="740" y="592" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">AKIA* keys used</text>
+  <text x="740" y="607" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">for cloud lateral move</text>
+  <rect x="900" y="524" width="240" height="100" rx="6" fill="#0f1117" stroke="#a855f7" stroke-width="1" opacity="1.0"/>
+  <line x1="600" y1="512" x2="1020" y2="522" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arr-purple)" stroke-dasharray="6,3"/>
+  <text x="1020" y="548" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#a855f7" text-anchor="middle">Azure ARM</text>
+  <text x="1020" y="568" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#a855f7" text-anchor="middle">Access</text>
+  <text x="1020" y="592" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">JWT token for</text>
+  <text x="1020" y="607" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">ARM API calls</text>
+</svg>

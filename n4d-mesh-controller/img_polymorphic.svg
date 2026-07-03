@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b949e"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff4444"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/>
+    </marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e"/>
+    </marker>
+    <marker id="arr-yellow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#eab308"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a855f7"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="720" fill="#0a0c10"/>
+  <text x="600" y="36" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="bold" fill="#e6edf3" text-anchor="middle">POLYMORPHIC DROPPER PIPELINE — n4d_agent.py</text>
+  <text x="600" y="58" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="normal" fill="#8b949e" text-anchor="middle">Per-deployment mutation engine generates unique agent binary each time</text>
+
+  <!-- ROW 1: SOURCE → [1] → [2] → [3] → [4] -->
+  <rect x="253" y="75" width="110" height="110" rx="6" fill="#161b22" stroke="#3b82f6" stroke-width="1" opacity="1.0"/>
+  <text x="308" y="97" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="middle">SOURCE</text>
+  <text x="308" y="115" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">C2 stores</text>
+  <text x="308" y="131" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">base agent</text>
+  <text x="308" y="147" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">template</text>
+  <text x="308" y="163" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="normal" fill="#484f58" text-anchor="middle">AES-encrypted</text>
+  <line x1="363" y1="130" x2="379" y2="130" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-blue)"/>
+
+  <rect x="379" y="80" width="130" height="100" rx="6" fill="#0f1117" stroke="#3b82f6" stroke-width="2" opacity="1.0"/>
+  <text x="444" y="114" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#3b82f6" text-anchor="middle">1</text>
+  <text x="444" y="136" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Fetch</text>
+  <text x="444" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Template</text>
+  <line x1="509" y1="130" x2="525" y2="130" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-blue)"/>
+
+  <rect x="525" y="80" width="130" height="100" rx="6" fill="#0f1117" stroke="#484f58" stroke-width="2" opacity="1.0"/>
+  <text x="590" y="114" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#484f58" text-anchor="middle">2</text>
+  <text x="590" y="136" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Insert</text>
+  <text x="590" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Junk Code</text>
+  <line x1="655" y1="130" x2="671" y2="130" stroke="#484f58" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="671" y="80" width="130" height="100" rx="6" fill="#0f1117" stroke="#484f58" stroke-width="2" opacity="1.0"/>
+  <text x="736" y="114" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#484f58" text-anchor="middle">3</text>
+  <text x="736" y="136" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Rename</text>
+  <text x="736" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Symbols</text>
+  <line x1="801" y1="130" x2="817" y2="130" stroke="#f97316" stroke-width="2" marker-end="url(#arr-orange)"/>
+
+  <rect x="817" y="80" width="130" height="100" rx="6" fill="#0f1117" stroke="#f97316" stroke-width="2" opacity="1.0"/>
+  <text x="882" y="114" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#f97316" text-anchor="middle">4</text>
+  <text x="882" y="136" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Pack &amp;</text>
+  <text x="882" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Compress</text>
+
+  <!-- Elbow connector: box 4 bottom-center → row 2 box 5 top-center -->
+  <polyline points="882,180 882,200 318,200 318,220" stroke="#f97316" stroke-width="2" fill="none" marker-end="url(#arr-orange)"/>
+
+  <!-- ROW 2: [5] → [6] → [7] → [8] → OUTPUT -->
+  <rect x="253" y="220" width="130" height="100" rx="6" fill="#0f1117" stroke="#f97316" stroke-width="2" opacity="1.0"/>
+  <text x="318" y="254" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#f97316" text-anchor="middle">5</text>
+  <text x="318" y="276" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">XOR</text>
+  <text x="318" y="294" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Encrypt</text>
+  <line x1="383" y1="270" x2="399" y2="270" stroke="#f97316" stroke-width="2" marker-end="url(#arr-orange)"/>
+
+  <rect x="399" y="220" width="130" height="100" rx="6" fill="#0f1117" stroke="#eab308" stroke-width="2" opacity="1.0"/>
+  <text x="464" y="254" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#eab308" text-anchor="middle">6</text>
+  <text x="464" y="276" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Embed</text>
+  <text x="464" y="294" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Config</text>
+  <line x1="529" y1="270" x2="545" y2="270" stroke="#eab308" stroke-width="2" marker-end="url(#arr-yellow)"/>
+
+  <rect x="545" y="220" width="130" height="100" rx="6" fill="#0f1117" stroke="#ff4444" stroke-width="2" opacity="1.0"/>
+  <text x="610" y="254" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#ff4444" text-anchor="middle">7</text>
+  <text x="610" y="276" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Strip</text>
+  <text x="610" y="294" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Metadata</text>
+  <line x1="675" y1="270" x2="691" y2="270" stroke="#ff4444" stroke-width="2" marker-end="url(#arr-red)"/>
+
+  <rect x="691" y="220" width="130" height="100" rx="6" fill="#0f1117" stroke="#22c55e" stroke-width="2" opacity="1.0"/>
+  <text x="756" y="254" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="bold" fill="#22c55e" text-anchor="middle">8</text>
+  <text x="756" y="276" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Deploy</text>
+  <text x="756" y="294" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#e6edf3" text-anchor="middle">Binary</text>
+  <line x1="821" y1="270" x2="837" y2="270" stroke="#22c55e" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <rect x="837" y="215" width="110" height="110" rx="6" fill="#161b22" stroke="#22c55e" stroke-width="1" opacity="1.0"/>
+  <text x="892" y="237" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="bold" fill="#22c55e" text-anchor="middle">OUTPUT</text>
+  <text x="892" y="255" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">Unique ELF</text>
+  <text x="892" y="271" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">per deploy</text>
+  <text x="892" y="287" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="middle">Different hash</text>
+  <text x="892" y="303" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="normal" fill="#484f58" text-anchor="middle">every time</text>
+
+  <!-- ANTI-ANALYSIS FEATURES -->
+  <text x="600" y="352" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14" font-weight="bold" fill="#e6edf3" text-anchor="middle">ANTI-ANALYSIS FEATURES</text>
+  <rect x="64" y="368" width="256" height="100" rx="6" fill="#0f1117" stroke="#ff4444" stroke-width="1" opacity="1.0"/>
+  <text x="192" y="392" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#ff4444" text-anchor="middle">Anti-Debug</text>
+  <text x="192" y="416" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">Detects ptrace, strace</text>
+  <text x="192" y="434" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">gdb; exits silently</text>
+  <rect x="336" y="368" width="256" height="100" rx="6" fill="#0f1117" stroke="#f97316" stroke-width="1" opacity="1.0"/>
+  <text x="464" y="392" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#f97316" text-anchor="middle">Self-Delete</text>
+  <text x="464" y="416" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">Unlinks own binary after</text>
+  <text x="464" y="434" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">injecting persistence</text>
+  <rect x="608" y="368" width="256" height="100" rx="6" fill="#0f1117" stroke="#eab308" stroke-width="1" opacity="1.0"/>
+  <text x="736" y="392" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#eab308" text-anchor="middle">Silent Fail</text>
+  <text x="736" y="416" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">No stderr output;</text>
+  <text x="736" y="434" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">all errors suppressed</text>
+  <rect x="880" y="368" width="256" height="100" rx="6" fill="#0f1117" stroke="#a855f7" stroke-width="1" opacity="1.0"/>
+  <text x="1008" y="392" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="bold" fill="#a855f7" text-anchor="middle">Per-Build Entropy</text>
+  <text x="1008" y="416" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">Random junk blocks</text>
+  <text x="1008" y="434" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">ensure unique hash</text>
+
+  <!-- CODE COMPARISON: BEFORE / AFTER -->
+  <rect x="24" y="488" width="560" height="190" rx="6" fill="#161b22" stroke="#484f58" stroke-width="1" opacity="1.0"/>
+  <text x="304" y="508" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="bold" fill="#8b949e" text-anchor="middle">BEFORE — Base Template</text>
+  <text x="34" y="526" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">def connect_to_c2(host, port):</text>
+  <text x="34" y="548" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">    sock = socket.socket()</text>
+  <text x="34" y="570" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">    sock.connect((host, port))</text>
+  <text x="34" y="592" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">    auth = hmac.new(KEY, MSG).digest()</text>
+  <text x="34" y="614" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">    sock.send(auth)</text>
+  <rect x="616" y="488" width="560" height="190" rx="6" fill="#161b22" stroke="#22c55e" stroke-width="1" opacity="1.0"/>
+  <text x="896" y="508" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="bold" fill="#22c55e" text-anchor="middle">AFTER — Mutated Instance</text>
+  <text x="626" y="526" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">def _x7k2_net_init(h3st, p0rt):</text>
+  <text x="626" y="548" font-family="'Courier New',Courier,monospace" font-size="11" fill="#22c55e" text-anchor="start">    _junk_7f2a = 0xdeadbeef ^ 0xcafe  # noise</text>
+  <text x="626" y="570" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">    _sock_a3f = socket.socket()</text>
+  <text x="626" y="592" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">    _sock_a3f.connect((h3st, p0rt))</text>
+  <text x="626" y="614" font-family="'Courier New',Courier,monospace" font-size="11" fill="#8b949e" text-anchor="start">    _a_7b1c = hmac.new(_K3Y_x9, _M5G).digest()</text>
+  <line x1="584" y1="583" x2="612" y2="583" stroke="#22c55e" stroke-width="2" marker-end="url(#arr-green)"/>
+  <text x="600" y="569" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="normal" fill="#22c55e" text-anchor="middle">mutate</text>
+</svg>

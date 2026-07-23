@@ -194,6 +194,12 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40p
 .diag-title{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:600;fill:var(--text);}
 .diag-sub{font-family:'Courier New',Courier,monospace;font-size:9.5px;fill:var(--dim);}
 
+/* EVIDENCE IMAGES */
+.ev-section{margin:20px 0;}
+.ev-fig{margin:0;}
+.ev-fig img{width:100%;display:block;border:1px solid var(--border);border-radius:4px;background:#0d1117;}
+.ev-cap{font-family:'Courier New',Courier,monospace;font-size:10px;color:var(--mute);margin-top:5px;line-height:1.5;}
+.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
 </style>
 </head>
 <body>
@@ -326,12 +332,19 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40p
 </div>
 
 <div class="stat-chips">
-  <div class="stat-chip"><span class="sc-num sc-red">—</span><span class="sc-label">UniFi Targets</span></div>
+  <div class="stat-chip"><span class="sc-num sc-red">167+</span><span class="sc-label">IoT Compromised</span></div>
   <div class="stat-chip"><span class="sc-num sc-red">14</span><span class="sc-label">CPU Architectures</span></div>
   <div class="stat-chip"><span class="sc-num sc-orange">4</span><span class="sc-label">CVEs Exploited</span></div>
   <div class="stat-chip"><span class="sc-num sc-purple">3</span><span class="sc-label">Victim Regions</span></div>
   <div class="stat-chip"><span class="sc-num sc-blue">6</span><span class="sc-label">Persist Methods</span></div>
   <div class="stat-chip"><span class="sc-num sc-yellow">2</span><span class="sc-label">OS Platforms</span></div>
+</div>
+
+<div class="ev-section">
+  <figure class="ev-fig">
+    <img src="opendir_wp2shell.png" alt="Open directory listing — staging server">
+    <div class="ev-cap">Open directory — staging server (:80). Agent binaries, stager script, and operator tooling left exposed without authentication.</div>
+  </figure>
 </div>
 
 <!-- 01 OVERVIEW -->
@@ -342,7 +355,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40p
 <p>Both attack vectors — WordPress exploitation and IoT compromise — are part of a single campaign and deliver the same payload: <strong>Agent-TCP</strong>, a cross-platform Go RAT compiled for 14 CPU architectures. Unpacked binary analysis reveals capabilities well beyond what the deployment scripts suggest — including in-memory fileless execution via Linux <code>MemfdCreate</code>, Windows DLL injection, post-quantum TLS (MLKEM), and an explicit Juniper SRX320 firewall execution fallback. The operator's development machine path leaked through the binary (see §05 Build Metadata).</p>
 
 <div class="callout-red">
-  <p><strong>Critical:</strong> The open directory contained live deployment logs confirming root-level compromise across multiple devices, plus full source code, target lists, and operator scripts — all left accessible without authentication. This represents a complete operational picture of an active campaign.</p>
+  <p><strong>Note:</strong> Full source code, deployment logs, target lists, and operator scripts were recovered from the open directory without authentication.</p>
 </div>
 
 <p>Operator scripts contain Mandarin Chinese comments (<code>批量部署</code>, <code>架构映射</code>, <code>持久化</code>, <code>提权到 root</code>). A dedicated target list focused on Chunghwa Telecom's network was recovered, along with a separate HNAP reconnaissance directory. A LoongArch64 binary variant is included in the payload set. No attribution to any specific threat actor is made.</p>
@@ -359,8 +372,22 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40p
     <tr><td class="mono red-text">[staging-server]:80</td><td class="strong">Staging / Artifact Distribution</td><td class="mono">agent_linux_*, agent_windows_amd64.exe, wp2shell_stager.sh — open directory (no auth)</td></tr>
     <tr><td class="mono red-text">[staging-server]:8443</td><td class="strong">Deploy Scripts + Heartbeat Receiver</td><td class="mono">dbusd_*, stager.sh, dropper.sh, persist.sh — /beacon endpoint (shell-only pings)</td></tr>
     <tr><td class="mono red-text">v9g6.my → 202.61.136.40</td><td class="strong">RAT C2 (primary — agent comms)</td><td class="mono">Full TCP/TLS control channel · ChaCha20Poly1305 · tasking, exec, upload, SOCKS5</td></tr>
+    <tr><td class="mono" style="color:var(--orange)">43.161.245.209</td><td class="strong">Secondary C2 — Under Investigation</td><td class="mono">Multiple associated domains — potential infrastructure overlap with this campaign</td></tr>
   </tbody>
 </table>
+</div>
+
+<div class="ev-section">
+  <figure class="ev-fig">
+    <img src="opendir_wp2shell_stager.png" alt="wp2shell Stager — source code">
+    <div class="ev-cap">wp2shell Stager — post-exploit shell script recovered from the open directory. Architecture detection, multi-method download, 4-method persistence installation.</div>
+  </figure>
+</div>
+<div class="ev-section">
+  <figure class="ev-fig">
+    <img src="opendir_wp2shell_ack.png" alt="C2 ACK — host PC-KGE5382 connecting to v9g6.my:8443">
+    <div class="ev-cap">C2 ACK — compromised host <code>PC-KGE5382</code> checking in to <code>v9g6.my:8443</code>. Server returns <code>PL=22 RID=4000</code> confirming active beacon session.</div>
+  </figure>
 </div>
 
 <h3>Infrastructure Topology</h3>
@@ -1227,7 +1254,7 @@ obfs.buildKey(<span class="fn">hash/crc32</span>)  <span class="muted">// CRC32-
 <!-- 07 TAIWAN -->
 <h2 id="geo">07. Geographic Targeting — Observable Facts</h2>
 
-<p>IoT victim devices confirmed from deployment logs span three countries: <strong>Taiwan</strong> (dedicated target list against Chunghwa Telecom's network), <strong>Japan</strong> (devices confirmed in deployment runs), and <strong>United States</strong> (IoT devices observed in botnet deployment logs). No geographic victim records exist for the WordPress exploitation component.</p>
+<p>Deployment logs recovered from the open directory confirm at least 167 compromised IoT devices. Victim devices span three countries: <strong>Taiwan</strong> (dedicated target list against Chunghwa Telecom's network), <strong>Japan</strong> (devices confirmed in deployment runs), and <strong>United States</strong> (IoT devices observed in botnet deployment logs). No geographic victim records exist for the WordPress exploitation component.</p>
 
 <h3>Taiwan — Dedicated Targeting Operation</h3>
 
@@ -1379,6 +1406,7 @@ level: high</code></pre>
   <tbody>
     <tr><td><span class="pill p-red">DOMAIN</span></td><td class="mono red-text">v9g6.my</td><td>RAT C2 — primary agent communication</td><td><span style="color:var(--red)">ACTIVE</span></td></tr>
     <tr><td><span class="pill p-red">IP</span></td><td class="mono red-text">202.61.136.40</td><td>RAT C2 resolved IP (v9g6.my)</td><td><span style="color:var(--red)">ACTIVE</span></td></tr>
+    <tr><td><span class="pill p-orange">IP</span></td><td class="mono" style="color:var(--orange)">43.161.245.209</td><td>Secondary C2 infrastructure — multiple associated domains, campaign correlation under investigation</td><td><span style="color:var(--orange)">INVESTIGATING</span></td></tr>
   </tbody>
 </table>
 </div>
@@ -1445,7 +1473,7 @@ level: high</code></pre>
     <tr><td><span class="pill p-red">CRITICAL</span></td><td>Update WordPress to 7.0.2 or 6.9.5 — patches CVE-2026-63030 (route-confusion SQLi) and CVE-2026-60137 (zero-credential admin creation)</td><td>All WordPress 6.9.0–7.0.1 installations</td></tr>
     <tr><td><span class="pill p-red">CRITICAL</span></td><td>Block <code>/wp-json/batch/v1</code> and <code>?rest_route=/batch/v1</code> at WAF; block unauthenticated <code>POST /wp/v2/users</code> until patched</td><td>WAF / CDN / edge</td></tr>
     <tr><td><span class="pill p-red">CRITICAL</span></td><td>Patch Ubiquiti UniFi Network Application (CVE-2021-36260)</td><td>All UniFi controllers</td></tr>
-    <tr><td><span class="pill p-red">CRITICAL</span></td><td>Block staging server and 202.61.136.40 (RAT C2) at perimeter</td><td>Firewall</td></tr>
+    <tr><td><span class="pill p-red">CRITICAL</span></td><td>Block staging server, 202.61.136.40, and 43.161.245.209 (C2 infrastructure) at perimeter</td><td>Firewall</td></tr>
     <tr><td><span class="pill p-orange">HIGH</span></td><td>Block DNS resolution of <code>v9g6.my</code></td><td>Internal DNS resolvers</td></tr>
     <tr><td><span class="pill p-orange">HIGH</span></td><td>Search for <code>cache-mgr.service</code>, <code>uniFi-core.service</code>, <code>S99dbusd</code> on all Linux hosts</td><td>Linux endpoints, IoT</td></tr>
     <tr><td><span class="pill p-orange">HIGH</span></td><td>Audit for <code>wp2_</code>-prefixed WordPress admin accounts</td><td>WordPress admin panels</td></tr>

@@ -22,13 +22,11 @@
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html, body { height: 100%; }
-
         body {
             background: var(--void);
             color: var(--white);
-            overflow: hidden;
             cursor: crosshair;
+            overflow-x: hidden;
         }
 
         /* Scanlines */
@@ -41,15 +39,15 @@
             z-index: 9999;
         }
 
-        /* ─── HERO ────────────────────────────────────── */
+        /* ─── HERO ─────────────────────────────────────────── */
         .hero {
             position: relative;
             width: 100%;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 2.5rem;
+            padding: 4rem 2.5rem 5rem;
             overflow: hidden;
         }
 
@@ -93,43 +91,16 @@
             margin-bottom: 1.5rem;
         }
 
-        .btn-p {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.85rem 1.75rem;
-            background: var(--red);
-            color: var(--white);
-            font-family: var(--font-m);
-            font-size: 0.72rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            transition: color 0.25s;
-        }
-        .btn-p::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: var(--white);
-            transform: translateX(-101%);
-            transition: transform 0.28s ease;
-        }
-        .btn-p:hover::before { transform: translateX(0); }
-        .btn-p:hover { color: var(--red); }
-        .btn-p span { position: relative; z-index: 1; }
-
         .hero-title {
             font-family: var(--font-d);
-            font-size: clamp(5rem, 13vw, 12rem);
+            font-size: clamp(4.5rem, 11vw, 10rem);
             font-weight: 900;
             line-height: 0.88;
             letter-spacing: -0.02em;
             text-transform: uppercase;
         }
 
-        .t-solid { color: var(--white); }
+        .t-solid  { color: var(--white); }
         .t-outline {
             color: transparent;
             -webkit-text-stroke: 1.5px var(--red);
@@ -170,19 +141,129 @@
             94%{ opacity:0; }
         }
 
-        .hero-sub {
-            margin-top: 2.5rem;
+        /* ─── RESEARCH CARDS ───────────────────────────────── */
+        .research-header {
+            margin-top: 3.5rem;
+            font-family: var(--font-m);
+            font-size: 0.6rem;
+            letter-spacing: 0.28em;
+            color: var(--dim);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 2.5rem;
+            gap: 1rem;
+        }
+        .research-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-hi);
         }
 
-        .hero-tagline {
+        .research-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border-hi);
+            border: 1px solid var(--border-hi);
+        }
+
+        .r-card {
+            background: var(--void);
+            padding: 1.6rem 1.75rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            border-left: 2px solid transparent;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+        }
+        .r-card:hover {
+            border-left-color: var(--red);
+            background: rgba(255, 26, 26, 0.04);
+        }
+
+        .r-card-meta {
             font-family: var(--font-m);
-            font-size: 0.8rem;
+            font-size: 0.58rem;
             color: var(--dim);
-            line-height: 1.9;
-            max-width: 480px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .r-badge {
+            font-family: var(--font-m);
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            padding: 2px 7px;
+            background: rgba(255,26,26,0.12);
+            color: var(--red);
+            border: 1px solid rgba(255,26,26,0.3);
+            text-transform: uppercase;
+        }
+        .r-badge.prev {
+            background: rgba(85,85,106,0.12);
+            color: var(--dim);
+            border-color: var(--border-hi);
+        }
+
+        .r-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-top: 0.1rem;
+        }
+        .r-tag {
+            font-family: var(--font-m);
+            font-size: 0.54rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--dim);
+            padding: 1px 6px;
+            border: 1px solid var(--border-hi);
+        }
+
+        .r-card-title {
+            font-family: var(--font-d);
+            font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.01em;
+            color: var(--white);
+            line-height: 1.05;
+            margin-top: 0.25rem;
+        }
+
+        .r-card-desc {
+            font-family: var(--font-m);
+            font-size: 0.62rem;
+            color: var(--dim);
+            line-height: 1.8;
+            margin-top: 0.1rem;
+        }
+
+        .r-card-link {
+            margin-top: auto;
+            padding-top: 1rem;
+            font-family: var(--font-m);
+            font-size: 0.62rem;
+            color: var(--red);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .r-card:hover .r-card-link { opacity: 1; }
+
+        @media (max-width: 720px) {
+            .research-grid { grid-template-columns: 1fr; }
         }
 
         ::selection { background: var(--red); color: #fff; }
@@ -193,14 +274,50 @@
 <section class="hero">
     <canvas id="fx"></canvas>
     <svg id="hex-bg" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"></svg>
+
     <div class="hero-inner">
         <div class="eyebrow">Threat Intelligence Research</div>
         <h1 class="hero-title">
             <span class="t-solid glitch" data-t="OFFENSIVE">OFFENSIVE</span>
             <span class="t-outline glitch" data-t="INTEL">INTEL</span>
         </h1>
-        <div style="margin-top:2.5rem">
-            <a href="n4d-mesh-controller/" class="btn-p"><span>→ Latest Research: N4D Mesh Controller</span></a>
+
+        <div class="research-header">// Research Publications</div>
+
+        <div class="research-grid">
+
+            <a href="cross-platform-rat-deployment-via-wp2shell/" class="r-card">
+                <div class="r-card-meta">
+                    <span class="r-badge">// Latest</span>
+                    <span>2026-07-23</span>
+                </div>
+                <div class="r-tags">
+                    <span class="r-tag">Go RAT</span>
+                    <span class="r-tag">WordPress</span>
+                    <span class="r-tag">IoT Botnet</span>
+                    <span class="r-tag">CVE-2026-63030</span>
+                </div>
+                <div class="r-card-title">Cross-Platform RAT Deployment via wp2shell</div>
+                <div class="r-card-desc">Agent-TCP — Go RAT compiled for 14 CPU architectures, deployed via WordPress pre-auth SQLi and IoT mass compromise targeting Ubiquiti, D-Link, and Totolink devices across Taiwan, Japan, and the US. Active C2: v9g6.my.</div>
+                <div class="r-card-link">→ Read Report</div>
+            </a>
+
+            <a href="n4d-mesh-controller/" class="r-card">
+                <div class="r-card-meta">
+                    <span class="r-badge prev">// Previous</span>
+                    <span>2026-07-02</span>
+                </div>
+                <div class="r-tags">
+                    <span class="r-tag">Botnet</span>
+                    <span class="r-tag">IA</span>
+                    <span class="r-tag">LLM</span>
+                    <span class="r-tag">MCP</span>
+                </div>
+                <div class="r-card-title">N4D Mesh Controller</div>
+                <div class="r-card-desc">Precedent-setting botnet combining generic MCP exploitation, automated multi-step lateral movement planning, and AI/LLM infrastructure targeting with emerging defense-awareness capabilities.</div>
+                <div class="r-card-link">→ Read Report</div>
+            </a>
+
         </div>
     </div>
 </section>
@@ -229,7 +346,7 @@
         svg.innerHTML = d;
     })();
 
-    // ── Particles + Lightning ──────────────────────────────
+    // ── Particles ─────────────────────────────────────────
     (function() {
         const canvas = document.getElementById('fx');
         const ctx = canvas.getContext('2d');
@@ -241,7 +358,6 @@
         resize();
         window.addEventListener('resize', resize);
 
-        // Snow particles
         const COUNT = 130;
         const pts = Array.from({ length: COUNT }, () => ({
             x:     Math.random() * window.innerWidth,
@@ -255,7 +371,6 @@
 
         function loop() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             pts.forEach(p => {
                 p.phase += 0.018;
                 p.x += p.vx + Math.sin(p.phase * 0.7) * 0.15;
@@ -269,10 +384,8 @@
                 ctx.fillStyle = `rgba(220,228,240,${a})`;
                 ctx.fill();
             });
-
             requestAnimationFrame(loop);
         }
-
         loop();
     })();
 </script>
